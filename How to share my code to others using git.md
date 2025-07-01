@@ -14,3 +14,4 @@
 ![[Pasted image 20250701122500.png]]
 8. your pull request will be up for approval. When that happens, the leader will need to review the code and merge it to the existing application.
 
+![image](https://github.com/user-attachments/assets/63100bf6-0712-42ef-b541-5fb06d2132e6)
