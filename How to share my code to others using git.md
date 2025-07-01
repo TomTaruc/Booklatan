@@ -1,5 +1,5 @@
 1. Right click the project
-![[Pasted image 20250701121542.png]]
+![image1](Pasted image 20250701121542.png)
 2. Go to `Git` and select `add`
 ![[Pasted image 20250701121618.png]]
 3. Go to `Git` and select `commit`. 
@@ -14,4 +14,3 @@
 ![[Pasted image 20250701122500.png]]
 8. your pull request will be up for approval. When that happens, the leader will need to review the code and merge it to the existing application.
 
-![image](https://github.com/user-attachments/assets/63100bf6-0712-42ef-b541-5fb06d2132e6)
