@@ -1,6 +1,6 @@
 1. Go to the BookLatan repository: https://github.com/KaiserLycan/Booklatan
 2. Create a `fork`, this will create a copy of the repository under your account.
-![[Pasted image 20250701115941.png]]
+![](Images/Pasted image 20250701115941.png)
 3. Go to your account `settings`, then go to `developer setting`
 ![[Pasted image 20250701120125.png]]
 ![[Pasted image 20250701120202.png]]
