@@ -1,6 +1,6 @@
 1. Right-click the project </br>
 ![image](https://github.com/user-attachments/assets/d73d7d8d-7ba2-4f74-9641-12d80bdcfa5c)
-2. Go to `Git` and select `add`
+2. Go to `Git` and select `add`</br>
 ![image](https://github.com/user-attachments/assets/3273c87d-3a53-49a6-baca-0bf98bfd34ba)
 3. Go to `Git` and select `commit`. 
 *DON'T FORGET TO ADD AN APPROPRIATE COMMENT THAT DESCRIBES YOUR CONTRIBUTION*
