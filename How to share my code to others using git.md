@@ -1,16 +1,16 @@
-1. Right click the project
-![image1](Pasted image 20250701121542.png)
+1. Right-click the project
+![image](https://github.com/user-attachments/assets/d73d7d8d-7ba2-4f74-9641-12d80bdcfa5c)
 2. Go to `Git` and select `add`
-![[Pasted image 20250701121618.png]]
+![image](https://github.com/user-attachments/assets/3273c87d-3a53-49a6-baca-0bf98bfd34ba)
 3. Go to `Git` and select `commit`. 
-*DONT FORGET TO ADD AN APPROPRIATE COMMENT THAT DESCRIBES YOUR CONTRIBUTION*
-![[Pasted image 20250701121640.png]]
+*DON'T FORGET TO ADD AN APPROPRIATE COMMENT THAT DESCRIBES YOUR CONTRIBUTION*
+![image](https://github.com/user-attachments/assets/5374ec0c-f721-4904-aefd-4e4f844c49ce)
 4. Go to `Git` and then `remote` and select `push to upstream`
-![[Pasted image 20250701121821.png]]
-5. This might not be necessary but do it anyways. head to remote and select `push`. Then click next. I
-![[Pasted image 20250701121840.png]]
-6. Go to you repository and check if the things you added and changes are reflected. If they aren't redo the process or ask for help. Otherwise you can proceed to opening a `pull request`.
-7. To open a pull request. Click `contirbute` and then `open pull-request`. Add a title and description then submit.
-![[Pasted image 20250701122500.png]]
-8. your pull request will be up for approval. When that happens, the leader will need to review the code and merge it to the existing application.
+![image](https://github.com/user-attachments/assets/b95ae97f-9d57-4bce-bee6-1dc281ce8073)
+5. This might not be necessary, but do it anyway. Head to the remote and select `push`. Then click next. I
+![image](https://github.com/user-attachments/assets/ec7ddeda-2ad2-4780-b1d8-dc355771da78)
+6. Go to your repository and check if the things you added and the changes are reflected. If they don't redo the process or ask for help. Otherwise, you can proceed to opening a `pull request`.
+7. To open a pull request. Click `contribute` and then `open pull request`. Add a title and description, then submit.
+![image](https://github.com/user-attachments/assets/d05a60b0-3306-4a44-87aa-fdf80648f034)
+8. Your pull request will be up for approval. When that happens, the leader will need to review the code and merge it into the existing application.
 
