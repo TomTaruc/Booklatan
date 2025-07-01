@@ -1,4 +1,4 @@
-1. Right-click the project
+1. Right-click the project </br>
 ![image](https://github.com/user-attachments/assets/d73d7d8d-7ba2-4f74-9641-12d80bdcfa5c)
 2. Go to `Git` and select `add`
 ![image](https://github.com/user-attachments/assets/3273c87d-3a53-49a6-baca-0bf98bfd34ba)
