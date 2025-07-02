@@ -6,6 +6,7 @@ package Test;
 import Model.*;
 import Control.*;
 import java.time.LocalDate;
+import io.github.cdimascio.dotenv.Dotenv;
 //import Views.*;
 /**
  *
@@ -13,6 +14,7 @@ import java.time.LocalDate;
  */
 public class Test {
     public static void main(String[] args) {
-        
+        Dotenv dotenv = Dotenv.load();
+        System.out.println(dotenv.get("DB_PASSWORD"));
     }
 }

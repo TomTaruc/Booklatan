@@ -4,14 +4,16 @@
  */
 package Model;
 import java.sql.*;
+import io.github.cdimascio.dotenv.Dotenv;
 /**
  *
  * @author Joseph Rey
  */
 public abstract class  DAO{
-    private String username = "root";
-    private String password = "KaiserLycan081505";
-    private String dbURL = "jdbc:mysql://localhost:3306/booklatan";
+    private final Dotenv dotenv = Dotenv.load();
+    private final String username = dotenv.get("DB_USER");
+    private final String password = dotenv.get("DB_PASSWORD");
+    private final String dbURL = dotenv.get("DB_URL");
     
     protected Connection getConnection() {
         try {
