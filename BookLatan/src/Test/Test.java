@@ -16,5 +16,18 @@ public class Test {
     public static void main(String[] args) {
         MemberDAO dao = new MemberDAO();
         
+        Member member = new Member();
+        member.setName("Dinel Robles");
+        member.setAddress("Taguig, Phlippines");
+        member.setEmail("dcpr@gmail.com");
+        member.setDateJoined(LocalDate.now());
+        member.setPhone("123-123-123");
+        member.setMemberID(4);
+        member.setUserID(4);
+        member.setStatus(Member.MembershipStatus.ACTIVE);
+        
+        
+        dao.addMember(member);
+        
     }
 }
