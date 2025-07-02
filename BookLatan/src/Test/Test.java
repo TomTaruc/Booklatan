@@ -14,20 +14,13 @@ import io.github.cdimascio.dotenv.Dotenv;
  */
 public class Test {
     public static void main(String[] args) {
-        MemberDAO dao = new MemberDAO();
+        UserController controller = new UserController(new UserDAO());
+        User user = new User();
+        user.setUserName("Kaiser123");
+        user.setPassword("Real");
+        user.setUserID(5);
+        user.setType(User.UserType.MEMBER);
         
-        Member member = new Member();
-        member.setName("Dinel Robles");
-        member.setAddress("Taguig, Phlippines");
-        member.setEmail("dcpr@gmail.com");
-        member.setDateJoined(LocalDate.now());
-        member.setPhone("123-123-123");
-        member.setMemberID(4);
-        member.setUserID(4);
-        member.setStatus(Member.MembershipStatus.ACTIVE);
-        
-        
-        dao.addMember(member);
-        
+        controller.deleteUser(user);
     }
 }
