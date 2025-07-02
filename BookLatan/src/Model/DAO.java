@@ -15,6 +15,12 @@ public abstract class  DAO{
     private final String password = dotenv.get("DB_PASSWORD");
     private final String dbURL = dotenv.get("DB_URL");
     
+    public void checkDetails() {
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println(dbURL);
+    }
+    
     protected Connection getConnection() {
         try {
             return DriverManager.getConnection(dbURL, username, password);        
