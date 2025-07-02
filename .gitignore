@@ -1,2 +1,8 @@
+#Env
+.env
+!sample.env
+
+
+# Java
 /BookLatan/nbproject/private/
 /BookLatan/build/
