@@ -5,6 +5,8 @@
 package Control;
 import Model.MemberDAO;
 import Model.Member;
+import Views.MemberView;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Joseph Rey
@@ -12,10 +14,16 @@ import Model.Member;
 public class MemberController {
     
     private MemberDAO model;
+    private MemberView view;
     
-    public MemberController(MemberDAO model) {
+    public MemberController(MemberDAO model, MemberView view) {
         this.model = model;
+        this.view = view;
     }
+    
+    public void displayMembers(DefaultTableModel tblModel) {
+        view.showMembers(tblModel, model.getMembers());
+    };
     
     public void registerMember(Member member) {
         model.addMember(member);

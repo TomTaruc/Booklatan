@@ -4,11 +4,51 @@
  */
 package Model;
 import java.sql.*;
+import java.util.ArrayList;
+import java.time.LocalDate;
 /**
  *
  * @author Joseph Rey
  */
 public class MemberDAO extends DAO {
+    
+    public ArrayList<Member> getMembers () {
+        Connection con = super.getConnection();
+        ArrayList<Member> members = new ArrayList<>();
+        Statement stmt;
+        ResultSet results;
+        try {
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT * FROM MemberUser;");
+            while(results.next()) {
+                Member member = new Member();
+                // Member Attributes
+                member.setMemberID(results.getInt("memberID"));
+                member.setName(results.getString("name"));
+                member.setAddress(results.getString("address"));
+                member.setDateJoined(results.getDate("dateJoined").toLocalDate());
+                member.setEmail(results.getString("email"));
+                member.setPhone(results.getString("phone"));
+                member.setStatus(Member.MembershipStatus.fromString(results.getString("_status")));
+                // User Attributes
+                member.setUserID(results.getInt("userID"));
+                member.setUserName(results.getString("userName"));
+                member.setType(User.UserType.MEMBER);
+                member.setPassword(results.getString("password"));
+                
+                members.add(member);
+            }
+            
+            results.close();
+            stmt.close();
+            con.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        return members;
+    }
     
     public void addMember(Member member) {
         Connection con = super.getConnection();

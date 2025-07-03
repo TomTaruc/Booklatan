@@ -13,7 +13,16 @@ public class Member extends User{
     public enum MembershipStatus {
         ACTIVE,
         SUSPENDED,
-        DEACTIVATED
+        DEACTIVATED;
+        
+        public static MembershipStatus fromString(String value) {
+            for(MembershipStatus type : MembershipStatus.values()) {
+                if(type.name().equalsIgnoreCase(value)) {
+                    return type;
+                }
+            }
+            return null;
+        }
     }
 
     
