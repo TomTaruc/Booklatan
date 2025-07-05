@@ -3,11 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Test;
+import Main.*;
 import Model.*;
 import Control.*;
 import java.time.LocalDate;
 import io.github.cdimascio.dotenv.Dotenv;
-import Main.*;
 //import Views.*;
 /**
  *
@@ -15,11 +15,8 @@ import Main.*;
  */
 public class Test {
     public static void main(String[] args) {
-        MemberDAO dao = new MemberDAO();
-        for(Member member : dao.getMembers()) {
-            System.out.println(member.getUserID() + ": " + member.getUserName());
-        }
         StaffApplication app = new StaffApplication();
-        app.setVisible(true);
+        
+        
     }
 }
