@@ -6,6 +6,10 @@ package Main;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 /**
  *
  * @author Joseph Rey
@@ -17,7 +21,7 @@ public class DashboardPanel extends JPanel{
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(primaryColor);
         
-        
+        //Header 
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
         header.setPreferredSize(new Dimension(this.getPreferredSize().width, 100));
@@ -34,10 +38,10 @@ public class DashboardPanel extends JPanel{
         header.add(Box.createVerticalStrut(5));
         header.add(headerSubTitle);
         
-        
+        //Overview
         JPanel cardHolder = new JPanel();
         cardHolder.setBackground(primaryColor);
-        cardHolder.setPreferredSize(new Dimension(this.getPreferredSize().width, 250));
+        cardHolder.setPreferredSize(new Dimension(this.getPreferredSize().width, 200));
         cardHolder.setMaximumSize(cardHolder.getPreferredSize());
         cardHolder.setAlignmentX(Component.CENTER_ALIGNMENT);
         ArrayList<InfoCard> infocards = new ArrayList<>();
@@ -51,10 +55,83 @@ public class DashboardPanel extends JPanel{
             cardHolder.add(Box.createVerticalStrut(10));
         }
         
+        //Recent activities
+        String[] columnNames = {"Activity", "Member Name", "Book Title", "Date"};
+        
+        Object[][] data = {
+            {"Loaned", "Kaiser Lycan", "How to kill a mocking bird", "12/08/2024"},
+            {"Reserved", "Dinel Robles", "Legion Lover", "12/08/2024"},
+            {"Returned", "Khryzna Advincula", "When a women kills", "12/08/2024"}
+        };
+        
+        JTable table = new JTable(new DefaultTableModel(data, columnNames)) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+            
+        };
+        
+        
+        table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0,0));
+        table.setRowHeight(50);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        
+        JTableHeader tHeader = table.getTableHeader();
+        tHeader.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        tHeader.setBackground(new Color(230, 230, 230));
+        tHeader.setForeground(Color.BLACK);
+        tHeader.setOpaque(true);
+        
+        table.getTableHeader().setFont(new Font("Tahoma", Font.PLAIN, 16));
+        table.getTableHeader().setReorderingAllowed(false);
+        table.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = new JLabel(value.toString());
+                label.setFont(new Font("Tahoma", Font.BOLD, 16));
+                label.setOpaque(true);
+                label.setBackground(new Color(230, 230, 230));
+                label.setForeground(Color.BLACK);
+                label.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                label.setHorizontalAlignment(LEFT);
+                return label;
+            }
+            
+        });
+                
+        for(int i = 0; i < columnNames.length; i++) {
+             table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JPanel panel = new JPanel(new BorderLayout());
+                panel.setBackground( isSelected ? table.getSelectionBackground() : primaryColor);
+                panel.setBorder(new EmptyBorder(5, 10, 5, 10));
+                
+                JLabel label = new JLabel(value.toString());
+                label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+                label.setOpaque(false);
+                label.setForeground(Color.black);
+                
+                panel.add(label, BorderLayout.WEST);
+                return panel;
+            } 
+            });
+        }
+        
+        //Scrollable Container
+        JScrollPane scrollTable = new JScrollPane(table); 
+        scrollTable.setPreferredSize(new Dimension(this.getPreferredSize().width - 50, 500));
+        scrollTable.setMaximumSize(scrollTable.getPreferredSize());
+        scrollTable.getViewport().setBackground(primaryColor);
+        scrollTable.setViewportBorder(null);
+        scrollTable.setBorder(BorderFactory.createEmptyBorder());
+        scrollTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, null);
         
         this.add(header);
         this.add(Box.createVerticalStrut(5));
         this.add(cardHolder);
-        
+        this.add(scrollTable);
     }
 }
