@@ -162,5 +162,17 @@
     }
   },
   "active": "23330532e9fbc9c7",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "BookLatan/build/classes/Main/LibrarianApplication$MemberPanel.class",
+    "BookLatan/build/classes/Views/CustomScrollPane$CustomScrollBar.class",
+    "BookLatan/build/classes/Views/CustomScrollPane.class",
+    "BookLatan/src/Views/CustomScrollPane.java",
+    "BookLatan/build/classes/Views/Sidebar$2.class",
+    "BookLatan/build/classes/Views/Sidebar.class",
+    "BookLatan/build/classes/Views/Sidebar$1.class",
+    "BookLatan/src/Views/Sidebar.java",
+    "BookLatan/build/classes/Views/BorderlessTable$1.class",
+    "BookLatan/build/classes/Views/BorderlessTable.class",
+    "BookLatan/build/classes/Views/BorderlessTable$2.class"
+  ]
 }
