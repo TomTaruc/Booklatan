@@ -15,8 +15,9 @@ import io.github.cdimascio.dotenv.Dotenv;
  */
 public class Test {
     public static void main(String[] args) {
-        StaffApplication app = new StaffApplication();
-        
+        LibrarianApplication app = new LibrarianApplication();
+        //MemberApplication app2 = new MemberApplication();
+        //AdminApplication app3 = new AdminApplication();
         
     }
 }

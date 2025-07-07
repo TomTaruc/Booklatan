@@ -14,7 +14,11 @@ public class MemberView {
     public void showMembers(DefaultTableModel model, ArrayList<Member> members) {
         model.setRowCount(0);
         for(Member member : members) {
-            model.addRow(new Object[] {member.getMemberID(), member.getUserID(), member.getName(), member.getUserName(),  member.getEmail(), member.getDateJoined()});
+            model.addRow(new Object[] {String.format("%06d", member.getMemberID()), member.getName(), member.getStatus().toString().toLowerCase(), member.getEmail(), member.getDateJoined().toString()});
+        }
+        
+        while(model.getRowCount() < 15) {
+            model.addRow(new Object[] {"-", "-", "-", "-", "-"});
         }
     }
     

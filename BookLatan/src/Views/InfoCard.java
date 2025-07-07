@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Main;
+package Views;
 import javax.swing.*;
 import java.awt.*;
 /**
@@ -15,10 +15,10 @@ public class InfoCard extends JPanel {
     
     public InfoCard(String title, String info, Color color) {
         primaryColor = color;
-        this.setPreferredSize(new Dimension(405, 150));
-        this.setMaximumSize(this.getPreferredSize());;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setPreferredSize(new Dimension(350, 150));
         this.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        this.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         JLabel jTitle = new JLabel(title);
         jTitle.setFont(new Font("Tahoma", Font.BOLD, 20));

@@ -35,7 +35,6 @@ public class MemberDAO extends DAO {
                 member.setUserName(results.getString("userName"));
                 member.setType(User.UserType.MEMBER);
                 member.setPassword(results.getString("password"));
-                
                 members.add(member);
             }
             
@@ -48,6 +47,41 @@ public class MemberDAO extends DAO {
         }
         
         return members;
+    }
+    
+    public Member getMemberByID(int memberID) {
+        Connection con = super.getConnection();
+        Member member;
+        Statement stmt;
+        ResultSet results;
+        
+        try {
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT * FROM MemberUser WHERE memberID = "+ memberID +";");
+            results.next();
+            member = new Member();
+            member.setMemberID(results.getInt("memberID"));
+            member.setName(results.getString("name"));
+            member.setAddress(results.getString("address"));
+            member.setDateJoined(results.getDate("dateJoined").toLocalDate());
+            member.setEmail(results.getString("email"));
+            member.setPhone(results.getString("phone"));
+            member.setStatus(Member.MembershipStatus.fromString(results.getString("_status")));
+            // User Attributes
+            member.setUserID(results.getInt("userID"));
+            member.setUserName(results.getString("userName"));
+            member.setType(User.UserType.MEMBER);
+            member.setPassword(results.getString("password"));
+            
+            results.close();
+            stmt.close();
+            con.close();
+            return member;
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
     
     public void addMember(Member member) {

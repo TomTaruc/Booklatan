@@ -25,6 +25,10 @@ public class MemberController {
         view.showMembers(tblModel, model.getMembers());
     };
     
+    public Member getMemberDetail(int memberNo) {
+        return model.getMemberByID(memberNo);
+    }
+    
     public void registerMember(Member member) {
         model.addMember(member);
     }
