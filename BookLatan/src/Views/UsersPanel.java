@@ -2,19 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Main;
+package Views;
 
 import Control.MemberController;
 import Model.*;
-import Views.BorderlessTable;
-import Views.CustomScrollPane;
-import Views.MemberView;
+import Views.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.*;
 /**
  *
@@ -22,17 +24,20 @@ import javax.swing.table.*;
  */
 
     
-public class MembersPanel extends JPanel {
+public class UsersPanel extends JPanel {
     private Color primaryColor = new Color(245, 245, 245);
+    private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
     private ArrayList<JLabel> labels = new ArrayList<>();
     private ArrayList<JTextField> fields = new ArrayList<>();
     private BorderlessTable membersTable;
     private DefaultTableModel membersTableModel;
     private MemberController memControl;
     private Member selectedMember;
+    private JTextField searchBar;
+    private JComboBox<Member.MembershipStatus> filterStatus;
     
     
-    public MembersPanel(JFrame frame) {
+    public UsersPanel(JFrame frame) {
         initComponent(frame);
     }
     
@@ -64,10 +69,82 @@ public class MembersPanel extends JPanel {
         textContent.add(Box.createVerticalStrut(5));
         textContent.add(headerSubTitle);
 
+        CustomButton registerBtn = new CustomButton("Register Member");
+        registerBtn.setPrimaryColor(new Color(168, 213, 186));
+        registerBtn.setHoverColor(new Color(148, 193, 166));
+        registerBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addMember(e);
+            }
+            
+        });
+        
         panelHeader.add(textContent);
         panelHeader.add(Box.createHorizontalGlue());
+        panelHeader.add(registerBtn);
         this.add(panelHeader);
         
+        // **** Search Panel ****
+        JPanel searchPanel = new JPanel();
+        searchPanel.setPreferredSize(new Dimension(this.getPreferredSize().width, 150));
+        searchPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
+        
+        searchBar = new JTextField("Search member");
+        searchBar.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        searchBar.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        searchBar.setForeground(Color.LIGHT_GRAY);
+        searchBar.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                if(searchBar.getText().equals("Search member")) {
+                    searchBar.setText("");
+                    searchBar.setForeground(Color.BLACK);   
+                }
+            }
+            
+            @Override
+            public void focusLost(FocusEvent e) {
+                if(searchBar.getText().isEmpty()) {
+                    searchBar.setText("Search member");
+                    searchBar.setForeground(Color.LIGHT_GRAY);
+                    memControl.displayMembers(membersTableModel);
+                }
+            }
+        });
+        
+        searchBar.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterSearch();
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterSearch();
+            }
+            
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterSearch();
+            }
+
+        });
+        
+        searchPanel.add(searchBar);
+        searchPanel.add(Box.createHorizontalStrut(10));
+        
+        
+        filterStatus = new JComboBox<>(Member.MembershipStatus.values());
+        filterStatus.setFont(primaryFont);
+        filterStatus.setPreferredSize(new Dimension(150, 50));
+        filterStatus.setMaximumSize(filterStatus.getPreferredSize());
+        
+        searchPanel.add(filterStatus);
+        
+        this.add(searchPanel);
         
         //Main Content 
         JPanel mainContentContainer = new JPanel();
@@ -84,7 +161,7 @@ public class MembersPanel extends JPanel {
         membersTable.changeModel(membersTableModel);
 
 
-        memControl = new MemberController(new MemberDAO(), new MemberView());
+        memControl = new MemberController(new MemberUserDAO(), new MemberView());
         memControl.displayMembers(membersTableModel);
 
         membersTable.getColumnModel().getColumn(0).setMaxWidth(200);
@@ -104,8 +181,8 @@ public class MembersPanel extends JPanel {
         // **** Members Details ****
         JPanel memberDetails;
         String[] labelNames;
-        JButton updateBtn;
-        JButton deleteBtn;
+        CustomButton updateBtn;
+        CustomButton deleteBtn;
         
         memberDetails = new JPanel();
         memberDetails.setPreferredSize(new Dimension(700, this.getPreferredSize().height));
@@ -142,9 +219,19 @@ public class MembersPanel extends JPanel {
             memberDetails.add(field);
             memberDetails.add(Box.createVerticalStrut(15));
         }
+        fields.get(6).setEditable(false);
+
         
-        updateBtn = new JButton("Update");
-        updateBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JPanel btnsHolder = new JPanel();
+        btnsHolder.setPreferredSize(new Dimension(memberDetails.getSize().width, 100));
+        btnsHolder.setMaximumSize(new Dimension(700, 100));
+        btnsHolder.setLayout(new BoxLayout(btnsHolder, BoxLayout.X_AXIS));
+        btnsHolder.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnsHolder.setBorder(BorderFactory.createEmptyBorder());
+        
+        updateBtn = new CustomButton("Update");
+        updateBtn.setPrimaryColor(new Color(163, 196, 243));
+        updateBtn.setHoverColor(new Color(143, 176, 223));
         updateBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -152,11 +239,11 @@ public class MembersPanel extends JPanel {
             }
             
         });
-        memberDetails.add(updateBtn);
+
         
-        
-        deleteBtn = new JButton("Delete");
-        deleteBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        deleteBtn = new CustomButton("Delete");
+        deleteBtn.setPrimaryColor(new Color(247, 161, 161));
+        deleteBtn.setHoverColor(new Color(227, 141, 141));
         deleteBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -164,7 +251,12 @@ public class MembersPanel extends JPanel {
             }
             
         });
-        memberDetails.add(deleteBtn);
+        
+        btnsHolder.add(Box.createHorizontalGlue());
+        btnsHolder.add(updateBtn);
+        btnsHolder.add(Box.createHorizontalStrut(20));
+        btnsHolder.add(deleteBtn);
+        memberDetails.add(btnsHolder);
         
         mainContentContainer.add(tableWrapper, BorderLayout.WEST);
         mainContentContainer.add(memberDetails);
@@ -190,6 +282,7 @@ public class MembersPanel extends JPanel {
         fields.get(3).setText(selectedMember.getEmail());
         fields.get(4).setText(selectedMember.getPhone());
         fields.get(5).setText(selectedMember.getAddress());
+        //Date
         fields.get(6).setText(selectedMember.getDateJoined().toString());   
     }
     
@@ -209,10 +302,40 @@ public class MembersPanel extends JPanel {
     }
     
     private void deleteMember(MouseEvent e) {
-        System.out.println("Worknig");
         memControl.deleteMember(selectedMember);
         memControl.displayMembers(membersTableModel);
+        for(JTextField field : fields) {
+            field.setText("");
+        }
         JOptionPane.showMessageDialog(null,  selectedMember.getName() + " account has been deleted sucessfully");
     }
+    
+    private void filterSearch() {
+        memControl.filterMembers(membersTableModel, searchBar.getText(), (Member.MembershipStatus) filterStatus.getSelectedItem());
+    }
+    
+    private void addMember(MouseEvent e) {
+        RegistrationFrame frame = new RegistrationFrame(this);
+        frame.setVisible(true);
+    }
+
+    public BorderlessTable getMembersTable() {
+        return membersTable;
+    }
+
+    public void setMembersTable(BorderlessTable membersTable) {
+        this.membersTable = membersTable;
+    }
+
+    public DefaultTableModel getMembersTableModel() {
+        return membersTableModel;
+    }
+
+    public void setMembersTableModel(DefaultTableModel membersTableModel) {
+        this.membersTableModel = membersTableModel;
+    }
+    
+    
+    
 }
     

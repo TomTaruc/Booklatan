@@ -17,12 +17,15 @@ public class MemberView {
             model.addRow(new Object[] {String.format("%06d", member.getMemberID()), member.getName(), member.getStatus().toString().toLowerCase(), member.getEmail(), member.getDateJoined().toString()});
         }
         
-        while(model.getRowCount() < 15) {
+        while(model.getRowCount() < 20) {
             model.addRow(new Object[] {"-", "-", "-", "-", "-"});
         }
     }
     
-    public void showMember() {
-        
+    public void filterMembers(DefaultTableModel model, ArrayList<Member> members) {
+        model.setRowCount(0);
+        for(Member member : members) {
+            model.addRow(new Object[] {String.format("%06d", member.getMemberID()), member.getName(), member.getStatus().toString().toLowerCase(), member.getEmail(), member.getDateJoined().toString()});
+        }
     }
 }

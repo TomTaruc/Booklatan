@@ -14,7 +14,16 @@ public class User {
     public enum UserType {
         ADMIN,
         LIBRARIAN,
-        MEMBER
+        MEMBER;
+        
+        public static UserType fromString(String value) {
+            for(UserType type : UserType.values()) {
+                if(type.name().equalsIgnoreCase(value)) {
+                    return type;
+                }
+            }
+            return null;
+        }
     }
     
     private int userID;

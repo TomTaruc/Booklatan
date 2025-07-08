@@ -10,7 +10,7 @@ import java.time.LocalDate;
  *
  * @author Joseph Rey
  */
-public class MemberDAO extends DAO {
+public class MemberUserDAO extends DAO {
     
     public ArrayList<Member> getMembers () {
         Connection con = super.getConnection();
@@ -21,6 +21,88 @@ public class MemberDAO extends DAO {
             stmt = con.createStatement();
             results = stmt.executeQuery("SELECT * FROM MemberUser;");
             while(results.next()) {
+                Member member = new Member();
+                // Member Attributes
+                member.setMemberID(results.getInt("memberID"));
+                member.setName(results.getString("name"));
+                member.setAddress(results.getString("address"));
+                member.setDateJoined(results.getDate("dateJoined").toLocalDate());
+                member.setEmail(results.getString("email"));
+                member.setPhone(results.getString("phone"));
+                member.setStatus(Member.MembershipStatus.fromString(results.getString("_status")));
+                // User Attributes
+                member.setUserID(results.getInt("userID"));
+                member.setUserName(results.getString("userName"));
+                member.setType(User.UserType.MEMBER);
+                member.setPassword(results.getString("password"));
+                members.add(member);
+            }
+            
+            results.close();
+            stmt.close();
+            con.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        return members;
+    }
+    
+    public ArrayList<Member> getMembers (Member.MembershipStatus status) {
+        Connection con = super.getConnection();
+        ArrayList<Member> members = new ArrayList<>();
+        Statement stmt;
+        ResultSet results;
+        try {
+            stmt = con.createStatement();
+            if(status != Member.MembershipStatus.ALL) {
+                results = stmt.executeQuery("SELECT * FROM MemberUser WHERE _status = "+ status.toString().toLowerCase() +");");
+            }
+            else {
+                results = stmt.executeQuery("SELECT * FROM MemberUser;");
+            }
+            while(results.next()) {
+                Member member = new Member();
+                // Member Attributes
+                member.setMemberID(results.getInt("memberID"));
+                member.setName(results.getString("name"));
+                member.setAddress(results.getString("address"));
+                member.setDateJoined(results.getDate("dateJoined").toLocalDate());
+                member.setEmail(results.getString("email"));
+                member.setPhone(results.getString("phone"));
+                member.setStatus(Member.MembershipStatus.fromString(results.getString("_status")));
+                // User Attributes
+                member.setUserID(results.getInt("userID"));
+                member.setUserName(results.getString("userName"));
+                member.setType(User.UserType.MEMBER);
+                member.setPassword(results.getString("password"));
+                members.add(member);
+            }
+            
+            results.close();
+            stmt.close();
+            con.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        return members;
+    }
+    
+    public ArrayList<Member> getMembers (String search, Member.MembershipStatus status) {
+        Connection con = super.getConnection();
+        ArrayList<Member> members = new ArrayList<>();
+        Statement stmt;
+        ResultSet results;
+        try {
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT * FROM MemberUser WHERE name LIKE ('%"+ search +"%');");
+            while(results.next()) {
+                if(status != Member.MembershipStatus.ALL && !results.getString("_status").equalsIgnoreCase(status.toString())) {
+                    continue;
+                }
                 Member member = new Member();
                 // Member Attributes
                 member.setMemberID(results.getInt("memberID"));
@@ -87,14 +169,14 @@ public class MemberDAO extends DAO {
     public void addMember(Member member) {
         Connection con = super.getConnection();
         try {
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO member(userID, name, phone, email, address, dateJoined, _status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            stmt.setInt(1, member.getUserID());
-            stmt.setString(2, member.getName());
-            stmt.setString(3, member.getPhone());
-            stmt.setString(4, member.getEmail());
-            stmt.setString(5, member.getAddress());
-            stmt.setDate(6, Date.valueOf(member.getDateJoined()));
-            stmt.setString(7, member.getStatus().toString().toLowerCase());
+            PreparedStatement stmt = con.prepareStatement("{CALL addMember(?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, member.getName());
+            stmt.setString(2, member.getUserName());
+            stmt.setString(3, member.getPassword());
+            stmt.setString(4, member.getPhone());
+            stmt.setString(5, member.getEmail());
+            stmt.setString(6, member.getAddress());
+            stmt.setDate(7, Date.valueOf(member.getDateJoined()));
             stmt.executeUpdate();
             stmt.close();
             con.close();
@@ -107,10 +189,9 @@ public class MemberDAO extends DAO {
     public void deleteMember(Member member) {
         Connection con = super.getConnection();
         try {
-            Statement stmt = con.createStatement();
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 0");
-            stmt.execute("DELETE FROM MEMBER WHERE memberID = " + member.getMemberID()+";");
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
+            PreparedStatement stmt = con.prepareStatement("{CALL deleteMember(?)}");
+            stmt.setInt(1, member.getMemberID());
+            stmt.execute();
             stmt.close();
             con.close();
         }
@@ -131,6 +212,12 @@ public class MemberDAO extends DAO {
             stmt.setString(6, member.getStatus().toString().toLowerCase());
             stmt.setInt(7, member.getMemberID());
             stmt.executeUpdate();
+            stmt = con.prepareStatement("UPDATE USERS SET userName = ? , password = ?, type = ? WHERE userID = ?");
+            stmt.setString(1, member.getUserName());
+            stmt.setString(2, member.getPassword());
+            stmt.setString(3, member.getType().toString().toLowerCase());
+            stmt.setInt(4, member.getUserID());
+            stmt.execute();
             stmt.close();
             con.close();
         }

@@ -4,6 +4,7 @@
  */
 package Main;
 
+import Views.Application;
 import Views.Sidebar;
 import javax.swing.*;
 import java.awt.*;

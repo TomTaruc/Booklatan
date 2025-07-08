@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class Member extends User{
     
     public enum MembershipStatus {
+        ALL,
         ACTIVE,
         SUSPENDED,
         DEACTIVATED;

@@ -3,6 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Main;
+import Views.UsersPanel;
+import Views.Application;
+import Views.DashboardPanel;
 import Model.*;
 import Control.*;
 import Views.*;
@@ -52,14 +55,12 @@ public class LibrarianApplication extends Application{
         JPanel cardPanel = new JPanel(cardLayout);
         
         DashboardPanel panel1 = new DashboardPanel(this);
-        JPanel panel2 = new JPanel();
-        MembersPanel panel3 = new MembersPanel(this);
+        BooksPanel panel2 = new BooksPanel(this);
+        UsersPanel panel3 = new UsersPanel(this);
         JPanel panel4 = new JPanel();
         JPanel panel5 = new JPanel();
         JPanel panel6 = new JPanel();
-
         
-        panel2.setBackground(Color.red);
         panel4.setBackground(Color.blue);
         panel5.setBackground(Color.green);
         panel6.setBackground(Color.pink);
