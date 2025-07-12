@@ -4,6 +4,8 @@
  */
 package Views;
 
+import Model.*;
+import Control.*;
 import Views.BorderlessTable;
 import Views.CustomScrollPane;
 import Views.InfoCard;
@@ -20,10 +22,13 @@ import javax.swing.table.*;
   
     public class DashboardPanel extends JPanel{
         Color primaryColor = new Color(245, 245, 245);
+        MemberController memCon = new MemberController(new MemberUserDAO(), new MemberView());
+        
         public DashboardPanel(JFrame frame) {
         this.setPreferredSize(new Dimension(frame.getSize().width - 200, frame.getSize().height));
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(primaryColor);
+        
 
         //Header 
         JPanel header = new JPanel();
@@ -57,7 +62,7 @@ import javax.swing.table.*;
         cardHolder.setAlignmentX(Component.CENTER_ALIGNMENT);
         cardHolder.setOpaque(false);
         ArrayList<InfoCard> infocards = new ArrayList<>();
-        infocards.add(new InfoCard("Active Members", "200", new Color(114, 90, 193)));
+        infocards.add(new InfoCard("Active Members", String.valueOf(memCon.getTotalActiveMembers()), new Color(114, 90, 193)));
         infocards.add(new InfoCard("Books Loaned", "100", new Color(96, 150, 186)));
         infocards.add(new InfoCard("Books Due Today", "3", new Color(229, 56, 59)));
         infocards.add(new InfoCard("Total Unpaid Fines", "30", new Color(107, 144, 128)));

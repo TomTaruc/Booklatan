@@ -4,16 +4,16 @@
  */
 package Control;
 import Model.Staff;
-import Model.StaffDAO;
+import Model.UserStaffDAO;
 /**
  *
  * @author Joseph Rey
  */
 public class StaffController {
     
-    private StaffDAO model;
+    private UserStaffDAO model;
 
-    public StaffController(StaffDAO model) {
+    public StaffController(UserStaffDAO model) {
         this.model = model;
     }
     

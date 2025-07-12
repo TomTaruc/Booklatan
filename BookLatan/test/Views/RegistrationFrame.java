@@ -24,7 +24,7 @@ public class RegistrationFrame extends JFrame{
     ArrayList<JTextField> fields = new ArrayList<>();
     private DefaultTableModel membersTableModel;
     
-    public RegistrationFrame(UsersPanel frame) {
+    public RegistrationFrame(MembersPanel frame) {
         membersTableModel = frame.getMembersTableModel();
         initComponent();
     };

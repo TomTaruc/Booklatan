@@ -20,7 +20,12 @@ public class FineDialog extends javax.swing.JDialog {
     public FineDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        fineDAO = new FineDAO();
+        try {
+            fineDAO = new FineDAO();
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
         setLocationRelativeTo(parent);
         generateFineId();
     }

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Views;
+import View.Components.Sidebar;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  */
 public abstract class Application extends JFrame {
     protected ArrayList<JButton> btns = new ArrayList<>();
-    
+    protected Sidebar sidebar;
     public Application() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         

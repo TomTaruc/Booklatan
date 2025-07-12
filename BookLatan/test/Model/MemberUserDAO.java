@@ -52,16 +52,18 @@ public class MemberUserDAO extends DAO {
     public ArrayList<Member> getMembers (Member.MembershipStatus status) {
         Connection con = super.getConnection();
         ArrayList<Member> members = new ArrayList<>();
-        Statement stmt;
+        PreparedStatement stmt;
         ResultSet results;
         try {
-            stmt = con.createStatement();
-            if(status != Member.MembershipStatus.ALL) {
-                results = stmt.executeQuery("SELECT * FROM MemberUser WHERE _status = "+ status.toString().toLowerCase() +");");
+            if(status.equals(Member.MembershipStatus.ALL)) {
+                stmt = con.prepareStatement("SELECT * FROM MemberUser");
             }
             else {
-                results = stmt.executeQuery("SELECT * FROM MemberUser;");
+                stmt = con.prepareStatement("SELECT * FROM MemberUser WHERE _status = ?;");
+                stmt.setString(1, status.toString().toLowerCase());
             }
+            
+            results = stmt.executeQuery();
             while(results.next()) {
                 Member member = new Member();
                 // Member Attributes
@@ -91,18 +93,28 @@ public class MemberUserDAO extends DAO {
         return members;
     }
     
+    //
+    
     public ArrayList<Member> getMembers (String search, Member.MembershipStatus status) {
+        System.out.println("Work it");
         Connection con = super.getConnection();
         ArrayList<Member> members = new ArrayList<>();
-        Statement stmt;
+        PreparedStatement stmt;
         ResultSet results;
         try {
-            stmt = con.createStatement();
-            results = stmt.executeQuery("SELECT * FROM MemberUser WHERE name LIKE ('%"+ search +"%');");
+            if(status.equals(Member.MembershipStatus.ALL)) {
+                stmt = con.prepareStatement("SELECT * FROM MemberUser WHERE name LIKE ?;");
+                stmt.setString(1, "%" + search + "%");
+            }
+            else {
+                stmt = con.prepareStatement("SELECT * FROM MemberUser WHERE name LIKE ? AND _status = ?;");
+                stmt.setString(1, "%" + search + "%");
+                stmt.setString(2, status.toString().toLowerCase());
+            }
+            
+            results = stmt.executeQuery();
+            
             while(results.next()) {
-                if(status != Member.MembershipStatus.ALL && !results.getString("_status").equalsIgnoreCase(status.toString())) {
-                    continue;
-                }
                 Member member = new Member();
                 // Member Attributes
                 member.setMemberID(results.getInt("memberID"));
@@ -223,6 +235,22 @@ public class MemberUserDAO extends DAO {
         }
         catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+    
+    public int countActiveMembers() {
+        Connection con = super.getConnection();
+        Statement stmt;
+        ResultSet results;
+        try{
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT COUNT(_status) as totalActive FROM member WHERE _status = 'active';");
+            results.next();
+            return results.getInt("totalActive");
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            return 0;
         }
     }
 }

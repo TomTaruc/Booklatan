@@ -6,6 +6,7 @@ package Test;
 import Main.*;
 import Model.*;
 import Control.*;
+import Views.LoginForm;
 import java.time.LocalDate;
 import io.github.cdimascio.dotenv.Dotenv;
 //import Views.*;
@@ -15,8 +16,14 @@ import io.github.cdimascio.dotenv.Dotenv;
  */
 public class Test {
     public static void main(String[] args) {
-        ReservationApplication app = new ReservationApplication();
-        app.setVisible(true);
+    
+        
+//        LoginForm login = new LoginForm();
+ 
+        
+        LibrarianApplication app = new LibrarianApplication();
+        //MemberApplication app2 = new MemberApplication();
+        AdminApplication app3 = new AdminApplication();
         
     }
 }

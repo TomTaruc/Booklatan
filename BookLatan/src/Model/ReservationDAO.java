@@ -16,32 +16,32 @@ import java.util.ArrayList;
  *
  * @author user
  */
-public class ReservationDAO extends DAO{
-    public ArrayList<Reservation> getReservation () {
-        Connection con = super.getConnection();
-        ArrayList<Reservation> reservations = new ArrayList<>();
-        Statement stmt;
-        ResultSet results;
-        try{
-            stmt = con.createStatement();
-            results = stmt.executeQuery("SELECT * FROM Reservation;");
-            while(results.next()) {
-                Reservation reservation = new Reservation();
-                // Member Attributes
-                reservation.setReservationID(results.getInt("reservtionID"));
-                reservation.getMember().getMemberID();
-                reservations.add(reservation);
-            }
-            results.close();
-            stmt.close();
-            con.close();
-            return reservations;
-        }
-        catch(SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+//public class ReservationDAO extends DAO{
+//    public ArrayList<Reservation> getReservation () {
+//        Connection con = super.getConnection();
+//        ArrayList<Reservation> reservations = new ArrayList<>();
+//        Statement stmt;
+//        ResultSet results;
+//        try{
+//            stmt = con.createStatement();
+//            results = stmt.executeQuery("SELECT * FROM Reservation;");
+//            while(results.next()) {
+//                Reservation reservation = new Reservation();
+//                // Member Attributes
+//                reservation.setReservationID(results.getInt("reservtionID"));
+//                reservation.getMember().getMemberID();
+//                reservations.add(reservation);
+//            }
+//            results.close();
+//            stmt.close();
+//            con.close();
+//            return reservations;
+//        }
+//        catch(SQLException ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//    }
    /*  
     public void deleteReservation(Reservation reservation) {
         Connection con = super.getConnection();
@@ -73,4 +73,4 @@ public class ReservationDAO extends DAO{
         }
     }
 */
-}
+//}

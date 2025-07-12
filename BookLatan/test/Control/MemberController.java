@@ -48,4 +48,8 @@ public class MemberController {
     public void udpateMember(Member member) {
         model.updateMember(member);
     }
+    
+    public int getTotalActiveMembers() {
+        return model.countActiveMembers();
+    }
 }

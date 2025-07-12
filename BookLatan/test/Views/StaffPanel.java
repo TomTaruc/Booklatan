@@ -3,28 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Views;
-
 import Control.MemberController;
-import Model.*;
-import Views.*;
+import Model.Member;
+import Model.MemberUserDAO;
 import javax.swing.*;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.*;
 /**
  *
  * @author Joseph Rey
  */
-
-    
-public class UsersPanel extends JPanel {
+public class StaffPanel extends JPanel {
     private Color primaryColor = new Color(245, 245, 245);
     private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
     private ArrayList<JLabel> labels = new ArrayList<>();
@@ -37,8 +36,8 @@ public class UsersPanel extends JPanel {
     private JComboBox<Member.MembershipStatus> filterStatus;
     
     
-    public UsersPanel(JFrame frame) {
-        initComponent(frame);
+    public StaffPanel(JFrame frame) {
+        this.initComponent(frame);
     }
     
     private void initComponent(JFrame frame) {
@@ -61,24 +60,17 @@ public class UsersPanel extends JPanel {
         textContent.setLayout(new BoxLayout(textContent, BoxLayout.Y_AXIS));
         textContent.setOpaque(false);
 
-        headerTitle = new JLabel("Manage Members");
+        headerTitle = new JLabel("Manage Staff");
         headerTitle.setFont(new Font("Tahoma", Font.BOLD, 25));
-        JLabel headerSubTitle = new JLabel("Add, Update, and Delete Members");
+        JLabel headerSubTitle = new JLabel("Add, Update, and Delete Staff");
         headerSubTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
         textContent.add(headerTitle);
         textContent.add(Box.createVerticalStrut(5));
         textContent.add(headerSubTitle);
 
-        CustomButton registerBtn = new CustomButton("Register Member");
+        CustomButton registerBtn = new CustomButton("Register Staff");
         registerBtn.setPrimaryColor(new Color(168, 213, 186));
         registerBtn.setHoverColor(new Color(148, 193, 166));
-        registerBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                addMember(e);
-            }
-            
-        });
         
         panelHeader.add(textContent);
         panelHeader.add(Box.createHorizontalGlue());
@@ -91,7 +83,7 @@ public class UsersPanel extends JPanel {
         searchPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
         
-        searchBar = new JTextField("Search member");
+        searchBar = new JTextField("Search staff");
         searchBar.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         searchBar.setFont(new Font("Tahoma", Font.PLAIN, 16));
         searchBar.setForeground(Color.LIGHT_GRAY);
@@ -99,7 +91,7 @@ public class UsersPanel extends JPanel {
 
             @Override
             public void focusGained(FocusEvent e) {
-                if(searchBar.getText().equals("Search member")) {
+                if(searchBar.getText().equals("Search staff")) {
                     searchBar.setText("");
                     searchBar.setForeground(Color.BLACK);   
                 }
@@ -108,7 +100,7 @@ public class UsersPanel extends JPanel {
             @Override
             public void focusLost(FocusEvent e) {
                 if(searchBar.getText().isEmpty()) {
-                    searchBar.setText("Search member");
+                    searchBar.setText("Search staff");
                     searchBar.setForeground(Color.LIGHT_GRAY);
                     memControl.displayMembers(membersTableModel);
                 }
@@ -141,6 +133,12 @@ public class UsersPanel extends JPanel {
         filterStatus.setFont(primaryFont);
         filterStatus.setPreferredSize(new Dimension(150, 50));
         filterStatus.setMaximumSize(filterStatus.getPreferredSize());
+        filterStatus.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                filterSearch();
+            }
+        });
         
         searchPanel.add(filterStatus);
         
@@ -156,7 +154,7 @@ public class UsersPanel extends JPanel {
         String[] columnNames;
         
         membersTable = new BorderlessTable();
-        columnNames = new String[]{"#", "Name", "Status", "Email", "Date Joined"};
+        columnNames = new String[]{"#", "Name", "Phone", "Email", "Date Hired", "Role"};
         membersTableModel = new DefaultTableModel(null, columnNames);
         membersTable.changeModel(membersTableModel);
 
@@ -198,7 +196,7 @@ public class UsersPanel extends JPanel {
             
         });
 
-        labelNames = new String[]{"Name", "Username", "Status", "Email:", "Phone", "Address", "Date Joined"};
+        labelNames = new String[]{"Name", "Username", "Email:", "Phone", "Address", "Date Joined"};
 
         // Creates textfields and labels for the display and update of member details
         for (int i = 0; i < labelNames.length; i++) {
@@ -219,7 +217,7 @@ public class UsersPanel extends JPanel {
             memberDetails.add(field);
             memberDetails.add(Box.createVerticalStrut(15));
         }
-        fields.get(6).setEditable(false);
+//        fields.get(6).setEditable(false);
 
         
         JPanel btnsHolder = new JPanel();
@@ -311,13 +309,15 @@ public class UsersPanel extends JPanel {
     }
     
     private void filterSearch() {
-        memControl.filterMembers(membersTableModel, searchBar.getText(), (Member.MembershipStatus) filterStatus.getSelectedItem());
+        if(searchBar.getText().equals("Search staff")) {
+            memControl.filterMembers(membersTableModel, (Member.MembershipStatus) filterStatus.getSelectedItem());
+        }
+        else {
+            memControl.filterMembers(membersTableModel, searchBar.getText(), (Member.MembershipStatus) filterStatus.getSelectedItem());
+        }
     }
     
-    private void addMember(MouseEvent e) {
-        RegistrationFrame frame = new RegistrationFrame(this);
-        frame.setVisible(true);
-    }
+    
 
     public BorderlessTable getMembersTable() {
         return membersTable;
@@ -334,8 +334,5 @@ public class UsersPanel extends JPanel {
     public void setMembersTableModel(DefaultTableModel membersTableModel) {
         this.membersTableModel = membersTableModel;
     }
-    
-    
-    
+
 }
-    

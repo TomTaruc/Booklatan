@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date; 
 
-public class FineDAO extends DAO { 
+public class FineDAO extends DataAccessObject { 
 
+    public FineDAO () throws Exception {};
+    
     public boolean addFine(Fine fine) {
         String sql = "INSERT INTO fines (fine_id, member_id, member_name, book_title, isbn, " +
                      "due_date, return_date, days_overdue, amount, status, issued_date, description) " +

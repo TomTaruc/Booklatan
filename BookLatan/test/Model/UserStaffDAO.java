@@ -9,7 +9,7 @@ import java.sql.*;
  *
  * @author Joseph Rey
  */
-public class StaffDAO extends DAO{
+public class UserStaffDAO extends DAO{
     public void registerStaff(Staff staff) {
         Connection con = super.getConnection();
         try {

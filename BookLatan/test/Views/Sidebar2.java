@@ -13,13 +13,13 @@ import java.util.Map;
  *
  * @author Joseph Rey
  */
-public class Sidebar extends JPanel{
+public class Sidebar2 extends JPanel{
     public ArrayList<JButton> btns = new ArrayList<>();
     private Color textColor = new Color(173, 181, 189);
     private Color selectedColor = new Color(108, 117, 125);
     private Color primaryColor = new Color(33, 37, 41);
     
-    public Sidebar(JFrame frame, Map<String, String> menuItems) {
+    public Sidebar2(JFrame frame, Map<String, String> menuItems) {
         //Panel Setup
         this.setPreferredSize(new Dimension( 200 , frame.getSize().height));
         this.setSize(this.getPreferredSize());
@@ -41,8 +41,6 @@ public class Sidebar extends JPanel{
         JLabel userIcon = new JLabel();
         userIcon.setIcon(imgIcon);
         userIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        
         
         JLabel username = new JLabel("John Doe");
         username.setFont(new Font("Tahoma", Font.BOLD, 18));

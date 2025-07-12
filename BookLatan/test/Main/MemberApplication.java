@@ -5,7 +5,7 @@
 package Main;
 
 import Views.Application;
-import Views.Sidebar;
+import Views.Sidebar2;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class MemberApplication extends Application{
         menuItems.put("Loans", "./src/Images/loanbooks.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
-        Sidebar sb = new Sidebar(this, menuItems);
+        Sidebar2 sb = new Sidebar2(this, menuItems);
         this.add(sb, BorderLayout.WEST);
         btns = sb.btns;   
     }

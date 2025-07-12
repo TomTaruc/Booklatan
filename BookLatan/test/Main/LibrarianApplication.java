@@ -3,14 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Main;
-import Views.UsersPanel;
+import Views.MembersPanel;
 import Views.Application;
 import Views.DashboardPanel;
 import Model.*;
 import Control.*;
 import Views.*;
 import Views.CustomScrollPane;
-import Views.Sidebar;
+import Views.Sidebar2;
 import Views.BorderlessTable;
 import Views.InfoCard;
 import javax.swing.*;
@@ -45,7 +45,7 @@ public class LibrarianApplication extends Application{
         menuItems.put("Loans", "./src/Images/loanbooks.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
-        Sidebar sb = new Sidebar(this, menuItems);
+        Sidebar2 sb = new Sidebar2(this, menuItems);
         this.add(sb, BorderLayout.WEST);
         btns = sb.btns;   
     }
@@ -56,7 +56,7 @@ public class LibrarianApplication extends Application{
         
         DashboardPanel panel1 = new DashboardPanel(this);
         BooksPanel panel2 = new BooksPanel(this);
-        UsersPanel panel3 = new UsersPanel(this);
+        MembersPanel panel3 = new MembersPanel(this);
         JPanel panel4 = new JPanel();
         JPanel panel5 = new JPanel();
         JPanel panel6 = new JPanel();
