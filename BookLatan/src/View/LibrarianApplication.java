@@ -3,24 +3,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package View;
+
 import View.Components.*;
+import Model.User;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 /**
  *
  * @author Joseph Rey
  */
-public class LibrarianApplication extends Application{
+public class LibrarianApplication extends Application {
     public Sidebar sidebar;
     public CardLayout mainPanelLayout;
     public JPanel mainPanel;
+    private User user; //new
     
-    public LibrarianApplication() {
+    public LibrarianApplication(User user) {
+        this.user = user; //new
         addSideBar();
         addMainPanel();
     }
@@ -41,7 +42,15 @@ public class LibrarianApplication extends Application{
         // EVERYTIME A USER LOGIN THIER USER NAME
         // AND USER NO (MEMBERID/STAFFID) IS DISPLAYED.
         // ON THE SIDEBAR. For: Dinel From: Joseph
-        sidebar.addUserInfo("John", 1);
+//        sidebar.addUserInfo("John", 1);
+//        sidebar.addMenuItems(menuItems);
+//        this.add(sidebar, BorderLayout.WEST);
+//        this.revalidate();
+//        this.repaint();
+//    }
+
+        sidebar.addUserInfo(user.getUsername(), user.getUserId());
+
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();
@@ -56,7 +65,7 @@ public class LibrarianApplication extends Application{
         JPanel members = new MembersManager(new Dimension(this.getWidth() - 200, this.getHeight()));
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
-        JPanel fines = new FinesPanel();
+        JPanel fines = new JPanel();
         
         books.setBackground(Color.black);
         loans.setBackground(Color.blue);

@@ -3,72 +3,88 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model;
+
 import Utilities.Validators;
-import java.util.regex.Pattern;
 
 /**
  *
  * @author Joseph Rey
  */
 public class User {
-    //Variables
+    // Variables
     private String username;
     private String password;
     private UserType type;
-    
-    public User(String username, String password) throws IllegalArgumentException {
+    private int userId; // ✅ Added userId field
+
+    // Constructor with userId
+    public User(String username, String password, int userId) throws IllegalArgumentException {
         setUsername(username);
         setPassword(password);
+        this.userId = userId;
     }
-    
-    
+    public User(String username, String password) throws IllegalArgumentException {
+        this(username, password, -1);
+    }
     // **** Setters ****
-    
     public void setUsername(String username) {
         Validators.validateUsername(username);
         this.username = username;
     }
-    
+
     public void setPassword(String password) {
         Validators.validatePassword(password);
         this.password = password;
     }
-    
-        public void setType(UserType type) {
+
+    public void setType(UserType type) {
         Validators.validateEmptyVariable(username, "User Type");
         this.type = type;
     }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-    
     // **** Getters ****
-     public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public UserType getType() { return type; }
-    
-    // **** Overrides ****
+    public String getUsername() {
+        return username;
+    }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    // **** Overrides ****
     @Override
     public String toString() {
-        return username + "\t" + password + "\t" + type;
+        return username + "\t" + password + "\t" + type + "\t" + userId;
     }
-    
+
     // **** Enumerators **** 
     public static enum UserType {
-        ALL("All"), //for filtering
+        ALL("All"), // for filtering
         MEMBER("Member"),
         LIBRARIAN("Librarian"),
         ADMIN("Admin");
-        
+
         private final String label;
-        
+
         UserType(String label) {
             this.label = label;
         }
-        
+
         public static UserType fromString(String value) {
-            for(UserType type : UserType.values()) {
-                if(type.name().equalsIgnoreCase(value)) {
+            for (UserType type : UserType.values()) {
+                if (type.name().equalsIgnoreCase(value)) {
                     return type;
                 }
             }
@@ -76,6 +92,9 @@ public class User {
         }
 
         @Override
-        public String toString() { return label; }
+        public String toString() {
+            return label;
+        }
     }
 }
+

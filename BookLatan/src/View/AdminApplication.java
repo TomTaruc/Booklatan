@@ -10,18 +10,23 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
 import java.awt.*;
+import Model.User;
+
 /**
  *
  * @author Joseph Rey
  */
 public class AdminApplication extends Application {
     private Sidebar sidebar;
-    protected CardLayout menus;
-    
-    public AdminApplication() {
+    private CardLayout menus;
+    private User user;
+
+    public AdminApplication(User user) {
+        this.user = user;
+        System.out.println("AdminApplication opened for: " + user.getUsername() + " (ID: " + user.getUserId() + ")");
         this.addSideBar();
     }
-    
+
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
@@ -29,16 +34,12 @@ public class AdminApplication extends Application {
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Members", "./src/Images/members.png");
         menuItems.put("Staff", "./src/Images/members.png");
+
         sidebar = new Sidebar(this.getSize());
-        // TASK: REPLACE THE CODE UNDER THIS SO THAT
-        // EVERYTIME A USER LOGIN THIER USER NAME
-        // AND USER NO (MEMBERID/STAFFID) IS DISPLAYED.
-        // ON THE SIDEBAR. For: Dinel From: Joseph
-        sidebar.addUserInfo("John", 1);
+        sidebar.addUserInfo(user.getUsername(), user.getUserId());
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();
         this.repaint();
     }
-    
 }
