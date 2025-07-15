@@ -19,9 +19,11 @@ public class Staff extends User {
     private String address;
     private LocalDate dateHired;
     
-    public Staff(String username, String password) throws IllegalArgumentException {
+    public Staff(String username, String password) {
         super(username, password);
     }
+    
+    public Staff()  {}
     
     // **** Setters ****
 

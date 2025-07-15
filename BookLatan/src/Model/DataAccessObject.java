@@ -24,17 +24,18 @@ public class DataAccessObject {
     private final String dbURL = dotenv.get("DB_URL");
     protected Connection connection;
     
-    protected DataAccessObject() throws Exception{
+    protected DataAccessObject() {
         checkDrivers();
     }
     
-    private void checkDrivers() throws Exception {
+    private void checkDrivers() {
         try {
             System.out.println("Checking MySQL JDBC driver: ");
             Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.println("Success! You may now use MySQL JDBC");
         } catch(ClassNotFoundException ex) {
-            throw new ClassNotFoundException("JDBC Driver is not found. Please ensure that you have MySQL JDBC driver installed and imported to your libraries.");
+            System.out.print("JDBC Driver is not found. Please ensure that you have MySQL JDBC driver installed and imported to your libraries.");
+            System.exit(0);
         }
     };
     
@@ -60,4 +61,6 @@ public class DataAccessObject {
         System.out.println((showPassword ? password : "PASSWORD IS HIDDEN"));
         System.out.println(dbURL);
     }
+    
+    
 }

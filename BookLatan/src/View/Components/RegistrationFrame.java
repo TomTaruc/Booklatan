@@ -18,11 +18,18 @@ import java.util.ArrayList;
  * @author Joseph Rey
  */
 public class RegistrationFrame extends JFrame{
+    public CustomButton registerBtn;
+    public CustomButton cancelBtn;
+    public ArrayList<JTextField> fields = new ArrayList<>();
     
+    private boolean isStaff = false;
     private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
-    ArrayList<JTextField> fields = new ArrayList<>();
-    private DefaultTableModel membersTableModel;
+    private Color primaryColor = new Color(245, 245, 245);
     
+    public RegistrationFrame(boolean isStaff) {
+        this.isStaff = isStaff;
+        initComponent();
+    }
     
     private void initComponent() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -32,38 +39,17 @@ public class RegistrationFrame extends JFrame{
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);        
         this.setResizable(false);
         
-        JPanel panelHeader;
-        JPanel textContent;
-        JLabel headerTitle;
-        panelHeader = new JPanel();
-        panelHeader.setLayout(new BoxLayout(panelHeader, BoxLayout.X_AXIS));
-        panelHeader.setPreferredSize(new Dimension(this.getPreferredSize().width, 100));
-        panelHeader.setMaximumSize(panelHeader.getPreferredSize());
-        panelHeader.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panelHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        textContent = new JPanel();
-        textContent.setLayout(new BoxLayout(textContent, BoxLayout.Y_AXIS));
-        textContent.setOpaque(false);
-
-        headerTitle = new JLabel("Register Member");
-        headerTitle.setFont(new Font("Tahoma", Font.BOLD, 25));
-        JLabel headerSubTitle = new JLabel("Please Enter the following formation: ");
-        headerSubTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        textContent.add(headerTitle);
-        textContent.add(Box.createVerticalStrut(5));
-        textContent.add(headerSubTitle);
         
-        panelHeader.add(textContent);
-        this.add(panelHeader, BorderLayout.NORTH);
+        HeaderPanel header = new HeaderPanel(new Dimension(this.getWidth(), 100));
+        header.setTitle("Register User");
+        header.setSubtitle("Please Enter the following information");
+        this.add(header, BorderLayout.NORTH);
         
         
          
         // **** Main Content ****
         JPanel informationPanel = new JPanel();
         String[] labelNames;
-        CustomButton registerBtn;
-        CustomButton cancelBtn;
         JPanel btnsHolder;
         
         informationPanel.setLayout(new BoxLayout(informationPanel, BoxLayout.Y_AXIS));
@@ -71,17 +57,28 @@ public class RegistrationFrame extends JFrame{
         informationPanel.setMaximumSize(new Dimension(this.getPreferredSize().width, informationPanel.getPreferredSize().height));
         informationPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         informationPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        informationPanel.setBackground(primaryColor);
         
-        labelNames = new String[] {"Name", "Username", "Phone", "Email", "Address", "Password"};
+        labelNames = new String[] {"Name", "Username", "Phone", "Email", "Address", "Password", "Role", "Date Hired"};
         
 
         for(String name: labelNames) {
+            
+            if(!isStaff && (name.equalsIgnoreCase("role") || name.equalsIgnoreCase("date hired")))
+                continue;
+            
+            
+            
             JLabel label = new JLabel(name + ": ");
             label.setFont(primaryFont.deriveFont(Font.BOLD));
+            
             informationPanel.add(label);
             informationPanel.add(Box.createVerticalStrut(5));
             
             JTextField field = new JTextField();
+            if(name.equalsIgnoreCase("date hired")) {
+                field.setText(LocalDate.now().toString());
+            }
             field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
             field.setAlignmentX(Component.LEFT_ALIGNMENT);
             field.setFont(primaryFont);
@@ -99,6 +96,7 @@ public class RegistrationFrame extends JFrame{
         btnsHolder.setMaximumSize(new Dimension(700, 100));
         btnsHolder.setLayout(new BoxLayout(btnsHolder, BoxLayout.X_AXIS));
         btnsHolder.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnsHolder.setBackground(primaryColor);
         btnsHolder.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         
         

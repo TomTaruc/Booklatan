@@ -5,7 +5,10 @@
 package View;
 
 import View.Components.Application;
+import View.Components.LibDashboard;
+import View.Components.MembersManager;
 import View.Components.Sidebar;
+import View.Components.StaffManager;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
@@ -15,11 +18,16 @@ import java.awt.*;
  * @author Joseph Rey
  */
 public class AdminApplication extends Application {
-    private Sidebar sidebar;
-    protected CardLayout menus;
+    public Sidebar sidebar;
+    public JPanel mainPanel;
+    public CardLayout mainPanelLayout;
+    public LibDashboard dashboard;
+    public MembersManager members;
+    public StaffManager staff;
     
     public AdminApplication() {
         this.addSideBar();
+        this.addMainPanel();
     }
     
     @Override
@@ -34,11 +42,32 @@ public class AdminApplication extends Application {
         // EVERYTIME A USER LOGIN THIER USER NAME
         // AND USER NO (MEMBERID/STAFFID) IS DISPLAYED.
         // ON THE SIDEBAR. For: Dinel From: Joseph
-        sidebar.addUserInfo("John", 1);
+        sidebar.addUserInfo("Ashely", 2);
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();
         this.repaint();
+    }
+    
+    private void addMainPanel() {
+        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
+        mainPanelLayout = new CardLayout();
+        mainPanel = new JPanel(mainPanelLayout);
+        dashboard = new LibDashboard(panelSize);
+        JPanel books = new JPanel();
+        members = new MembersManager(panelSize, true);
+        staff = new StaffManager(panelSize);
+        
+        books.setBackground(Color.black);
+        staff.setBackground(Color.blue);
+        
+        mainPanel.add(dashboard, "dashboard");
+        mainPanel.add(books, "books");
+        mainPanel.add(members, "members");
+        mainPanel.add(staff, "staff");
+        //mainPanel.add(fines, "fines");
+        
+        this.add(mainPanel);
     }
     
 }

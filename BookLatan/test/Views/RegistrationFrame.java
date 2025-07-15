@@ -20,6 +20,9 @@ import java.util.ArrayList;
  */
 public class RegistrationFrame extends JFrame{
     
+    public CustomButton registerBtn;
+    public CustomButton cancelBtn;
+    
     private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
     ArrayList<JTextField> fields = new ArrayList<>();
     private DefaultTableModel membersTableModel;
@@ -67,8 +70,6 @@ public class RegistrationFrame extends JFrame{
         // **** Main Content ****
         JPanel informationPanel = new JPanel();
         String[] labelNames;
-        CustomButton registerBtn;
-        CustomButton cancelBtn;
         JPanel btnsHolder;
         
         informationPanel.setLayout(new BoxLayout(informationPanel, BoxLayout.Y_AXIS));
@@ -113,7 +114,7 @@ public class RegistrationFrame extends JFrame{
         registerBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                registerMember();
+                //registerMember();
             }
             
         });
@@ -140,20 +141,5 @@ public class RegistrationFrame extends JFrame{
         this.dispose();
     }
     
-    private void registerMember() {
-        MemberController memCon = new MemberController(new MemberUserDAO(), new MemberView());
-        Member member = new Member();
-        
-        member.setName(fields.get(0).getText());
-        member.setUserName(fields.get(1).getText());
-        member.setPhone(fields.get(2).getText());
-        member.setEmail(fields.get(3).getText());
-        member.setAddress(fields.get(4).getText());
-        member.setPassword(fields.get(5).getText());
-        member.setDateJoined(LocalDate.now());
-        memCon.registerMember(member);
-        
-        memCon.displayMembers(membersTableModel);
-        this.dispose();
-    }
+    
 }

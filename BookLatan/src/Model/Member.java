@@ -19,6 +19,8 @@ public class Member extends User{
     private LocalDate dateJoined;
     private MembershipStatus status;
     
+    public Member() {};
+    
     public Member(String username, String password) throws IllegalArgumentException {
         super(username, password);
         setType(User.UserType.MEMBER);

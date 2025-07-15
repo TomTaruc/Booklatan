@@ -16,21 +16,25 @@ public class User {
     private String password;
     private UserType type;
     
-    public User(String username, String password) throws IllegalArgumentException {
-        setUsername(username);
-        setPassword(password);
+    public User() {};
+    
+    public User(String username, String password) {
+        setUsername(username, true);
+        setPassword(password, true);
     }
     
     
     // **** Setters ****
     
-    public void setUsername(String username) {
-        Validators.validateUsername(username);
+    public void setUsername(String username, boolean applyValidation) {
+        if (applyValidation)
+            Validators.validateUsername(username);
         this.username = username;
     }
     
-    public void setPassword(String password) {
-        Validators.validatePassword(password);
+    public void setPassword(String password, boolean applyValidation) {
+        if(applyValidation)
+            Validators.validatePassword(password);
         this.password = password;
     }
     

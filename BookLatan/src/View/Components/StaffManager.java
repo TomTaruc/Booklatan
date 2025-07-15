@@ -23,14 +23,19 @@ public class StaffManager extends JPanel{
     private Color textColor = Color.black;
     private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
     private ArrayList<JLabel> labels = new ArrayList<>();
-    private ArrayList<JTextField> fields = new ArrayList<>();
-    private BorderlessTable membersTable;
-    private DefaultTableModel membersTableModel;
-    private JTextField searchBar;
-    private JComboBox<Member.MembershipStatus> filterStatus;
+    private String searchbarDefaultText = "Search staff";
+    //Buttons
+    public ArrayList<JTextField> fields = new ArrayList<>();
+    public BorderlessTable table;
+    public DefaultTableModel tableModel;
+    public  JTextField searchBar;
+    public JComboBox dropdownRole;
     public CustomButton registerBtn;
+    public CustomButton updateBtn;
+    public CustomButton deleteBtn;
+        
     
-    public StaffManager (Dimension size) {
+    public StaffManager(Dimension size) {
         initComponent(size);
     }
     
@@ -63,7 +68,7 @@ public class StaffManager extends JPanel{
         searchPanel.setBackground(primaryColor);
         
         // Search Panel -- Search Bar
-        searchBar = new JTextField("Search staff");
+        searchBar = new JTextField(searchbarDefaultText);
         searchBar.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.black), 
                 BorderFactory.createEmptyBorder(0, 10, 0, 10)
@@ -76,30 +81,15 @@ public class StaffManager extends JPanel{
         
         
         // Search Panel -- Filters
-        filterStatus = new JComboBox<>(Member.MembershipStatus.values());
-        filterStatus.setFont(primaryFont);
-        filterStatus.setPreferredSize(new Dimension(200, 50));
-        filterStatus.setMaximumSize(filterStatus.getPreferredSize());
-        filterStatus.setBorder(BorderFactory.createLineBorder(Color.black));
-        filterStatus.setUI(new BasicComboBoxUI() {
-            
-            @Override
-            protected JButton createArrowButton() {
-                JButton button = new JButton("▼");
-                button.setBackground(primaryColor);
-                return button;
-            }
-
-            @Override
-            protected ComboPopup createPopup() {
-                BasicComboPopup popup = (BasicComboPopup) super.createPopup();
-                popup.getList().setBackground(primaryColor); // dropdown background
-                popup.getList().setForeground(Color.BLACK); // dropdown text
-                return popup;
-            }
-        });
+        String[] items = new String[] {"All", "Admin", "Librarian"};
+        dropdownRole = new JComboBox<>(items);
+        dropdownRole.setFont(primaryFont);
+        dropdownRole.setPreferredSize(new Dimension(200, 50));
+        dropdownRole.setMaximumSize(dropdownRole.getPreferredSize());
+        dropdownRole.setBorder(BorderFactory.createLineBorder(Color.black));
+        dropdownRole.setUI(new DropDownDesign());
         
-        filterStatus.setRenderer(new DefaultListCellRenderer() {
+        dropdownRole.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -114,27 +104,27 @@ public class StaffManager extends JPanel{
         
         searchPanel.add(searchBar);
         searchPanel.add(Box.createHorizontalStrut(10));
-        searchPanel.add(filterStatus);
+        searchPanel.add(dropdownRole);
         
         this.add(searchPanel);
         
-        //Manage Membbers -- Setup
+        //Manage Staff -- Setup
         JPanel main = new JPanel();
         main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
         
-        //Manage Members -- table;
+        //Manage Staff-- table;
         JPanel tableWrapper;
         ModernScrollPane scrollPane;
         String[] columnNames;
         
-        membersTable = new BorderlessTable();
-        columnNames = new String[]{"#", "Name", "Role", "Email", "Date Hired"};
-        membersTableModel = new DefaultTableModel(null, columnNames);
-        membersTable.changeModel(membersTableModel);
-        membersTable.getColumnModel().getColumn(0).setMaxWidth(200);
-        membersTable.getColumnModel().getColumn(0).setMinWidth(100);
+        table = new BorderlessTable();
+        columnNames = new String[]{"#", "Name", "Role", "Phone", "Email"};
+        tableModel = new DefaultTableModel(null, columnNames);
+        table.changeModel(tableModel);
+        table.getColumnModel().getColumn(0).setMaxWidth(200);
+        table.getColumnModel().getColumn(0).setMinWidth(100);
         
-        scrollPane = new ModernScrollPane(membersTable);
+        scrollPane = new ModernScrollPane(table);
         scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
         scrollPane.setBackground(primaryColor);
         scrollPane.getViewport().setBackground(primaryColor);
@@ -153,8 +143,6 @@ public class StaffManager extends JPanel{
         // **** Members Details ****
         JPanel memberDetails;
         String[] labelNames;
-        CustomButton updateBtn;
-        CustomButton deleteBtn;
         
         memberDetails = new JPanel();
         memberDetails.setPreferredSize(new Dimension(700, this.getPreferredSize().height));
@@ -165,19 +153,20 @@ public class StaffManager extends JPanel{
         memberDetails.setBackground(primaryColor);
         
 
-        labelNames = new String[]{"Name", "Username", "Role", "Email:", "Phone", "Address", "Date Hired"};
+        labelNames = new String[]{"Name", "Username", "Role", "Email", "Phone", "Address", "Date Hired", "Password"};
 
         // Creates textfields and labels for the display and update of member details
         for (int i = 0; i < labelNames.length; i++) {
             JLabel label = new JLabel(labelNames[i] + ": ");
-            label.setFont(new Font("Tahoma", Font.BOLD, 16));
+            label.setFont(primaryFont.deriveFont(Font.BOLD));
             label.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to left
             labels.add(label);
 
             JTextField field = new JTextField();
+            field.setName(labelNames[i]);
             field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40)); // Full width
             field.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to left
-            field.setFont(new Font("Tahoma", Font.PLAIN, 16));
+            field.setFont(primaryFont);
             field.setBorder(BorderFactory.createEmptyBorder(5,5, 5, 5));
             fields.add(field);
 
@@ -186,10 +175,6 @@ public class StaffManager extends JPanel{
             memberDetails.add(field);
             memberDetails.add(Box.createVerticalStrut(15));
         }
-        
-        fields.get(6).setEditable(false);
-        fields.get(6).setBackground(primaryColor);
-
         
         JPanel btnsHolder = new JPanel();
         btnsHolder.setPreferredSize(new Dimension(memberDetails.getSize().width, 100));
@@ -223,10 +208,27 @@ public class StaffManager extends JPanel{
     
     
     // **** Classess ****
+    private class DropDownDesign extends BasicComboBoxUI {
+        @Override
+        protected JButton createArrowButton() {
+            JButton button = new JButton("▼");
+            button.setBackground(primaryColor);
+            return button;
+        }
+
+        @Override
+        protected ComboPopup createPopup() {
+            BasicComboPopup popup = (BasicComboPopup) super.createPopup();
+            popup.getList().setBackground(primaryColor); // dropdown background
+            popup.getList().setForeground(Color.BLACK); // dropdown text
+            return popup;
+        }
+    }
+    
     private class SearchEffect implements FocusListener {
         @Override
         public void focusGained(FocusEvent e) {
-            if(searchBar.getText().equals("Search staff")) {
+            if(searchBar.getText().equals(searchbarDefaultText)) {
                 searchBar.setText("");
                 searchBar.setForeground(Color.BLACK);   
             }
@@ -235,7 +237,7 @@ public class StaffManager extends JPanel{
         @Override
         public void focusLost(FocusEvent e) {
             if(searchBar.getText().isEmpty()) {
-                searchBar.setText("Search staff");
+                searchBar.setText(searchbarDefaultText);
                 searchBar.setForeground(Color.LIGHT_GRAY);
             }
         }

@@ -4,6 +4,7 @@
  */
 package Utilities;
 
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 /**
@@ -50,9 +51,28 @@ public class Validators {
         }
     };
     
-    public static void validateEmptyVariable(Object variable, String variableName) {
+    public static void validateEmptyVariable(String variable, String variableName) {
         if(variable == null || variable.toString().trim().isEmpty()) {
             throw new IllegalArgumentException(variableName + " cannot be empty");
         }
     };
+    
+    public static void validateEmptyVariable(LocalDate variable, String variableName) {
+        if(variable == null) {
+            throw new IllegalArgumentException(variableName + " cannot be empty");
+        }
+    };
+    
+    public static void validateEmptyVariable(Integer variable, String variableName) {
+        if(variable == null) {
+            throw new IllegalArgumentException(variableName + " cannot be empty");
+        }
+    };
+    
+    public static void validateEmptyVariable(Enum variable, String variableName) {
+        if(variable == null) {
+            throw new IllegalArgumentException(variableName + " cannot be empty");
+        }
+    };
+    
 }

@@ -3,9 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Main;
+import Controller.ReservationController;
 import Model.*;
-import Views.*;
-import Control.*;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;

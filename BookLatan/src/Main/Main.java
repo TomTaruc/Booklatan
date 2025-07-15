@@ -22,8 +22,10 @@ public class Main {
     public static void main(String[] args) {
         //TODO: Replace this code with login window and use login controller. FOR: DINEL, FROM JOSEPH
          try {
-             LibAppCon app = new LibAppCon(new LibrarianApplication());
+             AppController app = new LibAppCon();
              app.openApp();
+             
+             
         }
             catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);

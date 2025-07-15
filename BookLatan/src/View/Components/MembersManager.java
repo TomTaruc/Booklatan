@@ -23,14 +23,20 @@ public class MembersManager extends JPanel{
     private Color textColor = Color.black;
     private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
     private ArrayList<JLabel> labels = new ArrayList<>();
-    private ArrayList<JTextField> fields = new ArrayList<>();
-    private BorderlessTable membersTable;
-    private DefaultTableModel membersTableModel;
-    private JTextField searchBar;
-    private JComboBox<Member.MembershipStatus> filterStatus;
+    //Buttons
+    private boolean isAdmin = false;
+    public ArrayList<JTextField> fields = new ArrayList<>();
+    public BorderlessTable membersTable;
+    public DefaultTableModel membersTableModel;
+    public  JTextField searchBar;
+    public JComboBox<Member.MembershipStatus> filterStatus;
     public CustomButton registerBtn;
+    public CustomButton updateBtn;
+    public CustomButton deleteBtn;
+        
     
-    public MembersManager(Dimension size) {
+    public MembersManager(Dimension size, Boolean isAdmin) {
+        this.isAdmin = isAdmin;
         initComponent(size);
     }
     
@@ -128,7 +134,7 @@ public class MembersManager extends JPanel{
         String[] columnNames;
         
         membersTable = new BorderlessTable();
-        columnNames = new String[]{"#", "Name", "Status", "Email", "Date Joined"};
+        columnNames = new String[]{"#", "Name", "Status", "Phone", "Email"};
         membersTableModel = new DefaultTableModel(null, columnNames);
         membersTable.changeModel(membersTableModel);
         membersTable.getColumnModel().getColumn(0).setMaxWidth(200);
@@ -153,8 +159,6 @@ public class MembersManager extends JPanel{
         // **** Members Details ****
         JPanel memberDetails;
         String[] labelNames;
-        CustomButton updateBtn;
-        CustomButton deleteBtn;
         
         memberDetails = new JPanel();
         memberDetails.setPreferredSize(new Dimension(700, this.getPreferredSize().height));
@@ -165,19 +169,24 @@ public class MembersManager extends JPanel{
         memberDetails.setBackground(primaryColor);
         
 
-        labelNames = new String[]{"Name", "Username", "Status", "Email:", "Phone", "Address", "Date Joined"};
+        labelNames = new String[]{"Name", "Username", "Status", "Email", "Phone", "Address", "Password" ,"Date Joined"};
 
         // Creates textfields and labels for the display and update of member details
         for (int i = 0; i < labelNames.length; i++) {
+            if(!isAdmin && labelNames[i].equalsIgnoreCase("Password")) {
+                continue;
+            }
+            
             JLabel label = new JLabel(labelNames[i] + ": ");
-            label.setFont(new Font("Tahoma", Font.BOLD, 16));
+            label.setFont(primaryFont.deriveFont(Font.BOLD));
             label.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to left
             labels.add(label);
 
             JTextField field = new JTextField();
+            field.setName(labelNames[i]);
             field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40)); // Full width
             field.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to left
-            field.setFont(new Font("Tahoma", Font.PLAIN, 16));
+            field.setFont(primaryFont);
             field.setBorder(BorderFactory.createEmptyBorder(5,5, 5, 5));
             fields.add(field);
 
@@ -187,9 +196,15 @@ public class MembersManager extends JPanel{
             memberDetails.add(Box.createVerticalStrut(15));
         }
         
-        fields.get(6).setEditable(false);
-        fields.get(6).setBackground(primaryColor);
-
+        if(isAdmin) {
+            fields.get(7).setEditable(false);
+            fields.get(7).setBackground(primaryColor);
+        }
+        else {
+            fields.get(6).setEditable(false);
+            fields.get(6).setBackground(primaryColor);
+        }
+        
         
         JPanel btnsHolder = new JPanel();
         btnsHolder.setPreferredSize(new Dimension(memberDetails.getSize().width, 100));
@@ -239,5 +254,9 @@ public class MembersManager extends JPanel{
                 searchBar.setForeground(Color.LIGHT_GRAY);
             }
         }
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }
