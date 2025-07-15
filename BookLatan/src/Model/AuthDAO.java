@@ -24,7 +24,8 @@ public class AuthDAO {
     }
     
     private static User authenticateFromDatabase(String username, String password) {
-        String sql = "SELECT u.* FROM users u " + "WHERE u.username = ? AND u.password = ?";
+        String sql = "SELECT u.* FROM users u WHERE u.username = ? AND u.password = ?";
+        
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -43,11 +44,6 @@ public class AuthDAO {
                     staff.setType(type);
                     staff.setUserId(userId); 
                     staff.setStaffID(userId);
-                    staff.setName(rs.getString("name"));
-                    Date hiredDate = rs.getDate("dateHired");
-                    if (hiredDate != null) {
-                        staff.setDateHired(hiredDate.toLocalDate());
-                    }
                     return staff;
                 } else if (type == UserType.MEMBER) {
                     User member = new User(username, password);
