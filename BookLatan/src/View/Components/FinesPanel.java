@@ -1,424 +1,374 @@
-///*
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-// */
-//package View.Components;
-//
-///**
-// *
-// * @author motar
-// */
-//import Model.*;
-//import java.text.SimpleDateFormat;
-//import java.util.List;
-//import javax.swing.*;
-//import javax.swing.table.DefaultTableModel;
-//
-//public class FinesPanel extends javax.swing.JPanel {
-//    
-//    private FineDAO fineDAO;
-//    private DefaultTableModel tableModel;
-//    
-//    public FinesPanel() {
-//        initComponents();
-//        try {
-//            fineDAO = new FineDAO();
-//        }
-//        catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        setupTable();
-//        loadFines();
-//    }
-//    
-//    private void setupTable() {
-//        String[] columns = {"Fine ID", "Member ID", "Member Name", "Book Title", 
-//                            "Due Date", "Return Date", "Days Overdue", "Amount", "Status"};
-//        tableModel = new DefaultTableModel(columns, 0) {
-//            @Override
-//            public boolean isCellEditable(int row, int column) {
-//                return false;
-//            }
-//        };
-//        finesTable.setModel(tableModel);
-//        
-//        // Set column widths
-//        finesTable.getColumnModel().getColumn(0).setPreferredWidth(80);    
-//        finesTable.getColumnModel().getColumn(1).setPreferredWidth(80);    
-//        finesTable.getColumnModel().getColumn(2).setPreferredWidth(120);
-//        finesTable.getColumnModel().getColumn(3).setPreferredWidth(150);
-//        finesTable.getColumnModel().getColumn(4).setPreferredWidth(100);
-//        finesTable.getColumnModel().getColumn(5).setPreferredWidth(100);
-//        finesTable.getColumnModel().getColumn(6).setPreferredWidth(100);
-//        finesTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Corrected index for Amount
-//        finesTable.getColumnModel().getColumn(8).setPreferredWidth(80); 
-//    }
-//    
-//    private void loadFines() {
-//        tableModel.setRowCount(0);
-//        List<Fine> fines = fineDAO.getAllFines();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        
-//        for (Fine fine : fines) {
-//            Object[] row = {
-//                fine.getFineId(),
-//                fine.getMemberId(),
-//                fine.getMemberName(),
-//                fine.getBookTitle(),
-//                dateFormat.format(fine.getDueDate()),
-//                fine.getReturnDate() != null ? dateFormat.format(fine.getReturnDate()) : "Not Returned",
-//                fine.getDaysOverdue(),
-//                "₱" + fine.getAmount(),
-//                fine.getStatus().toUpperCase()
-//            };
-//            tableModel.addRow(row);
-//        }
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
-//    private void initComponents() {
-//
-//        jPanel1 = new javax.swing.JPanel();
-//        jLabel1 = new javax.swing.JLabel();
-//        jPanel2 = new javax.swing.JPanel();
-//        btnIssueFine = new javax.swing.JButton();
-//        btnMarkPaid = new javax.swing.JButton();
-//        btnDeleteFine = new javax.swing.JButton();
-//        jPanel3 = new javax.swing.JPanel();
-//        jLabel2 = new javax.swing.JLabel();
-//        txtSearch = new javax.swing.JTextField();
-//        btnSearch = new javax.swing.JButton();
-//        jLabel3 = new javax.swing.JLabel();
-//        cmbStatusFilter = new javax.swing.JComboBox<>();
-//        btnRefresh = new javax.swing.JButton();
-//        jScrollPane1 = new javax.swing.JScrollPane();
-//        finesTable = new javax.swing.JTable();
-//
-//        setBackground(new java.awt.Color(245, 245, 245));
-//
-//        jPanel1.setBackground(new java.awt.Color(59, 130, 246));
-//
-//        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-//        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-//        jLabel1.setText("📚 Library Fines Management");
-//
-//        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-//        jPanel1.setLayout(jPanel1Layout);
-//        jPanel1Layout.setHorizontalGroup(
-//            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(jPanel1Layout.createSequentialGroup()
-//                .addGap(20, 20, 20)
-//                .addComponent(jLabel1)
-//                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//        );
-//        jPanel1Layout.setVerticalGroup(
-//            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(jPanel1Layout.createSequentialGroup()
-//                .addGap(20, 20, 20)
-//                .addComponent(jLabel1)
-//                .addContainerGap(20, Short.MAX_VALUE))
-//        );
-//
-//        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-//        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Actions"));
-//
-//        btnIssueFine.setBackground(new java.awt.Color(59, 130, 246));
-//        btnIssueFine.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-//        btnIssueFine.setForeground(new java.awt.Color(255, 255, 255));
-//        btnIssueFine.setText("📝 Issue Fine");
-//        btnIssueFine.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                btnIssueFineActionPerformed(evt);
-//            }
-//        });
-//
-//        btnMarkPaid.setBackground(new java.awt.Color(34, 197, 94));
-//        btnMarkPaid.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-//        btnMarkPaid.setForeground(new java.awt.Color(255, 255, 255));
-//        btnMarkPaid.setText("✅ Mark as Paid");
-//        btnMarkPaid.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                btnMarkPaidActionPerformed(evt);
-//            }
-//        });
-//
-//        btnDeleteFine.setBackground(new java.awt.Color(239, 68, 68));
-//        btnDeleteFine.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-//        btnDeleteFine.setForeground(new java.awt.Color(255, 255, 255));
-//        btnDeleteFine.setText("🗑️ Delete Fine");
-//        btnDeleteFine.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                btnDeleteFineActionPerformed(evt);
-//            }
-//        });
-//
-//        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-//        jPanel2.setLayout(jPanel2Layout);
-//        jPanel2Layout.setHorizontalGroup(
-//            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(jPanel2Layout.createSequentialGroup()
-//                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-//                .addComponent(btnIssueFine, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addGap(10, 10, 10)
-//                .addComponent(btnMarkPaid, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addGap(10, 10, 10)
-//                .addComponent(btnDeleteFine, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//        );
-//        jPanel2Layout.setVerticalGroup(
-//            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(jPanel2Layout.createSequentialGroup()
-//                .addGap(15, 15, 15)
-//                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-//                    .addComponent(btnIssueFine, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                    .addComponent(btnMarkPaid, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                    .addComponent(btnDeleteFine, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-//                .addContainerGap(15, Short.MAX_VALUE))
-//        );
-//
-//        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-//        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Search & Filter"));
-//
-//        jLabel2.setText("Search:");
-//
-//        btnSearch.setText("🔍 Search");
-//        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                btnSearchActionPerformed(evt);
-//            }
-//        });
-//
-//        jLabel3.setText("Filter by Status:");
-//
-//        cmbStatusFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All Status", "pending", "paid", "overdue" }));
-//        cmbStatusFilter.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                cmbStatusFilterActionPerformed(evt);
-//            }
-//        });
-//
-//        btnRefresh.setText("🔄 Refresh");
-//        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                btnRefreshActionPerformed(evt);
-//            }
-//        });
-//
-//        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-//        jPanel3.setLayout(jPanel3Layout);
-//        jPanel3Layout.setHorizontalGroup(
-//            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(jPanel3Layout.createSequentialGroup()
-//                .addGap(15, 15, 15)
-//                .addComponent(jLabel2)
-//                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-//                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-//                .addComponent(btnSearch)
-//                .addGap(20, 20, 20)
-//                .addComponent(jLabel3)
-//                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-//                .addComponent(cmbStatusFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addGap(20, 20, 20)
-//                .addComponent(btnRefresh)
-//                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//        );
-//        jPanel3Layout.setVerticalGroup(
-//            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(jPanel3Layout.createSequentialGroup()
-//                .addGap(15, 15, 15)
-//                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-//                    .addComponent(jLabel2)
-//                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                    .addComponent(btnSearch)
-//                    .addComponent(jLabel3)
-//                    .addComponent(cmbStatusFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                    .addComponent(btnRefresh))
-//                .addContainerGap(15, Short.MAX_VALUE))
-//        );
-//
-//        finesTable.setModel(new javax.swing.table.DefaultTableModel(
-//            new Object [][] {},
-//            new String [] {"Fine ID", "Member ID", "Member Name", "Book Title", "Due Date", "Return Date", "Days Overdue", "Amount", "Status"}
-//        ));
-//        finesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-//        finesTable.setRowHeight(25);
-//        jScrollPane1.setViewportView(finesTable);
-//
-//        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-//        this.setLayout(layout);
-//        layout.setHorizontalGroup(
-//            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-//            .addGroup(layout.createSequentialGroup()
-//                .addGap(20, 20, 20)
-//                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//                    .addComponent(jScrollPane1)
-//                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-//                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-//                .addGap(20, 20, 20))
-//        );
-//        layout.setVerticalGroup(
-//            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGroup(layout.createSequentialGroup()
-//                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addGap(20, 20, 20)
-//                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addGap(10, 10, 10)
-//                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-//                .addGap(10, 10, 10)
-//                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-//                .addGap(20, 20, 20))
-//        );
-//    }// </editor-fold>                        
-//    
-//    private void btnIssueFineActionPerformed(java.awt.event.ActionEvent evt) {                                             
-//        FineDialog dialog = new FineDialog((JFrame) SwingUtilities.getWindowAncestor(this), true);
-//        dialog.setVisible(true);
-//        if (dialog.isConfirmed()) {
-//            loadFines();
-//        }
-//    }                                            
-//
-//    private void btnMarkPaidActionPerformed(java.awt.event.ActionEvent evt) {                                            
-//        int selectedRow = finesTable.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Please select a fine to mark as paid.", "No Selection", JOptionPane.WARNING_MESSAGE);
-//            return;
-//        }
-//        
-//        String fineId = (String) tableModel.getValueAt(selectedRow, 0);
-//        String status = (String) tableModel.getValueAt(selectedRow, 8);
-//        
-//        if ("PAID".equals(status)) {
-//            JOptionPane.showMessageDialog(this, "This fine is already paid.", "Already Paid", JOptionPane.INFORMATION_MESSAGE);
-//            return;
-//        }
-//        
-//        int confirm = JOptionPane.showConfirmDialog(this, 
-//            "Are you sure you want to mark this fine as paid?", 
-//            "Confirm Payment", 
-//            JOptionPane.YES_NO_OPTION,
-//            JOptionPane.QUESTION_MESSAGE);
-//            
-//        if (confirm == JOptionPane.YES_OPTION) {
-//            if (fineDAO.markAsPaid(fineId)) {
-//                JOptionPane.showMessageDialog(this, "Fine marked as paid successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-//                loadFines();
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Error marking fine as paid.", "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
-//    }                                           
-//
-//    private void btnDeleteFineActionPerformed(java.awt.event.ActionEvent evt) {                                              
-//        int selectedRow = finesTable.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Please select a fine to delete.", "No Selection", JOptionPane.WARNING_MESSAGE);
-//            return;
-//        }
-//        
-//        String fineId = (String) tableModel.getValueAt(selectedRow, 0);
-//        String memberName = (String) tableModel.getValueAt(selectedRow, 2);
-//        
-//        int confirm = JOptionPane.showConfirmDialog(this, 
-//            "Are you sure you want to delete fine " + fineId + " for " + memberName + "?", 
-//            "Confirm Delete", 
-//            JOptionPane.YES_NO_OPTION,
-//            JOptionPane.WARNING_MESSAGE);
-//            
-//        if (confirm == JOptionPane.YES_OPTION) {
-//            if (fineDAO.deleteFine(fineId)) {
-//                JOptionPane.showMessageDialog(this, "Fine deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-//                loadFines();
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Error deleting fine.", "Error", JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
-//    }                                             
-//
-//    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {                                          
-//        String searchTerm = txtSearch.getText().trim();
-//        if (searchTerm.isEmpty()) {
-//            loadFines();
-//            return;
-//        }
-//        
-//        tableModel.setRowCount(0);
-//        List<Fine> fines = fineDAO.searchFines(searchTerm);
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        
-//        for (Fine fine : fines) {
-//            Object[] row = {
-//                fine.getFineId(),
-//                fine.getMemberId(),
-//                fine.getMemberName(),
-//                fine.getBookTitle(),
-//                dateFormat.format(fine.getDueDate()),
-//                fine.getReturnDate() != null ? dateFormat.format(fine.getReturnDate()) : "Not Returned",
-//                fine.getDaysOverdue(),
-//                "₱" + fine.getAmount(),
-//                fine.getStatus().toUpperCase()
-//            };
-//            tableModel.addRow(row);
-//        }
-//        
-//        if (fines.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "No fines found matching: " + searchTerm, "Search Results", JOptionPane.INFORMATION_MESSAGE);
-//        }
-//    }                                         
-//
-//    private void cmbStatusFilterActionPerformed(java.awt.event.ActionEvent evt) {                                                
-//        String selectedStatus = (String) cmbStatusFilter.getSelectedItem();
-//        
-//        if ("All Status".equals(selectedStatus)) {
-//            loadFines();
-//            return;
-//        }
-//        
-//        tableModel.setRowCount(0);
-//        List<Fine> fines = fineDAO.getFinesByStatus(selectedStatus.toLowerCase());
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        
-//        for (Fine fine : fines) {
-//            Object[] row = {
-//                fine.getFineId(),
-//                fine.getMemberId(),
-//                fine.getMemberName(),
-//                fine.getBookTitle(),
-//                dateFormat.format(fine.getDueDate()),
-//                fine.getReturnDate() != null ? dateFormat.format(fine.getReturnDate()) : "Not Returned",
-//                fine.getDaysOverdue(),
-//                "₱" + fine.getAmount(),
-//                fine.getStatus().toUpperCase()
-//            };
-//            tableModel.addRow(row);
-//        }
-//    }                                               
-//
-//    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {                                           
-//        txtSearch.setText("");
-//        cmbStatusFilter.setSelectedIndex(0);
-//        loadFines();
-//        JOptionPane.showMessageDialog(this, "Fines list refreshed!", "Refresh", JOptionPane.INFORMATION_MESSAGE);
-//    }                                          
-//
-//    // Variables declaration - do not modify                     
-//    private javax.swing.JButton btnDeleteFine;
-//    private javax.swing.JButton btnIssueFine;
-//    private javax.swing.JButton btnMarkPaid;
-//    private javax.swing.JButton btnRefresh;
-//    private javax.swing.JButton btnSearch;
-//    private javax.swing.JComboBox<String> cmbStatusFilter;
-//    private javax.swing.JTable finesTable;
-//    private javax.swing.JLabel jLabel1;
-//    private javax.swing.JLabel jLabel2;
-//    private javax.swing.JLabel jLabel3;
-//    private javax.swing.JPanel jPanel1;
-//    private javax.swing.JPanel jPanel2;
-//    private javax.swing.JPanel jPanel3;
-//    private javax.swing.JScrollPane jScrollPane1;
-//    private javax.swing.JTextField txtSearch;
-//    // End of variables declaration                   
-//}
+package View.Components;
+
+import Control.Components.FinesController;
+import Model.FineDAO;
+import Views.IssueFineDialog;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+public class FinesPanel extends JPanel {
+
+    private FinesController controller;
+    private DefaultTableModel finesTableModel;
+
+    private JTable finesTable;
+    private JTextField txtSearch;
+    private JComboBox<String> cmbStatusFilter;
+    private JButton btnIssueFine;
+    private JButton btnMarkAsPaid;
+    private JButton btnDeleteFine;
+    private JButton btnRefresh;
+    private JButton btnSearch;
+
+    private Color primaryBgColor = new Color(253, 245, 230);
+    private Color headerTextColor = Color.WHITE;
+
+    public FinesPanel() {
+        this.setLayout(new BorderLayout(10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBackground(primaryBgColor);
+
+        initComponents();
+        initTable();
+        addListeners();
+    }
+
+    public void setController(FinesController controller) {
+        this.controller = controller;
+        refreshFinesTable();
+    }
+
+    private void initComponents() {
+        JPanel mainContentWrapper = new JPanel(new BorderLayout());
+        mainContentWrapper.setBackground(primaryBgColor);
+        mainContentWrapper.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(primaryBgColor);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 10));
+        actionsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY), "Actions", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), Color.DARK_GRAY));
+        actionsPanel.setBackground(primaryBgColor);
+        actionsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        btnIssueFine = createStyledButton(" Issue Fine", new Color(160, 82, 45), createUnicodeIcon("\uF02B"), new Font("Segoe UI", Font.BOLD, 18), new Insets(12, 25, 12, 25));
+        btnMarkAsPaid = createStyledButton(" Mark as Paid", new Color(160, 82, 45), createUnicodeIcon("\uF00C"), new Font("Segoe UI", Font.BOLD, 18), new Insets(12, 25, 12, 25));
+        btnDeleteFine = createStyledButton(" Delete Fine", new Color(160, 82, 45), createUnicodeIcon("\uF014"), new Font("Segoe UI", Font.BOLD, 18), new Insets(12, 25, 12, 25));
+
+        actionsPanel.add(btnIssueFine);
+        actionsPanel.add(btnMarkAsPaid);
+        actionsPanel.add(btnDeleteFine);
+        
+        contentPanel.add(Box.createVerticalGlue());
+        contentPanel.add(actionsPanel);
+        contentPanel.add(Box.createVerticalGlue());
+        contentPanel.add(Box.createVerticalStrut(10));
+
+        JPanel searchFilterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        searchFilterPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY), "Search & Filter", TitledBorder.LEFT, TitledBorder.TOP, new Font("Segoe UI", Font.BOLD, 14), Color.DARK_GRAY));
+        searchFilterPanel.setBackground(primaryBgColor);
+        searchFilterPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel searchLabel = new JLabel("Search:");
+        searchLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        searchFilterPanel.add(searchLabel);
+
+        txtSearch = new JTextField(35);
+        txtSearch.putClientProperty("JTextField.placeholderText", "Search by Member/Book/ISBN");
+        txtSearch.setBorder(new EmptyBorder(5, 8, 5, 8));
+        txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        searchFilterPanel.add(txtSearch);
+
+        btnSearch = createStyledButton(" Search", new Color(205, 133, 63), createUnicodeIcon("\uF002"), new Font("Segoe UI", Font.BOLD, 14), new Insets(10, 20, 10, 20));
+        searchFilterPanel.add(btnSearch);
+
+        searchFilterPanel.add(new JLabel("Filter by Status:"));
+        cmbStatusFilter = new JComboBox<>(new String[]{"All Status", "Pending", "Paid", "Overdue"});
+        cmbStatusFilter.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+        searchFilterPanel.add(cmbStatusFilter);
+
+        btnRefresh = createStyledButton(" Refresh", new Color(205, 133, 63), createUnicodeIcon("\uF021"), new Font("Segoe UI", Font.BOLD, 12), new Insets(8, 15, 8, 15));
+        searchFilterPanel.add(btnRefresh);
+        
+        contentPanel.add(Box.createVerticalGlue());
+        contentPanel.add(searchFilterPanel);
+        contentPanel.add(Box.createVerticalGlue());
+        contentPanel.add(Box.createVerticalStrut(10));
+
+        finesTableModel = new DefaultTableModel(new Object[]{
+                "Fine ID", "Staff ID", "Member ID", "Member Name", "Amount", "Reason",
+                "Date Issued", "Status", "Book Title", "Due Date", "Return Date",
+                "Days Overdue", "ISBN", "Paid Date", "Description"
+        }, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        finesTable = new JTable(finesTableModel);
+        finesTable.setFillsViewportHeight(true);
+        finesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        finesTable.setBackground(primaryBgColor);
+        finesTable.setRowHeight(35);
+        finesTable.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        JTableHeader tHeader = finesTable.getTableHeader();
+        tHeader.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        tHeader.setBackground(new Color(230, 230, 230));
+        tHeader.setForeground(Color.BLACK);
+        tHeader.setOpaque(true);
+        tHeader.setReorderingAllowed(false);
+        tHeader.setDefaultRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = new JLabel(value.toString());
+                label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+                label.setOpaque(true);
+                label.setBackground(new Color(230, 230, 230));
+                label.setForeground(Color.BLACK);
+                label.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+                label.setHorizontalAlignment(CENTER);
+                return label;
+            }
+        });
+
+        finesTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setBackground(isSelected ? table.getSelectionBackground() : (row % 2 == 0 ? primaryBgColor : new Color(240, 240, 240)));
+                c.setForeground(Color.BLACK);
+                ((JLabel)c).setBorder(new EmptyBorder(5, 10, 5, 10));
+                return c;
+            }
+        });
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < finesTable.getColumnCount(); i++) {
+            if (finesTableModel.getColumnClass(i) == Date.class || finesTableModel.getColumnName(i).toLowerCase().contains("date")) {
+                 finesTable.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                        if (value instanceof Date) {
+                            value = dateFormat.format(value);
+                        }
+                        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                        c.setBackground(isSelected ? table.getSelectionBackground() : (row % 2 == 0 ? primaryBgColor : new Color(240, 240, 240)));
+                        c.setForeground(Color.BLACK);
+                        ((JLabel)c).setBorder(new EmptyBorder(5, 10, 5, 10));
+                        return c;
+                    }
+                });
+            }
+        }
+
+        JScrollPane scrollPane = new JScrollPane(finesTable);
+        scrollPane.getViewport().setBackground(primaryBgColor);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        contentPanel.add(scrollPane);
+
+        mainContentWrapper.add(contentPanel, BorderLayout.CENTER);
+        this.add(mainContentWrapper, BorderLayout.CENTER);
+    }
+
+    private void initTable() {
+        String[] desiredVisibleColumnNames = {
+            "Fine ID", "Member Name", "Book Title", "Due Date", "Return Date",
+            "Days Overdue", "Amount", "Status"
+        };
+
+        Map<String, Integer> originalColumnIndices = new HashMap<>();
+        for (int i = 0; i < finesTableModel.getColumnCount(); i++) {
+            originalColumnIndices.put(finesTableModel.getColumnName(i), i);
+        }
+
+        TableColumnModel columnModel = finesTable.getColumnModel();
+
+        java.util.List<javax.swing.table.TableColumn> allColumns = new java.util.ArrayList<>();
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            allColumns.add(columnModel.getColumn(i));
+        }
+
+        while (columnModel.getColumnCount() > 0) {
+            columnModel.removeColumn(columnModel.getColumn(0));
+        }
+
+        for (String colName : desiredVisibleColumnNames) {
+            Integer originalIndex = originalColumnIndices.get(colName);
+            if (originalIndex != null) {
+                javax.swing.table.TableColumn columnToAdd = null;
+                for(javax.swing.table.TableColumn col : allColumns) {
+                    if (col.getModelIndex() == originalIndex) {
+                        columnToAdd = col;
+                        break;
+                    }
+                }
+                if (columnToAdd != null) {
+                    columnModel.addColumn(columnToAdd);
+                }
+            }
+        }
+
+        finesTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        finesTable.getColumnModel().getColumn(1).setPreferredWidth(180);
+        finesTable.getColumnModel().getColumn(2).setPreferredWidth(250);
+        finesTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+        finesTable.getColumnModel().getColumn(4).setPreferredWidth(120);
+        finesTable.getColumnModel().getColumn(5).setPreferredWidth(120);
+        finesTable.getColumnModel().getColumn(6).setPreferredWidth(90);
+        finesTable.getColumnModel().getColumn(7).setPreferredWidth(100);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < finesTable.getColumnCount(); i++) {
+            if (finesTable.getColumnModel().getColumn(i).getHeaderValue().toString().toLowerCase().contains("date")) {
+                 finesTable.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                        if (value instanceof Date) {
+                            value = dateFormat.format(value);
+                        }
+                        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                        c.setBackground(isSelected ? table.getSelectionBackground() : (row % 2 == 0 ? primaryBgColor : new Color(240, 240, 240)));
+                        c.setForeground(Color.BLACK);
+                        ((JLabel)c).setBorder(new EmptyBorder(5, 10, 5, 10));
+                        return c;
+                    }
+                });
+            }
+        }
+    }
+
+    private JButton createStyledButton(String text, Color bgColor, Icon icon, Font font, Insets paddingInsets) {
+        JButton button = new JButton(text);
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+
+        button.setFont(font);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setIcon(icon);
+        button.setIconTextGap(8);
+        button.setBorder(new EmptyBorder(paddingInsets.top, paddingInsets.left, paddingInsets.bottom, paddingInsets.right));
+        button.setMargin(new Insets(0,0,0,0));
+        return button;
+    }
+
+    private ImageIcon createSquareIcon(Color color) {
+        BufferedImage image = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setColor(color);
+        g.fillRect(0, 0, 20, 20);
+        g.dispose();
+        return new ImageIcon(image);
+    }
+
+    private ImageIcon createUnicodeIcon(String unicodeChar) {
+        JLabel label = new JLabel(unicodeChar);
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        label.setForeground(Color.WHITE);
+        label.setSize(label.getPreferredSize());
+        BufferedImage image = new BufferedImage(label.getWidth(), label.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        label.paint(g);
+        g.dispose();
+        return new ImageIcon(image);
+    }
+
+    private void addListeners() {
+        btnRefresh.addActionListener(this::btnRefreshActionPerformed);
+        btnMarkAsPaid.addActionListener(this::btnMarkAsPaidActionPerformed);
+        btnSearch.addActionListener(this::btnSearchActionPerformed);
+
+        txtSearch.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    refreshFinesTable();
+                }
+            }
+        });
+
+        cmbStatusFilter.addActionListener(this::cmbStatusFilterActionPerformed);
+
+        btnIssueFine.addActionListener(e -> {
+            if (controller != null && controller.getModel() != null) {
+                IssueFineDialog issueFineDialog = new IssueFineDialog(SwingUtilities.getWindowAncestor(this), controller.getModel());
+                issueFineDialog.setVisible(true);
+                if (issueFineDialog.isFineSaved()) {
+                    refreshFinesTable();
+                }
+            } else {
+                displayMessage("Controller or FineDAO is not initialized. Cannot issue fine.", "Initialization Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        btnDeleteFine.addActionListener(e -> displayMessage("Delete Fine functionality not yet implemented.", "Info", JOptionPane.INFORMATION_MESSAGE));
+    }
+
+    private void btnRefreshActionPerformed(ActionEvent evt) {
+        refreshFinesTable();
+    }
+
+    private void btnSearchActionPerformed(ActionEvent evt) {
+        refreshFinesTable();
+    }
+
+    private void btnMarkAsPaidActionPerformed(ActionEvent evt) {
+        int selectedRow = finesTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String fineID = (String) finesTableModel.getValueAt(selectedRow, finesTable.getColumnModel().getColumnIndex("Fine ID"));
+            String currentStatus = (String) finesTableModel.getValueAt(selectedRow, finesTable.getColumnModel().getColumnIndex("Status"));
+
+            if ("Paid".equalsIgnoreCase(currentStatus)) {
+                displayMessage("This fine is already marked as Paid.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to mark fine ID " + fineID + " as paid?",
+                    "Confirm Payment", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                controller.payFine(fineID);
+                refreshFinesTable();
+            }
+        } else {
+            displayMessage("Please select a fine from the table to mark as paid.", "No Fine Selected", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void cmbStatusFilterActionPerformed(ActionEvent evt) {
+        refreshFinesTable();
+    }
+
+    public void refreshFinesTable() {
+        if (controller != null) {
+            String searchTerm = txtSearch.getText();
+            String statusFilter = (String) cmbStatusFilter.getSelectedItem();
+            controller.displayFines(finesTableModel, searchTerm, statusFilter);
+        }
+    }
+
+    public void displayMessage(String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(this, message, title, messageType);
+    }
+}

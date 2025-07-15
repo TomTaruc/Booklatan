@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
-public class FineDAO extends DAO {
+public class FineDAO extends DataAccessObject {
 
     public boolean addFine(Fine fine) {
         String sql = "INSERT INTO fine (fineID, staffID, memberID, amount, reason, dateIssued, _status, book_title, due_date, return_date, days_overdue, isbn, paid_date, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

@@ -58,12 +58,11 @@ public class LibrarianApplication extends Application{
         members = new MembersManager(new Dimension(this.getWidth() - 200, this.getHeight()), false);
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
-        //JPanel fines = new FinesPanel();
+        FinesPanel fines = new FinesPanel();
         
         books.setBackground(Color.black);
         loans.setBackground(Color.blue);
         reservations.setBackground(Color.green);
-        //fines.setBackground(Color.pink);
         
         
         mainPanel.add(dashboard, "dashboard");
@@ -71,7 +70,7 @@ public class LibrarianApplication extends Application{
         mainPanel.add(members, "members");
         mainPanel.add(loans, "loans");
         mainPanel.add(reservations, "reservations");
-        //mainPanel.add(fines, "fines");
+        mainPanel.add(fines, "fines");
         
         this.add(mainPanel);
     }
