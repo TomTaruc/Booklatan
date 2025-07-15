@@ -25,6 +25,7 @@ public class User {
         setPassword(password, true);
         this.userId = userId;
     }
+    
     public User(String username, String password) {
         this(username, password, -1);
     }
