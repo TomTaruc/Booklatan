@@ -4,10 +4,22 @@
  */
 package Controller;
 
+import View.MemberApplication;
+
+
 /**
  *
- * @author Joseph Rey
+ * @author Dinel
  */
 public class MemAppCon {
-    
+    private MemberApplication view;
+
+    public MemAppCon(MemberApplication view) {
+        this.view = view;
+        // Add member-specific listeners if needed
+    }
+
+    public void openApp() {
+        view.setVisible(true);
+    }
 }

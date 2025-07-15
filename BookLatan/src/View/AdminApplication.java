@@ -4,15 +4,17 @@
  */
 package View;
 
+import Model.User;
 import View.Components.Application;
 import View.Components.LibDashboard;
 import View.Components.MembersManager;
 import View.Components.Sidebar;
 import View.Components.StaffManager;
+import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
-import java.awt.*;
+
 /**
  *
  * @author Joseph Rey
@@ -24,12 +26,15 @@ public class AdminApplication extends Application {
     public LibDashboard dashboard;
     public MembersManager members;
     public StaffManager staff;
+    private User user;
     
-    public AdminApplication() {
+    public AdminApplication(User user) {
+        this.user = user;
+        System.out.println("AdminApplication opened for: " + user.getUsername() + " (ID: " + user.getUserId() + ")");
         this.addSideBar();
         this.addMainPanel();
     }
-    
+
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
@@ -37,12 +42,9 @@ public class AdminApplication extends Application {
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Members", "./src/Images/members.png");
         menuItems.put("Staff", "./src/Images/members.png");
+
         sidebar = new Sidebar(this.getSize());
-        // TASK: REPLACE THE CODE UNDER THIS SO THAT
-        // EVERYTIME A USER LOGIN THIER USER NAME
-        // AND USER NO (MEMBERID/STAFFID) IS DISPLAYED.
-        // ON THE SIDEBAR. For: Dinel From: Joseph
-        sidebar.addUserInfo("Ashely", 2);
+        sidebar.addUserInfo(user.getUsername(), user.getUserId());
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();

@@ -13,7 +13,8 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Joseph Rey
+ * @author Dinel
+ * @author Joseph
  */
 public class AdminAppCon implements AppController{
     public AdminApplication view;
