@@ -1,4 +1,4 @@
-package Views;
+package View.Components;
 
 import Model.Fine;
 import Model.FineDAO;

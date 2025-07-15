@@ -40,17 +40,6 @@ public class LibrarianApplication extends Application {
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
         sidebar = new Sidebar(this.getSize());
-        // TASK: REPLACE THE CODE UNDER THIS SO THAT
-        // EVERYTIME A USER LOGIN THIER USER NAME
-        // AND USER NO (MEMBERID/STAFFID) IS DISPLAYED.
-        // ON THE SIDEBAR. For: Dinel From: Joseph
-//        sidebar.addUserInfo("John", 1);
-//        sidebar.addMenuItems(menuItems);
-//        this.add(sidebar, BorderLayout.WEST);
-//        this.revalidate();
-//        this.repaint();
-//    }
-
         sidebar.addUserInfo(user.getUsername(), user.getUserId());
 
         sidebar.addMenuItems(menuItems);

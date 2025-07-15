@@ -21,8 +21,8 @@ public class AdminAppCon implements AppController{
     private MemberManagerController memCon;
     private StaffManagerController staffCon;
     
-    public AdminAppCon() {
-        this.view = new AdminApplication();
+    public AdminAppCon(AdminApplication view) {
+        this.view = view;
         this.memCon = new MemberManagerController(view.members, true);
         this.staffCon = new StaffManagerController(view.staff);
         attachListeners();

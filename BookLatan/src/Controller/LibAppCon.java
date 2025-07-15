@@ -31,8 +31,8 @@ public class LibAppCon implements AppController {
     public LibrarianApplication view;
     private MemberManagerController memCon;
     
-    public LibAppCon() {
-        this.view = new LibrarianApplication();
+    public LibAppCon(LibrarianApplication view) {
+        this.view = view;
         this.memCon = new MemberManagerController(view.members, false);
         attachListeners();
         

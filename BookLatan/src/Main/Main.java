@@ -4,7 +4,7 @@
  */
 package Main;
 
-import Views.LoginFrame;
+import View.Components.LoginFrame;
 import javax.swing.JOptionPane;
 
 /**

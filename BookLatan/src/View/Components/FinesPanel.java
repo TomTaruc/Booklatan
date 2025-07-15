@@ -1,7 +1,6 @@
 package View.Components;
 
 import Control.Components.FinesController;
-import Views.IssueFineDialog;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
