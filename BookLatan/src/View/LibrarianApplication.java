@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import View.Components.BookManager; //dinel
 /**
  *
  * @author Joseph Rey
@@ -52,13 +54,13 @@ public class LibrarianApplication extends Application {
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
         dashboard = new LibDashboard(new Dimension(this.getWidth() - 200, this.getHeight()));
-        JPanel books = new JPanel();
+        BookManager books = new BookManager(new Dimension(this.getWidth() - 200, this.getHeight())); //dinel
         members = new MembersManager(new Dimension(this.getWidth() - 200, this.getHeight()), false);
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
         FinesPanel fines = new FinesPanel();
         
-        books.setBackground(Color.black);
+//        books.setBackground(Color.black);
         loans.setBackground(Color.blue);
         reservations.setBackground(Color.green);
         
@@ -73,3 +75,4 @@ public class LibrarianApplication extends Application {
         this.add(mainPanel);
     }
 }
+    
