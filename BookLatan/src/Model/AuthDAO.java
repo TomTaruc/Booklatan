@@ -5,7 +5,6 @@
 package Model;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.*;
-import Model.User.UserType;
 
 /**
  *
@@ -24,8 +23,8 @@ public class AuthDAO {
     }
     
     private static User authenticateFromDatabase(String username, String password) {
-        String sql = "SELECT u.* FROM users u WHERE u.username = ? AND u.password = ?";
-        
+        String sql = "SELECT u.* FROM users u " + "WHERE u.username = ? AND u.password = ?";
+        User user = null;
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
@@ -34,24 +33,14 @@ public class AuthDAO {
             
             ResultSet rs = pstmt.executeQuery();
             
-            if (rs.next()) {
-                String typeStr = rs.getString("type");
-                UserType type = UserType.fromString(typeStr);
-                int userId = rs.getInt("userID");
-                
-                if (type == UserType.ADMIN || type == UserType.LIBRARIAN) {
-                    Staff staff = new Staff(username, password);
-                    staff.setType(type);
-                    staff.setUserId(userId); 
-                    staff.setStaffID(userId);
-                    return staff;
-                } else if (type == UserType.MEMBER) {
-                    User member = new User(username, password);
-                    member.setType(type);
-                    member.setUserId(userId); 
-                    return member;
-                }
+            if(rs.next()) {
+                user = new User(rs.getString("username"), rs.getString("password"));
+                user.setUserId(rs.getInt("userID"));
+                user.setType(User.UserType.fromString(rs.getString("type")));
             }
+            
+            return user;
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

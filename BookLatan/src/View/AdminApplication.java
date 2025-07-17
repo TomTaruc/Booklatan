@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
 
+import View.Components.BookManager; //dinel
 /**
  *
  * @author Joseph Rey
@@ -56,18 +57,18 @@ public class AdminApplication extends Application {
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
         dashboard = new LibDashboard(panelSize);
-        JPanel books = new JPanel();
+        BookManager books = new BookManager(panelSize); //
         members = new MembersManager(panelSize, true);
         staff = new StaffManager(panelSize);
-        
-        books.setBackground(Color.black);
-        staff.setBackground(Color.blue);
-        
+
+        books.setBackground(Color.black); // optional, you can remove this
+        staff.setBackground(Color.blue);  // optional, you can remove this
+
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
         mainPanel.add(staff, "staff");
-        
+
         this.add(mainPanel);
     }
     

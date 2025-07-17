@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import View.Components.BookManager; // dinel
 /**
  *
  * @author Dinel
@@ -36,7 +37,7 @@ public class AdminAppCon implements AppController{
     private void attachListeners() {
         Map<String, JButton> btns = view.sidebar.getMenuButtons();
         btns.get("Dashboard").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "dashboard"));
-        btns.get("Books").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "books"));
+        btns.get("Books").addActionListener(e ->    view.mainPanelLayout.show(view.mainPanel, "books"));
         btns.get("Members").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "members"));
         btns.get("Staff").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "staff"));
         btns.get("Logout").addActionListener(e -> {
