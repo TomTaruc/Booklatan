@@ -11,6 +11,12 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.Dimension;
+
+import View.Components.BookManager;
+import View.Components.LibDashboard;
 
 
 /**
@@ -20,12 +26,17 @@ import java.util.Map;
 
 public class MemberApplication extends Application {
     private Sidebar sidebar;
-    private CardLayout menus;
+    private CardLayout mainPanelLayout;
+    private JPanel mainPanel;
+    private LibDashboard dashboard;
+    private BookManager books;
     private User user;
 
     public MemberApplication(User user) {
         this.user = user;
         this.addSideBar();
+        this.addMainPanel();
+        this.attachListeners();
     }
 
     @Override
@@ -44,4 +55,24 @@ public class MemberApplication extends Application {
         this.revalidate();
         this.repaint();
     }
+
+    private void addMainPanel() {
+        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
+        mainPanelLayout = new CardLayout();
+        mainPanel = new JPanel(mainPanelLayout);
+        dashboard = new LibDashboard(panelSize);
+        books = new BookManager(panelSize, User.UserType.MEMBER); // read-only for members
+
+        mainPanel.add(dashboard, "dashboard");
+        mainPanel.add(books, "books");
+
+        this.add(mainPanel);
+    }
+
+    private void attachListeners() {
+        Map<String, JButton> btns = sidebar.getMenuButtons();
+        btns.get("Dashboard").addActionListener(e -> mainPanelLayout.show(mainPanel, "dashboard"));
+        btns.get("Books").addActionListener(e -> mainPanelLayout.show(mainPanel, "books"));
+    }
 }
+

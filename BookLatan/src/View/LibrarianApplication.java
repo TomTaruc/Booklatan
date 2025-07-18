@@ -10,11 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import View.Components.BookManager; //dinel
 /**
  *
- * @author Joseph Rey
+ * @author Dinel
  */
 public class LibrarianApplication extends Application {
     public Sidebar sidebar;
@@ -22,16 +20,14 @@ public class LibrarianApplication extends Application {
     public JPanel mainPanel;
     public LibDashboard dashboard;
     public MembersManager members;
-    private User user; //new
-    
+    private User user;
+
     public LibrarianApplication(User user) {
-        this.user = user; //new
+        this.user = user;
         addSideBar();
         addMainPanel();
     }
-    
-    
-    
+
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
@@ -49,29 +45,25 @@ public class LibrarianApplication extends Application {
         this.revalidate();
         this.repaint();
     }
-    
+
     private void addMainPanel() {
+        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
-        dashboard = new LibDashboard(new Dimension(this.getWidth() - 200, this.getHeight()));
-        BookManager books = new BookManager(new Dimension(this.getWidth() - 200, this.getHeight())); //dinel
-        members = new MembersManager(new Dimension(this.getWidth() - 200, this.getHeight()), false);
+        dashboard = new LibDashboard(panelSize);
+        BookManager books = new BookManager(panelSize, User.UserType.LIBRARIAN);
+        members = new MembersManager(panelSize, false);
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
         FinesPanel fines = new FinesPanel();
-        
-//        books.setBackground(Color.black);
-        loans.setBackground(Color.blue);
-        reservations.setBackground(Color.green);
-        
-        
+
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
         mainPanel.add(loans, "loans");
         mainPanel.add(reservations, "reservations");
         mainPanel.add(fines, "fines");
-        
+
         this.add(mainPanel);
     }
 }

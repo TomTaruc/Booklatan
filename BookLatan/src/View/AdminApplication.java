@@ -10,12 +10,11 @@ import View.Components.LibDashboard;
 import View.Components.MembersManager;
 import View.Components.Sidebar;
 import View.Components.StaffManager;
+import View.Components.BookManager;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
-
-import View.Components.BookManager; //dinel
 /**
  *
  * @author Joseph Rey
@@ -28,10 +27,9 @@ public class AdminApplication extends Application {
     public MembersManager members;
     public StaffManager staff;
     private User user;
-    
+
     public AdminApplication(User user) {
         this.user = user;
-        System.out.println("AdminApplication opened for: " + user.getUsername() + " (ID: " + user.getUserId() + ")");
         this.addSideBar();
         this.addMainPanel();
     }
@@ -51,18 +49,15 @@ public class AdminApplication extends Application {
         this.revalidate();
         this.repaint();
     }
-    
+
     private void addMainPanel() {
         Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
         dashboard = new LibDashboard(panelSize);
-        BookManager books = new BookManager(panelSize); //
+        BookManager books = new BookManager(panelSize, User.UserType.ADMIN);
         members = new MembersManager(panelSize, true);
         staff = new StaffManager(panelSize);
-
-        books.setBackground(Color.black); // optional, you can remove this
-        staff.setBackground(Color.blue);  // optional, you can remove this
 
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
@@ -71,5 +66,4 @@ public class AdminApplication extends Application {
 
         this.add(mainPanel);
     }
-    
 }

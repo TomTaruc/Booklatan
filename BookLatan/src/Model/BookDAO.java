@@ -5,106 +5,92 @@
 package Model;
 
 import java.sql.*;
-import java.util.Date;
-import java.util.List;
 import java.util.ArrayList;
-/**
- *
- * @author Dinel
- */
+import java.util.List;
+
 public class BookDAO {
 
-    // Add a new book
+    // CREATE: Add a new book
     public void addBook(Book book) throws SQLException {
-        String sql = "INSERT INTO Book (title, publisher, category, pubDate, language, status, shelfLocation) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books (title, category, pubDate, lang, _status, shelfLocation, pubID, libID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, book.getTitle());
-            stmt.setInt(2, book.getPublisher().getPubID());
-            stmt.setString(3, book.getCategory());
-            stmt.setDate(4, new java.sql.Date(book.getPubDate().getTime()));
-            stmt.setString(5, book.getLanguage());
-            stmt.setString(6, book.getStatus().name());
-            stmt.setString(7, book.getShelfLocation());
+            stmt.setString(2, book.getCategory());
+            stmt.setDate(3, new java.sql.Date(book.getPubDate().getTime()));
+            stmt.setString(4, book.getLanguage());
+            stmt.setString(5, book.getStatus().name().toLowerCase());
+            stmt.setString(6, book.getShelfLocation());
+            stmt.setInt(7, book.getPublisher().getPubID());
+            stmt.setInt(8, book.getLibID());
             stmt.executeUpdate();
-
 
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 book.setBookID(rs.getInt(1));
             }
-
-            for (Author author : book.getAuthors()) {
-                String baSql = "INSERT INTO BookAuthor (BookbookID, AuthorauthorID) VALUES (?, ?)";
-                try (PreparedStatement baStmt = conn.prepareStatement(baSql)) {
-                    baStmt.setInt(1, book.getBookID());
-                    baStmt.setInt(2, author.getAuthorID());
-                    baStmt.executeUpdate();
-                }
-            }
         }
     }
 
-    public List<Book> searchBooks(String query) throws SQLException {
+    // READ: Get all books
+    public List<Book> getAllBooks() throws SQLException {
         List<Book> books = new ArrayList<>();
-        String sql = "SELECT * FROM Book WHERE title LIKE ?";
+        String sql = "SELECT * FROM books";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, "%" + query + "%");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                int bookID = rs.getInt("bookID");
-                String title = rs.getString("title");
-
-                Publisher publisher = getPublisherById(rs.getInt("publisher"));
-
-                List<Author> authors = getAuthorsByBookId(bookID);
-
-                String category = rs.getString("category");
-                Date pubDate = rs.getDate("pubDate");
-                String language = rs.getString("language");
-                BookStatus status = BookStatus.valueOf(rs.getString("status"));
-                String shelfLocation = rs.getString("shelfLocation");
-
-                Book book = new Book(bookID, title, authors, publisher, category, pubDate, language, status, shelfLocation);
+                Book book = mapResultSetToBook(rs);
                 books.add(book);
             }
         }
         return books;
     }
 
-    private List<Author> getAuthorsByBookId(int bookID) throws SQLException {
-        List<Author> authors = new ArrayList<>();
-        String sql = "SELECT a.authorID, a.name, a.bio FROM Author a JOIN BookAuthor ba ON a.authorID = ba.AuthorauthorID WHERE ba.BookbookID = ?";
+    // UPDATE: Update a book
+    public void updateBook(Book book) throws SQLException {
+        String sql = "UPDATE books SET title=?, category=?, pubDate=?, lang=?, _status=?, shelfLocation=?, pubID=?, libID=? WHERE infobookID=?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, bookID);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                authors.add(new Author(rs.getInt("authorID"), rs.getString("name"), rs.getString("bio")));
-            }
+            stmt.setString(1, book.getTitle());
+            stmt.setString(2, book.getCategory());
+            stmt.setDate(3, new java.sql.Date(book.getPubDate().getTime()));
+            stmt.setString(4, book.getLanguage());
+            stmt.setString(5, book.getStatus().name().toLowerCase());
+            stmt.setString(6, book.getShelfLocation());
+            stmt.setInt(7, book.getPublisher().getPubID());
+            stmt.setInt(8, book.getLibID());
+            stmt.setInt(9, book.getBookID());
+            stmt.executeUpdate();
         }
-        return authors;
     }
 
-
-    private Publisher getPublisherById(int pubID) throws SQLException {
-        String sql = "SELECT * FROM Publisher WHERE pubID = ?";
+    // DELETE: Delete a book
+    public void deleteBook(int infobookID) throws SQLException {
+        String sql = "DELETE FROM books WHERE infobookID=?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, pubID);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new Publisher(
-                    rs.getInt("pubID"),
-                    rs.getString("name"),
-                    rs.getString("address"),
-                    rs.getString("phone"),
-                    rs.getString("email")
-                );
-            }
+            stmt.setInt(1, infobookID);
+            stmt.executeUpdate();
         }
-        return null;
     }
 
+    // Helper: Map ResultSet to Book object
+    private Book mapResultSetToBook(ResultSet rs) throws SQLException {
+        int bookID = rs.getInt("infobookID");
+        String title = rs.getString("title");
+        String category = rs.getString("category");
+        java.util.Date pubDate = rs.getDate("pubDate");
+        String lang = rs.getString("lang");
+        String statusStr = rs.getString("_status");
+        String shelfLocation = rs.getString("shelfLocation");
+        int pubID = rs.getInt("pubID");
+        int libID = rs.getInt("libID");
+
+        Publisher publisher = new Publisher(pubID, "", "", "", "");
+        BookStatus status = BookStatus.valueOf(statusStr.toUpperCase().replace(' ', '_'));
+
+        // For simplicity, authors are not loaded here
+        return new Book(bookID, title, null, publisher, category, pubDate, lang, status, shelfLocation, libID);
+    }
 }
