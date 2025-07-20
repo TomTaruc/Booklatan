@@ -2,371 +2,449 @@ package View.Components;
 
 import Model.Fine;
 import Model.FineDAO;
+import Model.UserMemberDAO;
+import Model.Member;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Date;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 public class IssueFineDialog extends JDialog {
-
     private FineDAO fineDAO;
-    private boolean fineSaved = false;
-
+    private UserMemberDAO userMemberDAO;
     private JTextField txtFineID;
+    private JTextField txtStaffID;
     private JTextField txtMemberID;
     private JTextField txtMemberName;
+    private JTextField txtAmount;
     private JTextField txtBookTitle;
+    private JTextArea txtDescription;
+    private JScrollPane descriptionScrollPane;
+    private JTextField txtDaysOverdue;
     private JTextField txtDueDate;
     private JTextField txtReturnDate;
-    private JTextField txtDaysOverdue;
-    private JTextField txtAmount;
-    private JTextArea txtDescription;
-
-    private JButton btnCalculateFine;
-    private JButton btnSaveFine;
+    
+    private JButton btnSave;
     private JButton btnCancel;
+    
+    private boolean fineSaved = false;
+    private Member currentMember = null;
 
-    private Color primaryBgColor = new Color(253, 245, 230);
-    private Color brownCalculateBtn = new Color(139, 69, 19);
-    private Color lightBrownSaveBtn = new Color(160, 82, 45);
-    private Color grayCancelBtn = new Color(150, 150, 150);
-
-    private static final double FINE_PER_DAY = 10.0;
-
-    public IssueFineDialog(Window owner, FineDAO fineDAO) {
-        super(owner, "Issue New Fine", ModalityType.APPLICATION_MODAL);
+    public IssueFineDialog(Window parent, FineDAO fineDAO, UserMemberDAO userMemberDAO) {
+        super(parent, "Issue Fine", ModalityType.APPLICATION_MODAL);
         this.fineDAO = fineDAO;
-        setSize(480, 500);
-        setLocationRelativeTo(owner);
-        setResizable(false);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+        this.userMemberDAO = userMemberDAO;
         initComponents();
-        addListeners();
-        generateFineID();
+        setupDialog();
+        loadNextFineID();
     }
 
     private void initComponents() {
-        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-        mainPanel.setBackground(primaryBgColor);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        
-        JPanel fineDetailsPanel = new JPanel(new GridBagLayout());
-        fineDetailsPanel.setBackground(primaryBgColor);
-        fineDetailsPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-                "Fine Details",
-                TitledBorder.LEFT,
-                TitledBorder.TOP,
-                new Font("Segoe UI", Font.BOLD, 12),
-                Color.DARK_GRAY
-        ));
+        setLayout(new BorderLayout());
+        setSize(450, 450);
+        setLocationRelativeTo(getParent());
 
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(3, 5, 3, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
 
-        addFormField(fineDetailsPanel, gbc, "Fine ID:", txtFineID = new JTextField(12), 0, false);
+        gbc.gridx = 0; gbc.gridy = 0;
+        mainPanel.add(new JLabel("Fine ID:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtFineID = new JTextField(15);
+        txtFineID.setEditable(false);
+        txtFineID.setBackground(Color.LIGHT_GRAY);
+        mainPanel.add(txtFineID, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Member ID:", txtMemberID = new JTextField(12), 1, true);
+        gbc.gridx = 0; gbc.gridy = 1; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Staff ID:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtStaffID = new JTextField(15);
+        mainPanel.add(txtStaffID, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Member Name:", txtMemberName = new JTextField(12), 2, true);
+        gbc.gridx = 0; gbc.gridy = 2; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Member ID:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtMemberID = new JTextField(15);
+        mainPanel.add(txtMemberID, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Book Title:", txtBookTitle = new JTextField(12), 3, true);
+        gbc.gridx = 0; gbc.gridy = 3; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Member Name:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtMemberName = new JTextField(15);
+        txtMemberName.setEditable(false);
+        txtMemberName.setBackground(Color.LIGHT_GRAY);
+        mainPanel.add(txtMemberName, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Due Date (yyyy-mm-dd):", txtDueDate = new JTextField(12), 4, true);
+        gbc.gridx = 0; gbc.gridy = 4; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Book Title:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtBookTitle = new JTextField(15);
+        mainPanel.add(txtBookTitle, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Return Date (yyyy-mm-dd):", txtReturnDate = new JTextField(12), 5, true);
+        gbc.gridx = 0; gbc.gridy = 5; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Due Date (YYYY-MM-DD):"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtDueDate = new JTextField(15);
+        mainPanel.add(txtDueDate, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Days Overdue:", txtDaysOverdue = new JTextField(12), 6, false);
+        gbc.gridx = 0; gbc.gridy = 6; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Return Date (YYYY-MM-DD):"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtReturnDate = new JTextField(15);
+        mainPanel.add(txtReturnDate, gbc);
 
-        addFormField(fineDetailsPanel, gbc, "Amount (₱):", txtAmount = new JTextField(12), 7, false);
+        gbc.gridx = 0; gbc.gridy = 7; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Days Overdue:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtDaysOverdue = new JTextField(15);
+        txtDaysOverdue.setEditable(false);
+        txtDaysOverdue.setBackground(Color.LIGHT_GRAY);
+        mainPanel.add(txtDaysOverdue, gbc);
 
-        JLabel lblDescription = new JLabel("Description:");
-        lblDescription.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        gbc.gridx = 0;
-        gbc.gridy = 8;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        fineDetailsPanel.add(lblDescription, gbc);
+        gbc.gridx = 0; gbc.gridy = 8; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Amount (₱):"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        txtAmount = new JTextField(15);
+        txtAmount.setEditable(false);
+        txtAmount.setBackground(Color.LIGHT_GRAY);
+        mainPanel.add(txtAmount, gbc);
 
-        txtDescription = new JTextArea(2, 12);
-        txtDescription.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        gbc.gridx = 0; gbc.gridy = 9; gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Description:"), gbc);
+        gbc.gridx = 1; gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0; gbc.weighty = 1.0;
+        txtDescription = new JTextArea(3, 15);
         txtDescription.setLineWrap(true);
         txtDescription.setWrapStyleWord(true);
+        txtDescription.setBorder(BorderFactory.createLoweredBevelBorder());
         txtDescription.setEditable(false);
-        JScrollPane descriptionScrollPane = new JScrollPane(txtDescription);
-        gbc.gridx = 1;
-        gbc.gridy = 8;
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.5;
-        gbc.fill = GridBagConstraints.BOTH;
-        fineDetailsPanel.add(descriptionScrollPane, gbc);
+        txtDescription.setBackground(Color.LIGHT_GRAY);
+        descriptionScrollPane = new JScrollPane(txtDescription);
+        descriptionScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        descriptionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        mainPanel.add(descriptionScrollPane, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 9;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(10, 5, 5, 5);
-        btnCalculateFine = createStyledButton(" Calculate Fine", brownCalculateBtn, createUnicodeIcon("\uF02D"), 8, new Font("Segoe UI", Font.BOLD, 14), new Insets(8, 15, 8, 15));
-        fineDetailsPanel.add(btnCalculateFine, gbc);
+        add(mainPanel, BorderLayout.CENTER);
 
-        mainPanel.add(fineDetailsPanel, BorderLayout.CENTER);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
-        buttonPanel.setBackground(primaryBgColor);
-
-        btnSaveFine = createStyledButton(" Save Fine", lightBrownSaveBtn, createUnicodeIcon("\uF0C7"), 8, new Font("Segoe UI", Font.BOLD, 14), new Insets(8, 15, 8, 15));
-        btnCancel = createStyledButton(" Cancel", grayCancelBtn, createUnicodeIcon("\uF00D"), 8, new Font("Segoe UI", Font.BOLD, 14), new Insets(8, 15, 8, 15));
-
-        buttonPanel.add(btnSaveFine);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        btnSave = new JButton("Save");
+        btnSave.setBackground(new Color(59, 130, 246));
+        btnSave.setForeground(Color.WHITE);
+        btnSave.setFocusPainted(false);
+        btnSave.setBorderPainted(false);
+        btnSave.setOpaque(true);
+        
+        btnCancel = new JButton("Cancel");
+        btnCancel.setBackground(new Color(239, 68, 68));
+        btnCancel.setForeground(Color.WHITE);
+        btnCancel.setFocusPainted(false);
+        btnCancel.setBorderPainted(false);
+        btnCancel.setOpaque(true);
+        
+        buttonPanel.add(btnSave);
         buttonPanel.add(btnCancel);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        add(buttonPanel, BorderLayout.SOUTH);
 
-        setContentPane(mainPanel);
-    }
-
-    private void addFormField(JPanel panel, GridBagConstraints gbc, String labelText, JTextField textField, int row, boolean editable) {
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        JLabel label = new JLabel(labelText);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        panel.add(label, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        textField.setEditable(editable);
-        textField.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        textField.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(8, Color.LIGHT_GRAY),
-            new EmptyBorder(4, 6, 4, 6)
-        ));
-        panel.add(textField, gbc);
+        addListeners();
     }
 
     private void addListeners() {
-        btnCalculateFine.addActionListener(this::calculateFineAction);
-        btnSaveFine.addActionListener(this::saveFineAction);
-        btnCancel.addActionListener(e -> dispose());
-
-        KeyAdapter updateListener = new KeyAdapter() {
+        txtMemberID.addFocusListener(new FocusAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
-                updateDescription();
+            public void focusLost(FocusEvent e) {
+                validateAndLoadMember();
             }
-        };
-        txtDueDate.addKeyListener(updateListener);
-        txtReturnDate.addKeyListener(updateListener);
-        txtBookTitle.addKeyListener(updateListener);
-        txtMemberName.addKeyListener(updateListener);
+        });
+
+        txtDueDate.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                calculateOverdueAndAmount();
+            }
+        });
+
+        txtReturnDate.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                calculateOverdueAndAmount();
+            }
+        });
+
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveFine();
+            }
+        });
+
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
     }
 
-    private void calculateFineAction(ActionEvent e) {
+    private void validateAndLoadMember() {
+        String memberID = txtMemberID.getText().trim();
+        if (memberID.isEmpty()) {
+            txtMemberName.setText("");
+            txtMemberName.setBackground(Color.LIGHT_GRAY);
+            currentMember = null;
+            return;
+        }
+
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date dueDate = dateFormat.parse(txtDueDate.getText());
-            Date returnDate = dateFormat.parse(txtReturnDate.getText());
-
-            long diff = returnDate.getTime() - dueDate.getTime();
-            long diffDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-
-            if (diffDays > 0) {
-                txtDaysOverdue.setText(String.valueOf(diffDays));
-                double amount = diffDays * FINE_PER_DAY;
-                txtAmount.setText(String.format("%.2f", amount));
-                updateDescription();
-            } else {
-                txtDaysOverdue.setText("0");
-                txtAmount.setText("0.00");
-                txtDescription.setText("No overdue days.");
+            int memberIDInt = Integer.parseInt(memberID);
+            Member member = null;
+            
+            try {
+                if (userMemberDAO.memberExists(memberIDInt)) {
+                    member = userMemberDAO.getMemberByID(memberIDInt);
+                } else {
+                    member = null;
+                }
+            } catch (Exception dbException) {
+                System.err.println("Database error while checking member: " + dbException.getMessage());
+                member = null;
             }
-        } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(this, "Please enter dates in YYYY-MM-DD format.", "Date Format Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error calculating fine: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
+            
+            if (member != null) {
+                txtMemberName.setText(member.getName());
+                txtMemberName.setBackground(Color.WHITE);
+                currentMember = member;
+                generateDescription();
+            } else {
+                txtMemberName.setText("Member not found!");
+                txtMemberName.setBackground(Color.PINK);
+                currentMember = null;
+            }
+        } catch (NumberFormatException e) {
+            txtMemberName.setText("Invalid Member ID!");
+            txtMemberName.setBackground(Color.PINK);
+            currentMember = null;
         }
     }
 
-    private void updateDescription() {
-        String bookTitle = txtBookTitle.getText().trim();
-        String memberName = txtMemberName.getText().trim();
+    private void calculateOverdueAndAmount() {
         String dueDateStr = txtDueDate.getText().trim();
         String returnDateStr = txtReturnDate.getText().trim();
-        String daysOverdueStr = txtDaysOverdue.getText();
-        String amountStr = txtAmount.getText();
 
-        StringBuilder description = new StringBuilder();
-        
-        if (!daysOverdueStr.isEmpty() && !daysOverdueStr.equals("0")) {
-            description.append("Book returned ").append(daysOverdueStr).append(" day(s) late");
-            if (!amountStr.isEmpty() && !amountStr.equals("0.00")) {
-                description.append(" - ₱").append(FINE_PER_DAY).append(" per day");
-            }
-        } else {
-            description.append("No days overdue.");
-        }
-
-        if (!bookTitle.isEmpty()) {
-            description.append(" for '").append(bookTitle).append("'");
-        }
-        if (!memberName.isEmpty()) {
-            description.append(" by ").append(memberName);
-        }
-        if (!dueDateStr.isEmpty()) {
-            description.append(" (Due: ").append(dueDateStr).append(")");
-        }
-        if (!returnDateStr.isEmpty()) {
-            description.append(" (Returned: ").append(returnDateStr).append(")");
-        }
-        
-        txtDescription.setText(description.toString());
-    }
-
-    private void saveFineAction(ActionEvent e) {
-        if (txtFineID.getText().isEmpty() || txtMemberID.getText().isEmpty() || txtMemberName.getText().isEmpty() ||
-            txtBookTitle.getText().isEmpty() || txtDueDate.getText().isEmpty() || txtReturnDate.getText().isEmpty() ||
-            txtAmount.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields (Fine ID, Member ID, Member Name, Book Title, Due Date, Return Date, Amount).", "Missing Information", JOptionPane.WARNING_MESSAGE);
+        if (dueDateStr.isEmpty() || returnDateStr.isEmpty()) {
+            txtDaysOverdue.setText("0");
+            txtAmount.setText("0.00");
+            generateDescription();
             return;
         }
 
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date dueDate = dateFormat.parse(txtDueDate.getText());
-            Date returnDate = dateFormat.parse(txtReturnDate.getText());
-            double amount = Double.parseDouble(txtAmount.getText());
-            int daysOverdue = Integer.parseInt(txtDaysOverdue.getText());
+            Date dueDate = dateFormat.parse(dueDateStr);
+            Date returnDate = dateFormat.parse(returnDateStr);
 
-            Fine fine = new Fine();
-            fine.setFineID(txtFineID.getText());
-            fine.setMemberID(txtMemberID.getText());
-            fine.setMemberName(txtMemberName.getText());
-            fine.setBook_title(txtBookTitle.getText());
-            fine.setDue_date(dueDate);
-            fine.setReturn_date(returnDate);
-            fine.setDays_overdue(daysOverdue);
-            fine.setAmount(amount);
-            fine.setDateIssued(new Date());
-            fine.set_status("Outstanding");
-            fine.setDescription(txtDescription.getText());
-            fine.setStaffID("N/A");
-            fine.setReason("Overdue Fine");
-            fine.setIsbn("N/A");
+            long diffInMillies = returnDate.getTime() - dueDate.getTime();
+            long daysOverdue = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-            if (fineDAO.addFine(fine)) {
-                JOptionPane.showMessageDialog(this, "Fine saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                fineSaved = true;
-                dispose();
+            if (daysOverdue > 0) {
+                txtDaysOverdue.setText(String.valueOf(daysOverdue));
+                double amount = daysOverdue * 50.0;
+                txtAmount.setText(String.format("%.2f", amount));
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to save fine. Please check console for details.", "Save Error", JOptionPane.ERROR_MESSAGE);
+                txtDaysOverdue.setText("0");
+                txtAmount.setText("0.00");
             }
 
-        } catch (ParseException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid date format. Please use YYYY-MM-DD.", "Input Error", JOptionPane.ERROR_MESSAGE);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid amount or days overdue format.", "Input Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "An unexpected error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
+            generateDescription();
+
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(this,
+                "Invalid date format. Please use YYYY-MM-DD format.",
+                "Date Format Error",
+                JOptionPane.ERROR_MESSAGE);
+            txtDaysOverdue.setText("0");
+            txtAmount.setText("0.00");
         }
     }
 
-    private JButton createStyledButton(String text, Color bgColor, Icon icon, int radius, Font font, Insets paddingInsets) {
-        JButton button = new JButton(text);
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setOpaque(true);
-        button.setContentAreaFilled(true);
+    private void generateDescription() {
+        StringBuilder description = new StringBuilder();
+        
+        String memberName = currentMember != null ? currentMember.getName() : txtMemberName.getText();
+        String bookTitle = txtBookTitle.getText().trim();
+        String daysOverdueStr = txtDaysOverdue.getText().trim();
+        String amountStr = txtAmount.getText().trim();
 
-        button.setFont(font);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setIcon(icon);
-        button.setIconTextGap(8);
-        button.setBorder(new CompoundBorder(
-            new RoundedBorder(radius, bgColor),
-            new EmptyBorder(paddingInsets.top, paddingInsets.left, paddingInsets.bottom, paddingInsets.right)
-        ));
-        button.setMargin(new Insets(0,0,0,0));
-        return button;
+        if (!memberName.isEmpty() && !memberName.equals("Member not found!") && !memberName.equals("Invalid Member ID!")) {
+            description.append("Fine issued to ").append(memberName);
+        }
+
+        if (!bookTitle.isEmpty()) {
+            if (description.length() > 0) description.append(" for ");
+            description.append("overdue book: ").append(bookTitle);
+        }
+
+        if (!daysOverdueStr.isEmpty() && !daysOverdueStr.equals("0")) {
+            if (description.length() > 0) description.append(". ");
+            description.append("Book was ").append(daysOverdueStr).append(" day(s) overdue");
+        }
+
+        if (!amountStr.isEmpty() && !amountStr.equals("0.00")) {
+            if (description.length() > 0) description.append(". ");
+            description.append("Total fine amount: ₱").append(amountStr);
+        }
+
+        if (description.length() == 0) {
+            description.append("Library fine for overdue book return");
+        }
+
+        txtDescription.setText(description.toString());
     }
 
-    private static class RoundedBorder implements Border {
-        private int radius;
-        private Color borderColor;
-
-        RoundedBorder(int radius, Color color) {
-            this.radius = radius;
-            this.borderColor = color;
-        }
-
-        public Insets getBorderInsets(Component c) {
-            return new Insets(this.radius/2 + 1, this.radius/2 + 1, this.radius/2 + 2, this.radius/2);
-        }
-
-        public boolean isBorderOpaque() {
-            return false;
-        }
-
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            g2.setColor(borderColor);
-            g2.draw(new RoundRectangle2D.Double(x, y, width - 1, height - 1, radius, radius));
-
-            g2.dispose();
-        }
+    private void setupDialog() {
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setResizable(false);
     }
 
-    private ImageIcon createSquareIcon(Color color) {
-        BufferedImage image = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setColor(color);
-        g.fillRect(0, 0, 20, 20);
-        g.dispose();
-        return new ImageIcon(image);
+    private void loadNextFineID() {
+        int nextFineID = fineDAO.getMaxFineID() + 1;
+        txtFineID.setText(String.valueOf(nextFineID));
     }
 
-    private ImageIcon createUnicodeIcon(String unicodeChar) {
-        JLabel label = new JLabel(unicodeChar);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        label.setForeground(Color.WHITE);
-        label.setSize(label.getPreferredSize());
-        BufferedImage image = new BufferedImage(label.getWidth(), label.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        label.paint(g);
-        g.dispose();
-        return new ImageIcon(image);
+    private void saveFine() {
+        try {
+            if (txtStaffID.getText().trim().isEmpty() ||
+                txtMemberID.getText().trim().isEmpty() || 
+                txtBookTitle.getText().trim().isEmpty() ||
+                txtDueDate.getText().trim().isEmpty() ||
+                txtReturnDate.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Please fill in all required fields (Staff ID, Member ID, Book Title, Due Date, Return Date).",
+                    "Validation Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String memberID = txtMemberID.getText().trim();
+            if (!memberID.isEmpty()) {
+                try {
+                    int memberIDInt = Integer.parseInt(memberID);
+                    Member member = null;
+                    
+                    try {
+                        if (userMemberDAO.memberExists(memberIDInt)) {
+                            member = userMemberDAO.getMemberByID(memberIDInt);
+                        } else {
+                            member = null;
+                        }
+                    } catch (Exception dbException) {
+                        System.err.println("Database error while checking member: " + dbException.getMessage());
+                        member = null;
+                    }
+                    
+                    if (member == null) {
+                        int choice = JOptionPane.showConfirmDialog(this,
+                            "Member ID '" + memberID + "' is not registered in the system.\n" +
+                            "Would you like to close this dialog and register the member first?",
+                            "Member Not Registered",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                        
+                        if (choice == JOptionPane.YES_OPTION) {
+                            dispose();
+                        }
+                        return;
+                    } else {
+                        currentMember = member;
+                        txtMemberName.setText(member.getName());
+                        txtMemberName.setBackground(Color.WHITE);
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this,
+                        "Please enter a valid numeric Member ID.",
+                        "Invalid Member ID Format",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Please enter a Member ID.",
+                    "Missing Member ID",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (currentMember == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Please enter a valid Member ID. Member must exist in the system.",
+                    "Invalid Member",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            calculateOverdueAndAmount();
+
+            Fine fine = new Fine();
+            fine.setFineID(Integer.parseInt(txtFineID.getText()));
+            fine.setStaffID(txtStaffID.getText());
+            fine.setMemberID(txtMemberID.getText());
+            fine.setMemberName(currentMember.getName());
+            fine.setAmount(Double.parseDouble(txtAmount.getText()));
+            fine.setReason("Overdue book return");
+            fine.setDateIssued(new Date());
+            fine.set_status("Pending");
+            fine.setBook_title(txtBookTitle.getText());
+            fine.setDays_overdue(Integer.parseInt(txtDaysOverdue.getText()));
+            fine.setDescription(txtDescription.getText());
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            fine.setDue_date(new java.sql.Date(dateFormat.parse(txtDueDate.getText()).getTime()));
+            fine.setReturn_date(new java.sql.Date(dateFormat.parse(txtReturnDate.getText()).getTime()));
+
+            if (fineDAO.addFine(fine)) {
+                fineSaved = true;
+                JOptionPane.showMessageDialog(this,
+                    "Fine issued successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Failed to issue fine. Please try again.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                "Please enter valid numeric values for dates and amounts.",
+                "Input Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(this,
+                "Invalid date format. Please use YYYY-MM-DD format.",
+                "Date Format Error",
+                JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error saving fine: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     public boolean isFineSaved() {
         return fineSaved;
-    }
-
-    private void generateFineID() {
-        String uuid = UUID.randomUUID().toString().substring(0, 7).toUpperCase();
-        txtFineID.setText("F" + uuid);
     }
 }

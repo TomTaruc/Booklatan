@@ -1,15 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package View;
 
-import View.Components.*;
+import Control.Components.FinesController;
+import Control.Components.MemberManagerController;
+import Model.FineDAO;
 import Model.User;
-import javax.swing.*;
+import View.Components.*;
 import java.awt.*;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashMap; //dinel
 import java.util.Map;
+import javax.swing.*; // Import FinesController
 /**
  *
  * @author Dinel
@@ -20,6 +19,7 @@ public class LibrarianApplication extends Application {
     public JPanel mainPanel;
     public LibDashboard dashboard;
     public MembersManager members;
+    public FinesPanel fines; // Declare FinesPanel
     private User user;
 
     public LibrarianApplication(User user) {
@@ -37,9 +37,9 @@ public class LibrarianApplication extends Application {
         menuItems.put("Loans", "./src/Images/loanbooks.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
+
         sidebar = new Sidebar(this.getSize());
         sidebar.addUserInfo(user.getUsername(), user.getUserId());
-
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();
@@ -56,7 +56,12 @@ public class LibrarianApplication extends Application {
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
         FinesPanel fines = new FinesPanel();
+        
+//        books.setBackground(Color.black);
+        loans.setBackground(Color.blue);
+        reservations.setBackground(Color.green);
 
+        // Add panels to the mainPanel with their respective card names
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
@@ -64,7 +69,8 @@ public class LibrarianApplication extends Application {
         mainPanel.add(reservations, "reservations");
         mainPanel.add(fines, "fines");
 
+
         this.add(mainPanel);
+        this.add(mainPanel, BorderLayout.CENTER); 
     }
 }
-    

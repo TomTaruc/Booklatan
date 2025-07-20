@@ -3,7 +3,7 @@ package Model;
 import java.util.Date;
 
 public class Fine {
-    private String fineID;
+    private int fineID;
     private String staffID;
     private String memberID;
     private String memberName;
@@ -19,14 +19,12 @@ public class Fine {
     private String description;
     private String reason;
 
-    public Fine() {
-    }
+    public Fine() {}
 
-    public Fine(String fineID, String staffID, String memberID, String memberName,
+    public Fine(String staffID, String memberID, String memberName,
                 double amount, String reason, Date dateIssued, String _status,
                 String book_title, Date due_date, Date return_date, int days_overdue,
                 String isbn, String description) {
-        this.fineID = fineID;
         this.staffID = staffID;
         this.memberID = memberID;
         this.memberName = memberName;
@@ -42,11 +40,11 @@ public class Fine {
         this.description = description;
     }
 
-    public String getFineID() {
+    public int getFineID() {
         return fineID;
     }
 
-    public void setFineID(String fineID) {
+    public void setFineID(int fineID) {
         this.fineID = fineID;
     }
 
@@ -165,12 +163,11 @@ public class Fine {
     @Override
     public String toString() {
         return "Fine{" +
-               "fineID='" + fineID + '\'' +
+               "fineID=" + fineID +
                ", staffID='" + staffID + '\'' +
                ", memberID='" + memberID + '\'' +
                ", memberName='" + memberName + '\'' +
                ", book_title='" + book_title + '\'' +
-               ", isbn='" + isbn + '\'' +
                ", due_date=" + due_date +
                ", return_date=" + return_date +
                ", days_overdue=" + days_overdue +

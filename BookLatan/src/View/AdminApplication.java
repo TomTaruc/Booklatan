@@ -11,6 +11,7 @@ import View.Components.MembersManager;
 import View.Components.Sidebar;
 import View.Components.StaffManager;
 import View.Components.BookManager;
+import View.Components.FinesPanel;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class AdminApplication extends Application {
     public LibDashboard dashboard;
     public MembersManager members;
     public StaffManager staff;
+    public FinesPanel fines;
     private User user;
 
     public AdminApplication(User user) {
@@ -40,6 +42,7 @@ public class AdminApplication extends Application {
         menuItems.put("Dashboard", "./src/Images/dashboard2.png");
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Members", "./src/Images/members.png");
+        menuItems.put("Fines", "./src/Images/fines_icon.png");
         menuItems.put("Staff", "./src/Images/members.png");
 
         sidebar = new Sidebar(this.getSize());
@@ -66,4 +69,4 @@ public class AdminApplication extends Application {
 
         this.add(mainPanel);
     }
-}
+}   
