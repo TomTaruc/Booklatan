@@ -1,17 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package View;
 
-import View.Components.*;
+import Control.Components.FinesController;
+import Control.Components.MemberManagerController;
+import Model.FineDAO;
 import Model.User;
-import javax.swing.*;
+import View.Components.*;
 import java.awt.*;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashMap; //dinel
 import java.util.Map;
+import javax.swing.*; // Import FinesController
 
-import View.Components.BookManager; //dinel
 /**
  *
  * @author Joseph Rey
@@ -22,16 +20,20 @@ public class LibrarianApplication extends Application {
     public JPanel mainPanel;
     public LibDashboard dashboard;
     public MembersManager members;
-    private User user; //new
-    
+    public FinesPanel fines; // Declare FinesPanel
+    private User user;
+
+    // Controllers
+    private MemberManagerController memCon;
+    private FinesController finesController; // Declare FinesController
+
     public LibrarianApplication(User user) {
-        this.user = user; //new
+        this.user = user;
         addSideBar();
         addMainPanel();
+        initializeControllers(); 
     }
-    
-    
-    
+
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
@@ -41,15 +43,15 @@ public class LibrarianApplication extends Application {
         menuItems.put("Loans", "./src/Images/loanbooks.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
+
         sidebar = new Sidebar(this.getSize());
         sidebar.addUserInfo(user.getUsername(), user.getUserId());
-
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();
         this.repaint();
     }
-    
+
     private void addMainPanel() {
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
@@ -63,16 +65,23 @@ public class LibrarianApplication extends Application {
 //        books.setBackground(Color.black);
         loans.setBackground(Color.blue);
         reservations.setBackground(Color.green);
-        
-        
+
+        // Add panels to the mainPanel with their respective card names
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
         mainPanel.add(loans, "loans");
         mainPanel.add(reservations, "reservations");
         mainPanel.add(fines, "fines");
-        
-        this.add(mainPanel);
+
+        this.add(mainPanel, BorderLayout.CENTER); 
+    }
+
+    private void initializeControllers() {
+
+        // Initialize FinesController
+        FineDAO fineDAO = new FineDAO(); // Create an instance of FineDAO
+        finesController = new FinesController(fineDAO, fines);
+        fines.setController(finesController); 
     }
 }
-    
