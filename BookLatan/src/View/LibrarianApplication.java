@@ -9,10 +9,9 @@ import java.awt.*;
 import java.util.LinkedHashMap; //dinel
 import java.util.Map;
 import javax.swing.*; // Import FinesController
-
 /**
  *
- * @author Joseph Rey
+ * @author Dinel
  */
 public class LibrarianApplication extends Application {
     public Sidebar sidebar;
@@ -48,11 +47,12 @@ public class LibrarianApplication extends Application {
     }
 
     private void addMainPanel() {
+        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
-        dashboard = new LibDashboard(new Dimension(this.getWidth() - 200, this.getHeight()));
-        BookManager books = new BookManager(new Dimension(this.getWidth() - 200, this.getHeight())); //dinel
-        members = new MembersManager(new Dimension(this.getWidth() - 200, this.getHeight()), false);
+        dashboard = new LibDashboard(panelSize);
+        BookManager books = new BookManager(panelSize, User.UserType.LIBRARIAN);
+        members = new MembersManager(panelSize, false);
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
         FinesPanel fines = new FinesPanel();
@@ -69,6 +69,8 @@ public class LibrarianApplication extends Application {
         mainPanel.add(reservations, "reservations");
         mainPanel.add(fines, "fines");
 
+
+        this.add(mainPanel);
         this.add(mainPanel, BorderLayout.CENTER); 
     }
 }

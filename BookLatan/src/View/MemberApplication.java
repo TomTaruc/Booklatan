@@ -9,12 +9,19 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.Dimension;
+
+import View.Components.BookManager;
+import View.Components.LibDashboard;
 import javax.swing.JPanel; 
 import javax.swing.JLabel; 
 import java.awt.Font;
 import javax.swing.SwingConstants; 
 import javax.swing.JButton; 
 import java.awt.GridBagLayout; 
+
 
 
 /**
@@ -27,6 +34,8 @@ public class MemberApplication extends Application {
     private Sidebar sidebar;
     private CardLayout mainPanelLayout;
     private JPanel mainPanel;
+    private LibDashboard dashboard;
+    private BookManager books;
     private User user;
 
     //Tom: Declare finesPanel as a class field
@@ -42,13 +51,10 @@ public class MemberApplication extends Application {
         super.initComponent();
 
         this.addSideBar();
-        this.addMainPanel(); // Call addMainPanel to initialize content panels
-    }
 
-    @Override
-    protected void initComponent() {
-        super.initComponent();
-    }
+        this.addMainPanel();
+        this.attachListeners();
+      }
 
     @Override
     protected void addSideBar() {
@@ -140,4 +146,24 @@ public class MemberApplication extends Application {
 
         this.add(mainPanel, BorderLayout.CENTER);
     }
+
+    private void addMainPanel() {
+        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
+        mainPanelLayout = new CardLayout();
+        mainPanel = new JPanel(mainPanelLayout);
+        dashboard = new LibDashboard(panelSize);
+        books = new BookManager(panelSize, User.UserType.MEMBER); // read-only for members
+
+        mainPanel.add(dashboard, "dashboard");
+        mainPanel.add(books, "books");
+
+        this.add(mainPanel);
+    }
+
+    private void attachListeners() {
+        Map<String, JButton> btns = sidebar.getMenuButtons();
+        btns.get("Dashboard").addActionListener(e -> mainPanelLayout.show(mainPanel, "dashboard"));
+        btns.get("Books").addActionListener(e -> mainPanelLayout.show(mainPanel, "books"));
+    }
 }
+
