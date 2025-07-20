@@ -8,7 +8,10 @@ import View.Components.*;
 import java.awt.*;
 import java.util.LinkedHashMap; //dinel
 import java.util.Map;
+<<<<<<< HEAD
 import javax.swing.*; // Import FinesController
+=======
+>>>>>>> parent of c91736e (Merge pull request #15 from CodeGizmo18/main)
 /**
  *
  * @author Dinel
@@ -50,14 +53,20 @@ public class LibrarianApplication extends Application {
         Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
+<<<<<<< HEAD
         dashboard = new LibDashboard(panelSize);
         BookManager books = new BookManager(panelSize, User.UserType.LIBRARIAN);
         members = new MembersManager(panelSize, false);
+=======
+        dashboard = new LibDashboard(new Dimension(this.getWidth() - 200, this.getHeight()));
+        JPanel books = new JPanel();
+        members = new MembersManager(new Dimension(this.getWidth() - 200, this.getHeight()), false);
+>>>>>>> parent of c91736e (Merge pull request #15 from CodeGizmo18/main)
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
         FinesPanel fines = new FinesPanel();
         
-//        books.setBackground(Color.black);
+        books.setBackground(Color.black);
         loans.setBackground(Color.blue);
         reservations.setBackground(Color.green);
 

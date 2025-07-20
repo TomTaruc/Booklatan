@@ -52,7 +52,7 @@ public class MemberManagerController {
     }
     
     private void filterSearch() {
-        if(view.searchBar.getText().equals("Search member")){
+        if(view.searchBar.getText().equals("Search member")) {
             updateMembersTable(memberModel.getMembers((Member.MembershipStatus) view.filterStatus.getSelectedItem()));   
         }
         else {

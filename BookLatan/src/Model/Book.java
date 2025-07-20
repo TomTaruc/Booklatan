@@ -4,12 +4,9 @@
  */
 package Model;
 
-import java.util.Date;
-import java.util.List;
-
 /**
  *
- * @author Dinel
+ * @author user
  */
 public class Book {
     private int bookID; // maps to infobookID
