@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package View.Components;
+package Views;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,6 @@ public class LoginFrame extends JFrame {
     private JButton loginButton;
     private JLabel statusLabel;
     private JPanel mainPanel;
-    protected Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public LoginFrame() {
         initializeComponents();
@@ -192,10 +191,10 @@ public class LoginFrame extends JFrame {
     private void setupFrame() {
         setTitle("Booklatan - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(screenSize.width, screenSize.height - 20));
+        setSize(450, 400);
         setLocationRelativeTo(null);
         setResizable(false);
-        //setExtendedState(JFrame.MAXIMIZED_BOTH); -- No full screen: FROM Joseph
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
 

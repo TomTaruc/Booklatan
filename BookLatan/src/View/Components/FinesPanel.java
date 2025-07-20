@@ -2,7 +2,7 @@ package View.Components;
 
 import Control.Components.FinesController;
 import Model.UserMemberDAO;
-
+import Views.IssueFineDialog;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
@@ -10,15 +10,12 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 
 public class FinesPanel extends JPanel {
 

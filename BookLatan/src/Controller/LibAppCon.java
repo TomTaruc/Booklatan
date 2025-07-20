@@ -33,8 +33,8 @@ public class LibAppCon implements AppController {
     private MemberManagerController memCon;
     private FinesController finesController; // Declare FinesController
     
-    public LibAppCon(LibrarianApplication view) {
-        this.view = view;
+    public LibAppCon() {
+        this.view = new LibrarianApplication();
         this.memCon = new MemberManagerController(view.members, false);
         attachListeners();
         // Initialize FinesController

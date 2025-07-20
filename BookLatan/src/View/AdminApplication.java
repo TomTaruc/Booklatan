@@ -70,6 +70,7 @@ public class AdminApplication extends Application {
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
         mainPanel.add(staff, "staff");
+        //mainPanel.add(fines, "fines");
         
         this.add(mainPanel);
     }
