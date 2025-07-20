@@ -4,6 +4,7 @@
  */
 package Controller;
 
+import Control.Components.FinesController;
 import Control.Components.MemberManagerController;
 import Control.Components.RegisterMemberCon;
 import View.*;
@@ -30,12 +31,17 @@ import javax.swing.table.DefaultTableModel;
 public class LibAppCon implements AppController {
     public LibrarianApplication view;
     private MemberManagerController memCon;
+    private FinesController finesController; // Declare FinesController
     
     public LibAppCon(LibrarianApplication view) {
         this.view = view;
         this.memCon = new MemberManagerController(view.members, false);
         attachListeners();
-        
+        // Initialize FinesController
+        // FIx this: JOSEPH
+        FineDAO fineDAO = new FineDAO(); // Create an instance of FineDAO
+        finesController = new FinesController(fineDAO, view.fines);
+        view.fines.setController(finesController);
     }
     
     public void openApp() {

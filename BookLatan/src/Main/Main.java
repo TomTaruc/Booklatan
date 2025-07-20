@@ -4,7 +4,9 @@
  */
 package Main;
 
+import Controller.LibAppCon;
 import View.Components.LoginFrame;
+import View.LibrarianApplication;
 import javax.swing.JOptionPane;
 
 /**

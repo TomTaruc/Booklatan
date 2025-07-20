@@ -23,15 +23,10 @@ public class LibrarianApplication extends Application {
     public FinesPanel fines; // Declare FinesPanel
     private User user;
 
-    // Controllers
-    private MemberManagerController memCon;
-    private FinesController finesController; // Declare FinesController
-
     public LibrarianApplication(User user) {
         this.user = user;
         addSideBar();
         addMainPanel();
-        initializeControllers(); 
     }
 
     @Override
@@ -75,13 +70,5 @@ public class LibrarianApplication extends Application {
         mainPanel.add(fines, "fines");
 
         this.add(mainPanel, BorderLayout.CENTER); 
-    }
-
-    private void initializeControllers() {
-
-        // Initialize FinesController
-        FineDAO fineDAO = new FineDAO(); // Create an instance of FineDAO
-        finesController = new FinesController(fineDAO, fines);
-        fines.setController(finesController); 
     }
 }
