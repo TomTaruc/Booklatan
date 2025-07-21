@@ -1,14 +1,20 @@
-package View;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Applications;
 
-import Control.Components.FinesController;
-import Control.Components.MemberManagerController;
-import Model.FineDAO;
-import Model.User;
+import Components.Managers.FinesManager;
+import Components.Dashboards.LibDashboard;
+import Components.Managers.BookManager;
+import Components.Managers.MembersManager;
 import View.Components.*;
+import Model.User;
+import Utilities.Design;
+import javax.swing.*;
 import java.awt.*;
-import java.util.LinkedHashMap; //dinel
+import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.swing.*; // Import FinesController
 /**
  *
  * @author Dinel
@@ -19,7 +25,7 @@ public class LibrarianApplication extends Application {
     public JPanel mainPanel;
     public LibDashboard dashboard;
     public MembersManager members;
-    public FinesPanel fines; // Declare FinesPanel
+    public FinesManager fines;
     private User user;
 
     public LibrarianApplication(User user) {
@@ -37,9 +43,9 @@ public class LibrarianApplication extends Application {
         menuItems.put("Loans", "./src/Images/loanbooks.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
-
         sidebar = new Sidebar(this.getSize());
         sidebar.addUserInfo(user.getUsername(), user.getUserId());
+
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();
@@ -47,21 +53,15 @@ public class LibrarianApplication extends Application {
     }
 
     private void addMainPanel() {
-        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
-        dashboard = new LibDashboard(panelSize);
-        BookManager books = new BookManager(panelSize, User.UserType.LIBRARIAN);
-        members = new MembersManager(panelSize, false);
+        dashboard = new LibDashboard();
+        BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);
+        members = new MembersManager(Design.MAIN_PANEL_SIZE, false);
         JPanel loans = new JPanel();
         JPanel reservations = new JPanel();
-        FinesPanel fines = new FinesPanel();
-        
-//        books.setBackground(Color.black);
-        loans.setBackground(Color.blue);
-        reservations.setBackground(Color.green);
+        fines = new FinesManager();
 
-        // Add panels to the mainPanel with their respective card names
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
@@ -69,8 +69,7 @@ public class LibrarianApplication extends Application {
         mainPanel.add(reservations, "reservations");
         mainPanel.add(fines, "fines");
 
-
         this.add(mainPanel);
-        this.add(mainPanel, BorderLayout.CENTER); 
     }
 }
+    

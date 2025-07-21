@@ -2,16 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package View;
+package Applications;
 
+import Components.Dashboards.LibDashboard;
 import Model.User;
-import View.Components.Application;
-import View.Components.LibDashboard;
-import View.Components.MembersManager;
+import Components.Managers.MembersManager;
 import View.Components.Sidebar;
-import View.Components.StaffManager;
-import View.Components.BookManager;
-import View.Components.FinesPanel;
+import Components.Managers.StaffManager;
+import Components.Managers.BookManager;
+import Utilities.Design;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +26,6 @@ public class AdminApplication extends Application {
     public LibDashboard dashboard;
     public MembersManager members;
     public StaffManager staff;
-    public FinesPanel fines;
     private User user;
 
     public AdminApplication(User user) {
@@ -42,7 +40,6 @@ public class AdminApplication extends Application {
         menuItems.put("Dashboard", "./src/Images/dashboard2.png");
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Members", "./src/Images/members.png");
-        menuItems.put("Fines", "./src/Images/fines_icon.png");
         menuItems.put("Staff", "./src/Images/members.png");
 
         sidebar = new Sidebar(this.getSize());
@@ -54,13 +51,12 @@ public class AdminApplication extends Application {
     }
 
     private void addMainPanel() {
-        Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
-        dashboard = new LibDashboard(panelSize);
-        BookManager books = new BookManager(panelSize, User.UserType.ADMIN);
-        members = new MembersManager(panelSize, true);
-        staff = new StaffManager(panelSize);
+        dashboard = new LibDashboard();
+        BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.ADMIN);
+        members = new MembersManager(Design.MAIN_PANEL_SIZE, true);
+        staff = new StaffManager(Design.MAIN_PANEL_SIZE);
 
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
@@ -69,4 +65,4 @@ public class AdminApplication extends Application {
 
         this.add(mainPanel);
     }
-}   
+}

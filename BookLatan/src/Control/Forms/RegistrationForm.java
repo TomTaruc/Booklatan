@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package View.Components;
+package Control.Forms;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import Model.*;
+import View.Components.CustomButton;
+import View.Components.HeaderPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
  *
  * @author Joseph Rey
  */
-public class RegistrationFrame extends JFrame{
+public class RegistrationForm extends JFrame{
     public CustomButton registerBtn;
     public CustomButton cancelBtn;
     public ArrayList<JTextField> fields = new ArrayList<>();
@@ -26,7 +28,7 @@ public class RegistrationFrame extends JFrame{
     private Font primaryFont = new Font("Tahoma", Font.PLAIN, 16);
     private Color primaryColor = new Color(245, 245, 245);
     
-    public RegistrationFrame(boolean isStaff) {
+    public RegistrationForm(boolean isStaff) {
         this.isStaff = isStaff;
         initComponent();
     }

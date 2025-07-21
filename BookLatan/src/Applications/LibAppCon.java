@@ -2,14 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Controller;
+package Applications;
 
-import Control.Components.FinesController;
-import Control.Components.MemberManagerController;
-import Control.Components.RegisterMemberCon;
-import View.*;
+import Components.Dashboards.LibDashCon;
+import Components.Login.LoginController;
+import Components.Managers.FinesManagerController;
+import Components.Managers.MemberManagerController;
+import Control.Forms.RegisterMemberCon;
 import Model.*;
-import View.Components.RegistrationFrame;
+import Control.Forms.RegistrationForm;
 import java.awt.CardLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -31,17 +32,16 @@ import javax.swing.table.DefaultTableModel;
 public class LibAppCon implements AppController {
     public LibrarianApplication view;
     private MemberManagerController memCon;
-    private FinesController finesController; // Declare FinesController
+    private LibDashCon dashCon;
+    private FinesManagerController fineCon;
     
     public LibAppCon(LibrarianApplication view) {
         this.view = view;
         this.memCon = new MemberManagerController(view.members, false);
+        this.dashCon = new LibDashCon(view.dashboard);
+        this.fineCon = new FinesManagerController(view.fines);
         attachListeners();
-        // Initialize FinesController
-        // FIx this: JOSEPH
-        FineDAO fineDAO = new FineDAO(); // Create an instance of FineDAO
-        finesController = new FinesController(fineDAO, view.fines);
-        view.fines.setController(finesController);
+        
     }
     
     public void openApp() {
@@ -59,6 +59,7 @@ public class LibAppCon implements AppController {
         btns.get("Logout").addActionListener(e -> {
            int answer = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
            if(answer == JOptionPane.YES_OPTION) {
+               new LoginController();
                view.dispose();
            }
         });

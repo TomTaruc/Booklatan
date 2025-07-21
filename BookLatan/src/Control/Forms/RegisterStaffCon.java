@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Control.Components;
+package Control.Forms;
 
 import Model.Member;
 import Model.Staff;
 import Model.User;
 import Model.UserMemberDAO;
 import Model.UserStaffDAO;
-import View.Components.RegistrationFrame;
+import Control.Forms.RegistrationForm;
 import java.time.LocalDate;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -19,11 +19,11 @@ import javax.swing.JTextField;
  * @author Joseph Rey
  */
 public class RegisterStaffCon {
-    private  RegistrationFrame view;
+    private  RegistrationForm view;
     private  UserStaffDAO staffModel;
     private Runnable onRisgterSuccess;
     
-    public RegisterStaffCon(RegistrationFrame view, Runnable onRisgterSuccess) {
+    public RegisterStaffCon(RegistrationForm view, Runnable onRisgterSuccess) {
         this.view = view;
         this.staffModel = new UserStaffDAO();
         this.onRisgterSuccess = onRisgterSuccess;

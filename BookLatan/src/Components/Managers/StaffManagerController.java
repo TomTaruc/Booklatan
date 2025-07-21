@@ -2,16 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Control.Components;
+package Components.Managers;
 
 import Model.Member;
 import Model.Staff;
 import Model.User;
 import Model.UserMemberDAO;
 import Model.UserStaffDAO;
-import View.Components.MembersManager;
-import View.Components.RegistrationFrame;
-import View.Components.StaffManager;
+import Components.Managers.MembersManager;
+import Control.Forms.RegisterStaffCon;
+import Control.Forms.RegistrationForm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -103,7 +103,7 @@ public class StaffManagerController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            RegisterStaffCon register = new RegisterStaffCon(new RegistrationFrame(true), () -> updateTable());
+            RegisterStaffCon register = new RegisterStaffCon(new RegistrationForm(true), () -> updateTable());
         }
         
     }

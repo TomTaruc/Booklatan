@@ -1,11 +1,12 @@
-package Control.Components;
+package Components.Managers;
 
 
-import Control.Components.RegisterMemberCon;
+import Control.Forms.RegisterMemberCon;
 import Model.Member;
 import Model.UserMemberDAO;
-import View.Components.MembersManager;
-import View.Components.RegistrationFrame;
+import Components.Managers.MembersManager;
+import Control.Forms.RegisterMemberCon;
+import Control.Forms.RegistrationForm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -104,7 +105,7 @@ public class MemberManagerController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            RegisterMemberCon register = new RegisterMemberCon(new RegistrationFrame(false), () -> updateMembersTable());
+            RegisterMemberCon register = new RegisterMemberCon(new RegistrationForm(false), () -> updateMembersTable());
         }
         
     }

@@ -27,6 +27,10 @@ public class ModernScrollPane extends JScrollPane{
         initComponent();
     }
     
+    public ModernScrollPane() {
+        initComponent();
+    }
+    
     public void initComponent() {
         this.setViewportBorder(null);
         this.setBorder(BorderFactory.createEmptyBorder());

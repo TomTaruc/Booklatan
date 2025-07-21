@@ -4,9 +4,9 @@
  */
 package Main;
 
-import Controller.LibAppCon;
-import View.Components.LoginFrame;
-import View.LibrarianApplication;
+import Components.Login.LoginController;
+import Applications.LibAppCon;
+import Applications.LibrarianApplication;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,9 +15,8 @@ import javax.swing.JOptionPane;
  */
 public class Main {
     public static void main(String[] args) {
-        //TODO: Replace this code with login window and use login controller. FOR: DINEL, FROM JOSEPH
          try {
-             LoginFrame app = new LoginFrame();
+             LoginController login = new LoginController();
         }
             catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);

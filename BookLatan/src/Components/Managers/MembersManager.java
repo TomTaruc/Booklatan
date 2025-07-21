@@ -2,8 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package View.Components;
+package Components.Managers;
 import Model.Member;
+import Utilities.Design;
+import View.Components.BorderlessTable;
+import View.Components.CustomButton;
+import View.Components.CustomComboBox;
+import View.Components.HeaderPanel;
+import View.Components.ModernScrollPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -51,8 +57,8 @@ public class MembersManager extends JPanel{
         header.setSubtitle("Add, Update, and Delete Members");
 
         registerBtn = new CustomButton("Register Member");
-        registerBtn.setPrimaryColor(new Color(168, 213, 186));
-        registerBtn.setHoverColor(new Color(148, 193, 166));
+        registerBtn.setPrimaryColor(Design.BTN1);
+        registerBtn.setHoverColor(Design.BTN1_HOVER);
         
         header.add(Box.createHorizontalGlue());
         header.add(registerBtn);
@@ -78,7 +84,7 @@ public class MembersManager extends JPanel{
         searchBar.setPreferredSize(new Dimension(size.width-150, 50));
         searchBar.setMaximumSize(searchBar.getPreferredSize());
         searchBar.setForeground(Color.LIGHT_GRAY);
-        searchBar.addFocusListener(new SearchEffect());
+        Design.addSearchEffect(searchBar, "Search member");
         
         
         // Search Panel -- Filters
@@ -87,23 +93,7 @@ public class MembersManager extends JPanel{
         filterStatus.setPreferredSize(new Dimension(200, 50));
         filterStatus.setMaximumSize(filterStatus.getPreferredSize());
         filterStatus.setBorder(BorderFactory.createLineBorder(Color.black));
-        filterStatus.setUI(new BasicComboBoxUI() {
-            
-            @Override
-            protected JButton createArrowButton() {
-                JButton button = new JButton("▼");
-                button.setBackground(primaryColor);
-                return button;
-            }
-
-            @Override
-            protected ComboPopup createPopup() {
-                BasicComboPopup popup = (BasicComboPopup) super.createPopup();
-                popup.getList().setBackground(primaryColor); // dropdown background
-                popup.getList().setForeground(Color.BLACK); // dropdown text
-                return popup;
-            }
-        });
+        filterStatus.setUI(new CustomComboBox());
         
         filterStatus.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -215,14 +205,14 @@ public class MembersManager extends JPanel{
         btnsHolder.setBorder(BorderFactory.createEmptyBorder());
         
         updateBtn = new CustomButton("Update");
-        updateBtn.setPrimaryColor(new Color(163, 196, 243));
-        updateBtn.setHoverColor(new Color(143, 176, 223));
+        updateBtn.setPrimaryColor(Design.BTN2);
+        updateBtn.setHoverColor(Design.BTN2_HOVER);
         
 
         
         deleteBtn = new CustomButton("Delete");
-        deleteBtn.setPrimaryColor(new Color(247, 161, 161));
-        deleteBtn.setHoverColor(new Color(227, 141, 141));
+        deleteBtn.setPrimaryColor(Design.BTN3);
+        deleteBtn.setHoverColor(Design.BTN3_HOVER);
         
         
         btnsHolder.add(Box.createHorizontalGlue());
@@ -236,26 +226,6 @@ public class MembersManager extends JPanel{
         this.add(main);
     };
     
-    
-    // **** Classess ****
-    private class SearchEffect implements FocusListener {
-        @Override
-        public void focusGained(FocusEvent e) {
-            if(searchBar.getText().equals("Search member")) {
-                searchBar.setText("");
-                searchBar.setForeground(Color.BLACK);   
-            }
-        }
-            
-        @Override
-        public void focusLost(FocusEvent e) {
-            if(searchBar.getText().isEmpty()) {
-                searchBar.setText("Search member");
-                searchBar.setForeground(Color.LIGHT_GRAY);
-            }
-        }
-    }
-
     public void setIsAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }

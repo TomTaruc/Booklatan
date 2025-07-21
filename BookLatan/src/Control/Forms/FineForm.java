@@ -1,4 +1,4 @@
-package View.Components;
+package Control.Forms;
 
 import Model.Fine;
 import Model.FineDAO;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
-public class IssueFineDialog extends JDialog {
+public class FineForm extends JDialog {
     private FineDAO fineDAO;
     private UserMemberDAO userMemberDAO;
     private JTextField txtFineID;
@@ -38,10 +38,9 @@ public class IssueFineDialog extends JDialog {
     private boolean fineSaved = false;
     private Member currentMember = null;
 
-    public IssueFineDialog(Window parent, FineDAO fineDAO, UserMemberDAO userMemberDAO) {
-        super(parent, "Issue Fine", ModalityType.APPLICATION_MODAL);
-        this.fineDAO = fineDAO;
-        this.userMemberDAO = userMemberDAO;
+    public FineForm() {
+        this.fineDAO = new FineDAO();
+        this.userMemberDAO = new UserMemberDAO();
         initComponents();
         setupDialog();
         loadNextFineID();

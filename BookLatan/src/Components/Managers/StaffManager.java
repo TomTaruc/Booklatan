@@ -2,8 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package View.Components;
+package Components.Managers;
 import Model.Member;
+import Utilities.Design;
+import View.Components.BorderlessTable;
+import View.Components.CustomButton;
+import View.Components.HeaderPanel;
+import View.Components.ModernScrollPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -77,7 +82,7 @@ public class StaffManager extends JPanel{
         searchBar.setPreferredSize(new Dimension(size.width-150, 50));
         searchBar.setMaximumSize(searchBar.getPreferredSize());
         searchBar.setForeground(Color.LIGHT_GRAY);
-        searchBar.addFocusListener(new SearchEffect());
+        Design.addSearchEffect(searchBar, "Search staff");
         
         
         // Search Panel -- Filters
