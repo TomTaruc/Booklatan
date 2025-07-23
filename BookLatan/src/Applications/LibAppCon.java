@@ -8,38 +8,31 @@ import Components.Dashboards.LibDashCon;
 import Components.Login.LoginController;
 import Components.Managers.FinesManagerController;
 import Components.Managers.MemberManagerController;
-import Control.Forms.RegisterMemberCon;
 import Model.*;
-import Control.Forms.RegistrationForm;
-import java.awt.CardLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 
 
 /**
  *
  * @author Joseph Rey
  */
-public class LibAppCon implements AppController {
+public class LibAppCon {
     public LibrarianApplication view;
     private MemberManagerController memCon;
     private LibDashCon dashCon;
+    private UserStaffDAO userDAO;
     private FinesManagerController fineCon;
+    private User user;
     
-    public LibAppCon(LibrarianApplication view) {
+    public LibAppCon(LibrarianApplication view, User user) {
+        userDAO = new UserStaffDAO();
         this.view = view;
+        this.user = user;
+        view.sidebar.addUserInfo(user.getUsername(), userDAO.getStaffIDByUserID(user.getUserId()));
         this.memCon = new MemberManagerController(view.members, false);
         this.dashCon = new LibDashCon(view.dashboard);
-        this.fineCon = new FinesManagerController(view.fines);
+        this.fineCon = new FinesManagerController(view.fines, userDAO.getStaffByUserID(user.getUserId()));
         attachListeners();
         
     }

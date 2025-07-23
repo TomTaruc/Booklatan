@@ -75,7 +75,7 @@ public class Sidebar extends JPanel{
         userinfo.add(Box.createVerticalStrut(10));
         userinfo.add(accountNo);
         userinfo.add(Box.createVerticalStrut(20));
-        this.add(userinfo);
+        this.add(userinfo, 0);
     }
     
     

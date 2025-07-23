@@ -26,6 +26,28 @@ public class UserStaffDAO extends DataAccessObject{
     
     public UserStaffDAO() {};
     
+    public int getStaffIDByUserID(int userID) {
+        con = super.getConnection();
+        int staffID = -1;
+        try {
+            pstmt = con.prepareStatement("SELECT staffID FROM StaffUser WHERE userID = ?");
+            pstmt.setInt(1, userID);
+            results = pstmt.executeQuery();
+            
+            if(results.next()) {
+                staffID = results.getInt("staffID");
+            }
+            
+            return staffID;
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+            return -1;
+        }
+    }
+    
     
     public ArrayList<Staff> getStaff ()  {
         con = super.getConnection();
@@ -138,6 +160,37 @@ public class UserStaffDAO extends DataAccessObject{
             pstmt.close();
             con.close(); 
             return staff;
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+            return null;
+        }
+    }
+    
+    public Staff getStaffByUserID(int userID) {
+        try {
+            con = super.getConnection();
+            Staff individual;
+
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT * FROM StaffUser WHERE userID = "+ userID +";");
+            results.next();
+            individual = new Staff(results.getString("userName"), results.getString("password"));
+            individual.setStaffID(results.getInt("staffID"));
+            individual.setName(results.getString("name"));
+            individual.setPhone(results.getString("phone"));
+            individual.setEmail(results.getString("email"));
+            individual.setAddress(results.getString("address"));
+            individual.setDateHired(results.getDate("dateHired").toLocalDate());
+            individual.setType(User.UserType.fromString(results.getString("type")));
+
+            results.close();
+            stmt.close();
+            con.close();
+
+            return individual;
         }
         catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);

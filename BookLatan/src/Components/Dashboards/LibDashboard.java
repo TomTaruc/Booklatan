@@ -23,6 +23,7 @@ public class LibDashboard extends ModernScrollPane {
     private JPanel contentPanel;
     public BorderlessTable recentlyLoanedTable;
     public DefaultTableModel recentlyLoanedModel;
+    public ArrayList<InfoCard> infocards;
     
     public LibDashboard () {
         contentPanel = new JPanel();
@@ -42,7 +43,7 @@ public class LibDashboard extends ModernScrollPane {
         
         //Info cards -- Holder
         JPanel cardHolder = new JPanel();
-        ArrayList<InfoCard> infocards = new ArrayList<>();
+        infocards = new ArrayList<>();
 
         cardHolder.setBackground(Design.PRIME_COLOR);
         cardHolder.setLayout(new BoxLayout(cardHolder, BoxLayout.X_AXIS));

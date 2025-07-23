@@ -26,10 +26,8 @@ public class LibrarianApplication extends Application {
     public LibDashboard dashboard;
     public MembersManager members;
     public FinesManager fines;
-    private User user;
-
-    public LibrarianApplication(User user) {
-        this.user = user;
+    
+    public LibrarianApplication() {
         addSideBar();
         addMainPanel();
     }
@@ -44,7 +42,6 @@ public class LibrarianApplication extends Application {
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
         menuItems.put("Fines", "./src/Images/payments.png");
         sidebar = new Sidebar(this.getSize());
-        sidebar.addUserInfo(user.getUsername(), user.getUserId());
 
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);

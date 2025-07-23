@@ -17,6 +17,7 @@ public class Main {
     public static void main(String[] args) {
          try {
              LoginController login = new LoginController();
+             login.bypassLib();
         }
             catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -26,10 +26,8 @@ public class AdminApplication extends Application {
     public LibDashboard dashboard;
     public MembersManager members;
     public StaffManager staff;
-    private User user;
 
-    public AdminApplication(User user) {
-        this.user = user;
+    public AdminApplication() {
         this.addSideBar();
         this.addMainPanel();
     }
@@ -43,7 +41,6 @@ public class AdminApplication extends Application {
         menuItems.put("Staff", "./src/Images/members.png");
 
         sidebar = new Sidebar(this.getSize());
-        sidebar.addUserInfo(user.getUsername(), user.getUserId());
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();

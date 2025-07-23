@@ -15,7 +15,6 @@ import Utilities.Design;
  * @author Joseph Rey R. Panti - Revisor
  */
 public class LoginView extends JFrame {
-    private Image appIcon = new ImageIcon("./src/Images/userimage.png").getImage();
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -43,7 +42,7 @@ public class LoginView extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
-        setIconImage(appIcon);
+        setIconImage(Design.appIcon);
     }
 
     private void styleComponents() {
@@ -80,7 +79,7 @@ public class LoginView extends JFrame {
         mainPanel.setBackground(Design.PRIME_COLOR);
         
         JLabel img = new JLabel();
-        img.setIcon(new ImageIcon(appIcon.getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
+        img.setIcon(new ImageIcon(Design.appIcon.getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
         img.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel titleLabel = new JLabel("BOOKLATAN", SwingConstants.CENTER);

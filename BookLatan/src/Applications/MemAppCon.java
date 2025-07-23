@@ -4,6 +4,9 @@
  */
 package Applications;
 
+import Model.User;
+import Model.UserMemberDAO;
+
 
 /**
  *
@@ -11,9 +14,14 @@ package Applications;
  */
 public class MemAppCon {
     private MemberApplication view;
+    private User user;
+    private UserMemberDAO userDAO;
 
-    public MemAppCon(MemberApplication view) {
+    public MemAppCon(MemberApplication view, User user) {
         this.view = view;
+        this.user = user;
+        this.userDAO = new UserMemberDAO();
+        this.view.sidebar.addUserInfo(this.user.getUsername(), userDAO.getMemberIDByUSerID(user.getUserId()));
         // Add member-specific listeners if needed
     }
 

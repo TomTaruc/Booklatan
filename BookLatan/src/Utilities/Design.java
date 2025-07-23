@@ -7,12 +7,14 @@ package Utilities;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
@@ -27,6 +29,7 @@ public class Design {
     public static final Dimension MAIN_PANEL_SIZE = new Dimension(FRAME_SIZE.width - 200, FRAME_SIZE.height);
     public static final Font PRIME_FONT = new Font("Tahoma", Font.PLAIN, 16);
     public static final Color PRIME_COLOR = new Color(245, 243, 244);
+    public static final Image appIcon = new ImageIcon("./src/Images/userimage.png").getImage();
     
     //Joseph Colors
     public static final Color CLR1 = new Color(33, 37, 41);

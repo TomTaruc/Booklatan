@@ -7,6 +7,7 @@ import View.Components.CustomButton;
 import View.Components.CustomComboBox;
 import View.Components.HeaderPanel;
 import Control.Forms.FineForm;
+import Model.FineStatus;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,17 +29,15 @@ import javax.swing.table.JTableHeader;
  */
 public class FinesManager extends JPanel {
 
-    private FinesManagerController controller;
-    private DefaultTableModel finesTableModel;
-    private BorderlessTable finesTable;
-    private JTextField txtSearch;
-    private JComboBox<String> cmbStatusFilter;
+    public DefaultTableModel finesTableModel;
+    public BorderlessTable finesTable;
+    public JTextField txtSearch;
+    public JComboBox<FineStatus> cmbStatusFilter;
     public CustomButton issueBtn;
-    private JButton btnMarkAsPaid;
-    private JButton btnDeleteFine;
-    private JButton btnRefresh;
-    private JButton btnSearch;
-
+    public JButton btnMarkAsPaid;
+    public JButton btnDeleteFine;
+    public JButton btnRefresh;
+    
     private Color headerTextColor = Color.BLACK;
 
     private Color issueFineBtnColor = new Color(59, 130, 246);
@@ -47,8 +46,7 @@ public class FinesManager extends JPanel {
     private Color searchRefreshBtnColor = new Color(59, 130, 246);
 
     private final String[] TABLE_COLUMN_NAMES = {
-        "Fine ID", "Member Name", "Book Title", "Due Date", "Return Date",
-        "Days Overdue", "Amount", "Status"
+        "Fine ID", "Member Name", "Amount", "Status", "Description"
     };
 
     public FinesManager() {
@@ -95,7 +93,7 @@ public class FinesManager extends JPanel {
         Design.addSearchEffect(txtSearch, "Search Member");
         
 
-        cmbStatusFilter = new JComboBox<>(new String[]{"All Status", "Pending", "Paid"});
+        cmbStatusFilter = new JComboBox<>(FineStatus.values());
         cmbStatusFilter.setFont(Design.PRIME_FONT);
         cmbStatusFilter.setPreferredSize(new Dimension(200, 50));
         cmbStatusFilter.setMaximumSize(cmbStatusFilter.getPreferredSize());

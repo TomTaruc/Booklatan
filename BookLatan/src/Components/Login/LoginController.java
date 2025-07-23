@@ -56,6 +56,13 @@ public class LoginController {
         
     }
     
+    //Delete this
+    public void bypassLib() {
+        view.getUsernameField().setText("KaiserLycan1");
+        view.getPasswordField().setText("KaiserLycan@081505");
+        loginEvent();
+    }
+    
     private void loginEvent() {
         //Declaration of Variables
         User user;
@@ -80,9 +87,9 @@ public class LoginController {
             view.showSuccess("Login successful! Welcome, " + user.getUsername());
             view.dispose();
             switch (user.getType()) {
-                case ADMIN -> new AdminAppCon(new AdminApplication(user)).openApp();
-                case LIBRARIAN -> new LibAppCon(new LibrarianApplication(user)).openApp();
-                case MEMBER -> new MemAppCon(new MemberApplication(user)).openApp();
+                case ADMIN -> new AdminAppCon(new AdminApplication(), user).openApp();
+                case LIBRARIAN -> new LibAppCon(new LibrarianApplication(), user).openApp();
+                case MEMBER -> new MemAppCon(new MemberApplication(), user).openApp();
             }
         } else {
             view.showError("Invalid username or password.");

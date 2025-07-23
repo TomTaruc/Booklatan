@@ -16,6 +16,28 @@ public class UserMemberDAO extends DataAccessObject{
     private ArrayList<Member> members = new ArrayList<>();
 
     public UserMemberDAO() {};
+    
+    public int getMemberIDByUSerID(int userID) {
+        con = super.getConnection();
+        int memberID = -1;
+        try {
+            pstmt = con.prepareStatement("SELECT memberID FROM MemberUser WHERE userID = ?");
+            pstmt.setInt(1, userID);
+            results = pstmt.executeQuery();
+            
+            if(results.next()) {
+                memberID = results.getInt("memberID");
+            }
+            
+            return memberID;
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+            return 0;
+        }
+    }
 
     public ArrayList<Member> getMembers () {
         con = super.getConnection();
@@ -137,6 +159,41 @@ public class UserMemberDAO extends DataAccessObject{
             return null;
         }
     }
+    
+    public Member getMemberByName(String name) {
+        Member member;
+        con = super.getConnection();
+
+        try {
+
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT * FROM MemberUser WHERE name  LIKE '%"+ name +"%';");
+            // Check if there's a result before calling results.next()
+            if (results.next()) {
+                member = new Member(results.getString("userName"), results.getString("password"));
+                member.setMemberID(results.getInt("memberID"));
+                member.setName(results.getString("name"));
+                member.setAddress(results.getString("address"));
+                member.setDateJoined(results.getDate("dateJoined").toLocalDate());
+                member.setEmail(results.getString("email"));
+                member.setPhone(results.getString("phone"));
+                member.setStatus(Member.MembershipStatus.fromString(results.getString("_status")));
+            } else {
+                member = null;
+            }
+
+            results.close();
+            stmt.close();
+            con.close();        
+            return member;
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+            return null;
+        }
+    }
 
     public Member getMemberByID(int memberID) {
         Member member;
@@ -172,46 +229,6 @@ public class UserMemberDAO extends DataAccessObject{
             return null;
         }
     }
-
-    public boolean memberExists(int memberID) throws SQLException {
-        Connection localCon = null;
-        PreparedStatement localPstmt = null;
-        ResultSet localRs = null;
-        try {
-            localCon = super.getConnection(); // Get a connection from your DataAccessObject
-            String sql = "SELECT COUNT(*) FROM MemberUser WHERE memberID = ?;";
-            localPstmt = localCon.prepareStatement(sql);
-            localPstmt.setInt(1, memberID);
-            localRs = localPstmt.executeQuery();
-            if (localRs.next()) {
-                return localRs.getInt(1) > 0;
-            }
-            return false;
-        } finally {
-            if (localRs != null) {
-                try {
-                    localRs.close();
-                } catch (SQLException e) {
-                    System.err.println("Error closing ResultSet in memberExists: " + e.getMessage());
-                }
-            }
-            if (localPstmt != null) {
-                try {
-                    localPstmt.close();
-                } catch (SQLException e) {
-                    System.err.println("Error closing PreparedStatement in memberExists: " + e.getMessage());
-                }
-            }
-            if (localCon != null) {
-                try {
-                    localCon.close(); 
-                } catch (SQLException e) {
-                    System.err.println("Error closing Connection in memberExists: " + e.getMessage());
-                }
-            }
-        }
-    }
-
 
     public void addMember(Member member) throws SQLException {
         con = super.getConnection();

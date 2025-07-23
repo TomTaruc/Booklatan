@@ -24,15 +24,13 @@ import Components.Dashboards.LibDashboard;
  */
 
 public class MemberApplication extends Application {
-    private Sidebar sidebar;
+    Sidebar sidebar;
     private CardLayout mainPanelLayout;
     private JPanel mainPanel;
-    private LibDashboard dashboard;
-    private BookManager books;
-    private User user;
+    LibDashboard dashboard;
+    BookManager books;
 
-    public MemberApplication(User user) {
-        this.user = user;
+    public MemberApplication() {
         this.addSideBar();
         this.addMainPanel();
         this.attachListeners();
@@ -48,7 +46,6 @@ public class MemberApplication extends Application {
         menuItems.put("Fines", "./src/Images/payments.png");
 
         sidebar = new Sidebar(this.getSize());
-        sidebar.addUserInfo(user.getUsername(), user.getUserId());
         sidebar.addMenuItems(menuItems);
         this.add(sidebar, BorderLayout.WEST);
         this.revalidate();

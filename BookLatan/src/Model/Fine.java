@@ -1,182 +1,105 @@
 package Model;
 
+import Utilities.Validators;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Fine {
     private int fineID;
-    private String staffID;
-    private String memberID;
-    private String memberName;
-    private String book_title;
-    private String isbn;
-    private Date due_date;
-    private Date return_date;
-    private int days_overdue;
+    private int staffID;
+    private int memberID;
+    private LocalDate dueDate;
     private double amount;
-    private String _status;
-    private Date dateIssued;
-    private Date paid_date;
+    private FineStatus status;
+    private LocalDate dateIssued;
+    private LocalDate paidDate;
     private String description;
-    private String reason;
 
-    public Fine() {}
-
-    public Fine(String staffID, String memberID, String memberName,
-                double amount, String reason, Date dateIssued, String _status,
-                String book_title, Date due_date, Date return_date, int days_overdue,
-                String isbn, String description) {
-        this.staffID = staffID;
-        this.memberID = memberID;
-        this.memberName = memberName;
-        this.amount = amount;
-        this.reason = reason;
-        this.dateIssued = dateIssued;
-        this._status = _status;
-        this.book_title = book_title;
-        this.due_date = due_date;
-        this.return_date = return_date;
-        this.days_overdue = days_overdue;
-        this.isbn = isbn;
-        this.description = description;
-    }
+    // **** Getters ******
 
     public int getFineID() {
         return fineID;
     }
 
-    public void setFineID(int fineID) {
-        this.fineID = fineID;
-    }
-
-    public String getStaffID() {
+    public int getStaffID() {
         return staffID;
     }
 
-    public void setStaffID(String staffID) {
-        this.staffID = staffID;
-    }
-
-    public String getMemberID() {
+    public int getMemberID() {
         return memberID;
     }
 
-    public void setMemberID(String memberID) {
-        this.memberID = memberID;
-    }
 
-    public String getMemberName() {
-        return memberName;
-    }
-
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
-    }
-
-    public String getBook_title() {
-        return book_title;
-    }
-
-    public void setBook_title(String book_title) {
-        this.book_title = book_title;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public Date getDue_date() {
-        return due_date;
-    }
-
-    public void setDue_date(Date due_date) {
-        this.due_date = due_date;
-    }
-
-    public Date getReturn_date() {
-        return return_date;
-    }
-
-    public void setReturn_date(Date return_date) {
-        this.return_date = return_date;
-    }
-
-    public int getDays_overdue() {
-        return days_overdue;
-    }
-
-    public void setDays_overdue(int days_overdue) {
-        this.days_overdue = days_overdue;
+    public LocalDate getDue_date() {
+        return dueDate;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public FineStatus getStatus() {
+        return status;
     }
 
-    public String get_status() {
-        return _status;
-    }
-
-    public void set_status(String _status) {
-        this._status = _status;
-    }
-
-    public Date getDateIssued() {
+    public LocalDate getDateIssued() {
         return dateIssued;
     }
 
-    public void setDateIssued(Date dateIssued) {
-        this.dateIssued = dateIssued;
-    }
-
-    public Date getPaid_date() {
-        return paid_date;
-    }
-
-    public void setPaid_date(Date paid_date) {
-        this.paid_date = paid_date;
+    public LocalDate getPaid_date() {
+        return paidDate;
     }
 
     public String getDescription() {
         return description;
     }
+    
+    
+    // ****** Setterss *****
+
+    public void setFineID(int fineID) {
+        Validators.validateEmptyVariable(fineID, "Fine ID");
+        this.fineID = fineID;
+    }
+
+    public void setStaffID(int staffID) {
+        Validators.validateEmptyVariable(staffID, "Staff ID");
+        this.staffID = staffID;
+    }
+
+    public void setMemberID(int memberID) {
+        Validators.validateEmptyVariable(memberID, "Member ID");
+        this.memberID = memberID;
+    }
+
+    public void setDue_date(LocalDate due_date) {
+        Validators.validateEmptyVariable(due_date, description);
+        this.dueDate = due_date;
+    }
+
+    public void setAmount(double amount) {
+        Validators.validateEmptyVariable(amount, "Amount");
+        Validators.validateLimitValue(amount, 1000.0, 10000.0);
+        this.amount = amount;
+    }
+
+    public void setStatus(FineStatus status) {
+        Validators.validateEmptyVariable(status, "Status");
+        this.status = status;
+    }
+
+    public void setDateIssued(LocalDate dateIssued) {
+        Validators.validateEmptyVariable(dateIssued, "Date Issued");
+        this.dateIssued = dateIssued;
+    }
+
+    public void setPaid_date(LocalDate paid_date) {
+        this.paidDate = paid_date;
+    }
 
     public void setDescription(String description) {
+        Validators.validateEmptyVariable(description, "Description");
         this.description = description;
     }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    @Override
-    public String toString() {
-        return "Fine{" +
-               "fineID=" + fineID +
-               ", staffID='" + staffID + '\'' +
-               ", memberID='" + memberID + '\'' +
-               ", memberName='" + memberName + '\'' +
-               ", book_title='" + book_title + '\'' +
-               ", due_date=" + due_date +
-               ", return_date=" + return_date +
-               ", days_overdue=" + days_overdue +
-               ", amount=" + amount +
-               ", _status='" + _status + '\'' +
-               ", dateIssued=" + dateIssued +
-               ", paid_date=" + paid_date +
-               ", description='" + description + '\'' +
-               ", reason='" + reason + '\'' +
-               '}';
-    }
+    
 }

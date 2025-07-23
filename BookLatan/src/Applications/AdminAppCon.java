@@ -6,6 +6,8 @@ package Applications;
 
 import Components.Managers.MemberManagerController;
 import Components.Managers.StaffManagerController;
+import Model.User;
+import Model.UserStaffDAO;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -14,13 +16,16 @@ import javax.swing.JOptionPane;
  * @author Dinel
  * @author Joseph
  */
-public class AdminAppCon implements AppController{
+public class AdminAppCon{
     public AdminApplication view;
     private MemberManagerController memCon;
     private StaffManagerController staffCon;
+    private UserStaffDAO userDAO;
     
-    public AdminAppCon(AdminApplication view) {
+    public AdminAppCon(AdminApplication view, User user) {
         this.view = view;
+        this.userDAO = new UserStaffDAO();
+        this.view.sidebar.addUserInfo(user.getUsername(), userDAO.getStaffIDByUserID(user.getUserId()));
         this.memCon = new MemberManagerController(view.members, true);
         this.staffCon = new StaffManagerController(view.staff);
         attachListeners();
