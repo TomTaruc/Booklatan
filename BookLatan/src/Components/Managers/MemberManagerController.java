@@ -1,12 +1,12 @@
 package Components.Managers;
 
 
-import Control.Forms.RegisterMemberCon;
+import Components.Forms.RegisterMemberCon;
 import Model.Member;
 import Model.UserMemberDAO;
 import Components.Managers.MembersManager;
-import Control.Forms.RegisterMemberCon;
-import Control.Forms.RegistrationForm;
+import Components.Forms.RegisterMemberCon;
+import Components.Forms.RegistrationForm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;

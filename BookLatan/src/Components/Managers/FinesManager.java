@@ -6,7 +6,7 @@ import Utilities.Design;
 import View.Components.CustomButton;
 import View.Components.CustomComboBox;
 import View.Components.HeaderPanel;
-import Control.Forms.FineForm;
+import Components.Forms.FineForm;
 import Model.FineStatus;
 
 import java.awt.*;

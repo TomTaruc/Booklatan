@@ -1,4 +1,4 @@
-package Control.Forms;
+package Components.Forms;
 
 import Utilities.Design;
 import View.Components.CustomButton;

@@ -58,8 +58,8 @@ public class LoginController {
     
     //Delete this
     public void bypassLib() {
-        view.getUsernameField().setText("KaiserLycan");
-        view.getPasswordField().setText("KaiserLycan@081505");
+        view.getUsernameField().setText("LegionLover");
+        view.getPasswordField().setText("HelloPo_@134");
         loginEvent();
     }
     

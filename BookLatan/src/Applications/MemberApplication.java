@@ -16,6 +16,7 @@ import java.awt.Dimension;
 
 import Components.Managers.BookManager;
 import Components.Dashboards.LibDashboard;
+import java.awt.Color;
 
 
 /**
@@ -25,15 +26,17 @@ import Components.Dashboards.LibDashboard;
 
 public class MemberApplication extends Application {
     Sidebar sidebar;
-    private CardLayout mainPanelLayout;
-    private JPanel mainPanel;
+    public CardLayout mainPanelLayout;
+    public JPanel mainPanel;
     LibDashboard dashboard;
     BookManager books;
+    JPanel loans;
+    JPanel reservations;
+    JPanel fines;
 
     public MemberApplication() {
         this.addSideBar();
         this.addMainPanel();
-        this.attachListeners();
     }
 
     @Override
@@ -56,19 +59,25 @@ public class MemberApplication extends Application {
         Dimension panelSize = new Dimension(this.getWidth() - 200, this.getHeight());
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
+        
         dashboard = new LibDashboard();
         books = new BookManager(panelSize, User.UserType.MEMBER); // read-only for members
+        loans = new JPanel();
+        reservations = new JPanel();
+        fines = new JPanel();
+        
+        loans.setBackground(Color.pink);
+        reservations.setBackground(Color.red);
+        fines.setBackground(Color.orange);
 
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
+        mainPanel.add(loans, "loans");
+        mainPanel.add(reservations, "reservations");
+        mainPanel.add(fines, "fines");
 
         this.add(mainPanel);
     }
 
-    private void attachListeners() {
-        Map<String, JButton> btns = sidebar.getMenuButtons();
-        btns.get("Dashboard").addActionListener(e -> mainPanelLayout.show(mainPanel, "dashboard"));
-        btns.get("Books").addActionListener(e -> mainPanelLayout.show(mainPanel, "books"));
-    }
 }
 

@@ -2,11 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Control.Forms;
+package Components.Forms;
 
 import Model.Member;
+import Model.Staff;
+import Model.User;
 import Model.UserMemberDAO;
-import Control.Forms.RegistrationForm;
+import Model.UserStaffDAO;
+import Components.Forms.RegistrationForm;
+import java.time.LocalDate;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -14,14 +18,14 @@ import javax.swing.JTextField;
  *
  * @author Joseph Rey
  */
-public class RegisterMemberCon {
+public class RegisterStaffCon {
     private  RegistrationForm view;
-    private  UserMemberDAO memberModel;
+    private  UserStaffDAO staffModel;
     private Runnable onRisgterSuccess;
     
-    public RegisterMemberCon(RegistrationForm view, Runnable onRisgterSuccess) {
+    public RegisterStaffCon(RegistrationForm view, Runnable onRisgterSuccess) {
         this.view = view;
-        this.memberModel = new UserMemberDAO();
+        this.staffModel = new UserStaffDAO();
         this.onRisgterSuccess = onRisgterSuccess;
         
         attachListeners();
@@ -38,7 +42,7 @@ public class RegisterMemberCon {
         
         view.registerBtn.addActionListener(e -> {
             // "Name", "Username", "Phone", "Email", "Address", "Password"
-            Member member;
+            Staff individual;
             int answer = JOptionPane.YES_OPTION;
             String name = view.fields.get(0).getText();
             String username = view.fields.get(1).getText();
@@ -46,20 +50,24 @@ public class RegisterMemberCon {
             String email = view.fields.get(3).getText();
             String address = view.fields.get(4).getText();
             String password = view.fields.get(5).getText();
+            String role = view.fields.get(6).getText();
+            String dateHired = view.fields.get(7).getText();
             
             try {
-                member = new Member();
-                member.setName(name);
-                member.setUsername(username, true);
-                member.setPhone(phone);
-                member.setEmail(email);
-                member.setAddress(address);
-                member.setPassword(password, true);
-                memberModel.addMember(member);
+                individual = new Staff();
+                individual.setName(name);
+                individual.setUsername(username, true);
+                individual.setPhone(phone);
+                individual.setEmail(email);
+                individual.setAddress(address);
+                individual.setPassword(password, true);
+                individual.setType(User.UserType.fromString(role));
+                individual.setDateHired(LocalDate.parse(dateHired));
+                staffModel.addStaff(individual);
                 
                 this.onRisgterSuccess.run();
                 
-                answer = JOptionPane.showConfirmDialog(null, "Member added. Do you want to add more members?", "Successfully Registered", JOptionPane.YES_NO_OPTION);
+                answer = JOptionPane.showConfirmDialog(null, "Staff added. Do you want to add more staff?", "Successfully Registered", JOptionPane.YES_NO_OPTION);
                 if(answer == JOptionPane.NO_OPTION) {
                     view.dispose();
                 }
@@ -70,6 +78,7 @@ public class RegisterMemberCon {
             }
             catch(Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
         });
         
