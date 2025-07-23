@@ -66,6 +66,13 @@ public class InfoCard extends JPanel{
         this.add(jInfo);        
         this.add(Box.createVerticalGlue());
     }
+    
+    public void updateContent(String info) {
+        this.info = info;
+        this.removeAll();
+        this.initComponent();
+        repaint();
+    }
 
     // **** Setters ****
     public void setPrimaryColor(Color primaryColor) {

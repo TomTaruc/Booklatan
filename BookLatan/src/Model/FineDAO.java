@@ -198,4 +198,23 @@ public class FineDAO extends DataAccessObject {
             System.exit(0);   
         }
     }
+    
+    public int countUnpaidFine() {
+        con = super.getConnection();
+        int totalUnpaid = 0;
+        try {
+            stmt = con.createStatement();
+            results = stmt.executeQuery("Select count(_status) as totalUnpaid from fine where _status = 'pending' group by _status;");
+            if(results.next()) {
+                totalUnpaid = results.getInt("totalUnpaid");
+            }
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);   
+        }
+        
+        return totalUnpaid;
+    }
 }

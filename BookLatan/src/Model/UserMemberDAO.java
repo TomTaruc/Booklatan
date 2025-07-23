@@ -296,17 +296,27 @@ public class UserMemberDAO extends DataAccessObject{
         }
     }
 
-    public int countActiveMembers() throws SQLException{
+    public int countActiveMembers() {
         con = super.getConnection();
-        stmt = con.createStatement();
-        results = stmt.executeQuery("SELECT COUNT(_status) as totalActive FROM member WHERE _status = 'active';");
-        results.next(); 
+        int totalActive = 0;
+        
+        try {
+            stmt = con.createStatement();
+            results = stmt.executeQuery("SELECT COUNT(_status) as totalActive FROM member WHERE _status = 'active';");
+            results.next(); 
 
-        int totalActive = results.getInt("totalActive");
+            totalActive = results.getInt("totalActive");
 
-        results.close();
-        stmt.close();
-        con.close();
+            results.close();
+            stmt.close();
+            con.close();
+            
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+        }
 
         return totalActive; 
     }

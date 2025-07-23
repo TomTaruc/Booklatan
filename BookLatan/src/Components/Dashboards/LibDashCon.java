@@ -4,6 +4,8 @@
  */
 package Components.Dashboards;
 
+import Model.FineDAO;
+import Model.UserMemberDAO;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -11,10 +13,14 @@ import javax.swing.table.DefaultTableModel;
  * @author Joseph Rey
  */
 public class LibDashCon {
-    LibDashboard view;
+    private LibDashboard view;
+    private UserMemberDAO memDAO;
+    private FineDAO fineDAO;
     
     public LibDashCon(LibDashboard view) {
         this.view = view;
+        this.memDAO = new UserMemberDAO();
+        this.fineDAO = new FineDAO();
         
         String[] columnNames = {"#", "Name", "Book Title", "Date Loaned", "Date Due"};
         Object[][] data = {
@@ -30,6 +36,9 @@ public class LibDashCon {
         while(view.recentlyLoanedModel.getRowCount() < 15) {
             view.recentlyLoanedModel.addRow(new Object[] {"-", "-", "-", "-", "-"});
         }
+        
+        view.infocards.get(0).updateContent(String.valueOf(memDAO.countActiveMembers()));
+        view.infocards.get(3).updateContent(String.valueOf(fineDAO.countUnpaidFine()));
         
                
        
