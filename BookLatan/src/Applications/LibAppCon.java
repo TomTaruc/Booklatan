@@ -23,12 +23,10 @@ public class LibAppCon {
     private LibDashCon dashCon;
     private UserStaffDAO userDAO;
     private FinesManagerController fineCon;
-    private User user;
     
     public LibAppCon(LibrarianApplication view, User user) {
         userDAO = new UserStaffDAO();
         this.view = view;
-        this.user = user;
         view.sidebar.addUserInfo(user.getUsername(), userDAO.getStaffIDByUserID(user.getUserId()));
         this.memCon = new MemberManagerController(view.members, false);
         this.dashCon = new LibDashCon(view.dashboard);

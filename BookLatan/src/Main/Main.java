@@ -5,8 +5,6 @@
 package Main;
 
 import Components.Login.LoginController;
-import Applications.LibAppCon;
-import Applications.LibrarianApplication;
 import javax.swing.JOptionPane;
 
 /**

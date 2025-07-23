@@ -71,9 +71,55 @@ public class FineDAO extends DataAccessObject {
                 pstmt.setString(1, "%" + search +"%");
             }
             else {
-                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ?, name like ?");
+                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? and name like ?");
                 pstmt.setString(1, status.toString().toLowerCase());
                 pstmt.setString(2, "%" + search +"%");
+            }
+            
+            results = pstmt.executeQuery();
+            
+            while(results.next()) {
+                Fine fine = new Fine();
+                fine.setMemberID(results.getInt("memberID"));
+                fine.setStaffID(results.getInt("staffID"));
+                fine.setAmount(results.getDouble("amount"));
+                fine.setDateIssued(results.getDate("dateIssued").toLocalDate());
+                fine.setDue_date(results.getDate("due_date").toLocalDate());
+                java.sql.Date date = results.getDate("paid_date");
+                if (date != null) {
+                    fine.setPaid_date(date.toLocalDate());
+                }
+                fine.setDescription(results.getString("description"));
+                fine.setFineID(results.getInt("fineID"));
+                fine.setStatus(FineStatus.fromString(results.getString("_status")));
+                fines.add(fine);
+            }
+            
+            results.close();
+            pstmt.close();
+            con.close();
+            return fines;
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+            return null;
+        }
+    }
+    
+    public ArrayList<Fine> getFines(Member member, FineStatus status) {
+        con =  super.getConnection();
+        fines.clear();
+        try {
+            if (status == FineStatus.ALL) {
+                pstmt = con.prepareStatement("Select * FROM FineMember WHERE memberID = ?");
+                pstmt.setInt(1, member.getMemberID());
+            }
+            else {
+                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? and memberID = ?");
+                pstmt.setString(1, status.toString().toLowerCase());
+                pstmt.setInt(2, member.getMemberID());
             }
             
             results = pstmt.executeQuery();
@@ -216,5 +262,25 @@ public class FineDAO extends DataAccessObject {
         }
         
         return totalUnpaid;
+    }
+    
+    public double totalUnpaidFine(Member member) {
+        double amount = 0d;
+        con = super.getConnection();
+        try {
+            pstmt = con.prepareStatement("Select sum(amount) as sumlUnpaid From Fine where memberID = ? and _status = 'pending' group by memberID;");
+            pstmt.setInt(1, member.getMemberID());
+            results = pstmt.executeQuery();
+            if(results.next()) {
+                amount = results.getDouble("sumlUnpaid");
+            }
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            System.exit(0);
+        }
+        
+        return amount;
     }
 }

@@ -4,6 +4,7 @@
  */
 package Applications;
 
+import Components.Login.LoginController;
 import Components.Managers.MemberManagerController;
 import Components.Managers.StaffManagerController;
 import Model.User;
@@ -45,6 +46,7 @@ public class AdminAppCon{
         btns.get("Logout").addActionListener(e -> {
            int answer = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Logout", JOptionPane.YES_NO_OPTION);
            if(answer == JOptionPane.YES_OPTION) {
+               new LoginController();
                view.dispose();
            }
         });

@@ -5,9 +5,9 @@
 package Components.Forms;
 
 import Utilities.Design;
-import View.Components.CustomButton;
-import View.Components.HeaderPanel;
-import View.Components.ModernScrollPane;
+import Components.Designs.CustomButton;
+import Components.Designs.HeaderPanel;
+import Components.Designs.ModernScrollPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;

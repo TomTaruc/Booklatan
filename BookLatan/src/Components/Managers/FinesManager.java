@@ -1,27 +1,17 @@
 
 package Components.Managers;
 
-import Model.UserMemberDAO;
+import Components.Designs.ModernScrollPane;
+import Components.Designs.BorderlessTable;
 import Utilities.Design;
-import View.Components.CustomButton;
-import View.Components.CustomComboBox;
-import View.Components.HeaderPanel;
-import Components.Forms.FineForm;
+import Components.Designs.CustomButton;
+import Components.Designs.CustomComboBox;
+import Components.Designs.HeaderPanel;
 import Model.FineStatus;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import View.Components.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 /**
  * @author Tom
@@ -108,68 +98,6 @@ public class FinesManager extends JPanel {
         finesTableModel = new DefaultTableModel(new Object[][] {},this.TABLE_COLUMN_NAMES);
         finesTable.changeModel(finesTableModel);
         ModernScrollPane scrollTable = new ModernScrollPane(finesTable);
-        this.add(scrollTable);
-        
-    }
-
-  private void setupFinesTable() {
-        JTableHeader tHeader = finesTable.getTableHeader();
-        tHeader.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        tHeader.setBackground(new Color(220, 220, 220));
-        tHeader.setForeground(headerTextColor);
-        tHeader.setOpaque(true);
-        tHeader.setReorderingAllowed(false);
-        tHeader.setDefaultRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JLabel label = new JLabel(value.toString());
-                label.setFont(new Font("Segoe UI", Font.BOLD, 15));
-                label.setOpaque(true);
-                label.setBackground(new Color(220, 220, 220));
-                label.setForeground(headerTextColor);
-                label.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-                label.setHorizontalAlignment(CENTER);
-                return label;
-            }
-        });
-
-        finesTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setBackground(isSelected ? table.getSelectionBackground() : (row % 2 == 0 ? Design.PRIME_COLOR : new Color(230, 230, 230)));
-                c.setForeground(Color.BLACK);
-                ((JLabel)c).setBorder(new EmptyBorder(5, 10, 5, 10));
-                return c;
-            }
-        });
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        for (int i = 0; i < finesTable.getColumnCount(); i++) {
-            if (finesTable.getColumnModel().getColumn(i).getHeaderValue().toString().toLowerCase().contains("date")) {
-                finesTable.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
-                    @Override
-                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                        if (value instanceof Date) {
-                            value = dateFormat.format(value);
-                        }
-                        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                        c.setBackground(isSelected ? table.getSelectionBackground() : (row % 2 == 0 ? Design.PRIME_COLOR : new Color(230, 230, 230)));
-                        c.setForeground(Color.BLACK);
-                        ((JLabel)c).setBorder(new EmptyBorder(5, 10, 5, 10));
-                        return c;
-                    }
-                });
-            }
-        }
-        
-        finesTable.getColumnModel().getColumn(0).setPreferredWidth(100);
-        finesTable.getColumnModel().getColumn(1).setPreferredWidth(180);
-        finesTable.getColumnModel().getColumn(2).setPreferredWidth(250);
-        finesTable.getColumnModel().getColumn(3).setPreferredWidth(120);
-        finesTable.getColumnModel().getColumn(4).setPreferredWidth(120);
-        finesTable.getColumnModel().getColumn(5).setPreferredWidth(120);
-        finesTable.getColumnModel().getColumn(6).setPreferredWidth(100);
-        finesTable.getColumnModel().getColumn(7).setPreferredWidth(100);
+        this.add(scrollTable);        
     }
 }

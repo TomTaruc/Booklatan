@@ -4,6 +4,7 @@
  */
 package Applications;
 
+import Componenents.Members.FineViewCon;
 import Components.Login.LoginController;
 import Model.User;
 import Model.UserMemberDAO;
@@ -20,12 +21,16 @@ public class MemAppCon {
     private MemberApplication view;
     private User user;
     private UserMemberDAO userDAO;
+    
+    private FineViewCon fineviewCon;
 
     public MemAppCon(MemberApplication view, User user) {
         this.view = view;
         this.user = user;
         this.userDAO = new UserMemberDAO();
         this.view.sidebar.addUserInfo(this.user.getUsername(), userDAO.getMemberIDByUSerID(user.getUserId()));
+        
+        this.fineviewCon = new FineViewCon(view.fines, userDAO.getMemberByID(userDAO.getMemberIDByUSerID(user.getUserId())));
         attachListeners();
         
     }

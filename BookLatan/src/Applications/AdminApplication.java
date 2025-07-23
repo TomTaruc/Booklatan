@@ -7,7 +7,7 @@ package Applications;
 import Components.Dashboards.LibDashboard;
 import Model.User;
 import Components.Managers.MembersManager;
-import View.Components.Sidebar;
+import Components.Designs.Sidebar;
 import Components.Managers.StaffManager;
 import Components.Managers.BookManager;
 import Utilities.Design;

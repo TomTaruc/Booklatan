@@ -5,11 +5,11 @@
 package Components.Managers;
 import Model.Member;
 import Utilities.Design;
-import View.Components.BorderlessTable;
-import View.Components.CustomButton;
-import View.Components.CustomComboBox;
-import View.Components.HeaderPanel;
-import View.Components.ModernScrollPane;
+import Components.Designs.BorderlessTable;
+import Components.Designs.CustomButton;
+import Components.Designs.CustomComboBox;
+import Components.Designs.HeaderPanel;
+import Components.Designs.ModernScrollPane;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

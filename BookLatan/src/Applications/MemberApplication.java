@@ -4,13 +4,13 @@
  */
 package Applications;
 
-import View.Components.Sidebar;
+import Componenents.Members.FineView;
+import Components.Designs.Sidebar;
 import Model.User;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 
@@ -32,7 +32,7 @@ public class MemberApplication extends Application {
     BookManager books;
     JPanel loans;
     JPanel reservations;
-    JPanel fines;
+    FineView fines;
 
     public MemberApplication() {
         this.addSideBar();
@@ -64,11 +64,10 @@ public class MemberApplication extends Application {
         books = new BookManager(panelSize, User.UserType.MEMBER); // read-only for members
         loans = new JPanel();
         reservations = new JPanel();
-        fines = new JPanel();
+        fines = new FineView();
         
         loans.setBackground(Color.pink);
         reservations.setBackground(Color.red);
-        fines.setBackground(Color.orange);
 
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");

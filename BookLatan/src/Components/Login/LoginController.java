@@ -15,8 +15,6 @@ import static Model.User.UserType.MEMBER;
 import Applications.AdminApplication;
 import Applications.LibrarianApplication;
 import Applications.MemberApplication;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -58,8 +56,8 @@ public class LoginController {
     
     //Delete this
     public void bypassLib() {
-        view.getUsernameField().setText("LegionLover");
-        view.getPasswordField().setText("HelloPo_@134");
+        view.getUsernameField().setText("KaiserLycan");
+        view.getPasswordField().setText("KaiserLycan@081505");
         loginEvent();
     }
     

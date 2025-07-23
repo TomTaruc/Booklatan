@@ -4,11 +4,11 @@
  */
 package Applications;
 
+import Components.Designs.Sidebar;
 import Components.Managers.FinesManager;
 import Components.Dashboards.LibDashboard;
 import Components.Managers.BookManager;
 import Components.Managers.MembersManager;
-import View.Components.*;
 import Model.User;
 import Utilities.Design;
 import javax.swing.*;

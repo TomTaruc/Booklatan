@@ -1,8 +1,8 @@
 package Components.Forms;
 
 import Utilities.Design;
-import View.Components.CustomButton;
-import View.Components.HeaderPanel;
+import Components.Designs.CustomButton;
+import Components.Designs.HeaderPanel;
 
 import javax.swing.*;
 import java.awt.*;

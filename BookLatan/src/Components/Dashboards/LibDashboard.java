@@ -4,10 +4,10 @@
  */
 package Components.Dashboards;
 import Utilities.Design;
-import View.Components.BorderlessTable;
-import View.Components.HeaderPanel;
-import View.Components.InfoCard;
-import View.Components.ModernScrollPane;
+import Components.Designs.BorderlessTable;
+import Components.Designs.HeaderPanel;
+import Components.Designs.InfoCard;
+import Components.Designs.ModernScrollPane;
 import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;

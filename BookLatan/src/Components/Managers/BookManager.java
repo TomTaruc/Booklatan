@@ -15,8 +15,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import Model.User;
-import View.Components.BorderlessTable;
-import View.Components.CustomButton;
+import Components.Designs.BorderlessTable;
+import Components.Designs.CustomButton;
 
 public class BookManager extends JPanel {
     private Color primaryColor = new Color(245, 245, 245);
