@@ -55,11 +55,11 @@ public class LoginController {
     }
     
     //Delete this
-    public void bypassLib() {
-        view.getUsernameField().setText("KaiserLycan");
-        view.getPasswordField().setText("KaiserLycan@081505");
-        loginEvent();
-    }
+//    public void bypassLib() {
+//        view.getUsernameField().setText("KaiserLycan");
+//        view.getPasswordField().setText("KaiserLycan@081505");
+//        loginEvent();
+//    }
     
     private void loginEvent() {
         //Declaration of Variables
