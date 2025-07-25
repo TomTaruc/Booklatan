@@ -4,15 +4,18 @@
  */
 package Model;
 
+import static Model.DatabaseUtil.getConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookDAO {
+    
+    private Book book;
 
     // CREATE: Add a new book
     public void addBook(Book book) throws SQLException {
-        String sql = "INSERT INTO books (title, category, pubDate, lang, _status, shelfLocation, pubID, libID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO book (title, category, pubDate, lang, _status, shelfLocation, pubID, libID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, book.getTitle());
@@ -35,7 +38,7 @@ public class BookDAO {
     // READ: Get all books
     public List<Book> getAllBooks() throws SQLException {
         List<Book> books = new ArrayList<>();
-        String sql = "SELECT * FROM books";
+        String sql = "SELECT * FROM book";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
@@ -49,7 +52,7 @@ public class BookDAO {
 
     // UPDATE: Update a book
     public void updateBook(Book book) throws SQLException {
-        String sql = "UPDATE books SET title=?, category=?, pubDate=?, lang=?, _status=?, shelfLocation=?, pubID=?, libID=? WHERE infobookID=?";
+        String sql = "UPDATE book SET title=?, category=?, pubDate=?, lang=?, _status=?, shelfLocation=?, pubID=?, libID=? WHERE bookID=?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, book.getTitle());
@@ -66,18 +69,18 @@ public class BookDAO {
     }
 
     // DELETE: Delete a book
-    public void deleteBook(int infobookID) throws SQLException {
-        String sql = "DELETE FROM books WHERE infobookID=?";
+    public void deleteBook(int bookID) throws SQLException {
+        String sql = "DELETE FROM book WHERE bookID=?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, infobookID);
+            stmt.setInt(1, bookID);
             stmt.executeUpdate();
         }
     }
 
     // Helper: Map ResultSet to Book object
     private Book mapResultSetToBook(ResultSet rs) throws SQLException {
-        int bookID = rs.getInt("infobookID");
+        int bookID = rs.getInt("bookID");
         String title = rs.getString("title");
         String category = rs.getString("category");
         java.util.Date pubDate = rs.getDate("pubDate");
@@ -93,4 +96,35 @@ public class BookDAO {
         // For simplicity, authors are not loaded here
         return new Book(bookID, title, null, publisher, category, pubDate, lang, status, shelfLocation, libID);
     }
+    
+    public Book getBookByTitle(String title) {
+    String sql = "SELECT * FROM book WHERE title = ?";
+    try (Connection conn = getConnection(); 
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setString(1, title);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            book.setBookID(rs.getInt("bookID"));
+            book.setTitle(rs.getString("title"));
+
+            String statusStr = rs.getString("status");
+            try {
+                BookStatus status = BookStatus.valueOf(statusStr.toUpperCase());
+                book.setStatus(status);
+            } catch (IllegalArgumentException ex) {
+                book.setStatus(BookStatus.NOT_AVAILABLE); 
+            }
+
+            return book;
+        }
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+
+    return null;
+}
+    
 }

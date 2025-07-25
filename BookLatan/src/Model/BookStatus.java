@@ -9,9 +9,10 @@ package Model;
  * @author Dinel
  */
 public enum BookStatus {
+    LOANED,
     AVAILABLE,
-    RESERVED,
-    NOT_AVAILABLE;
+    NOT_AVAILABLE,
+    RESERVED;
 
     public String toReadableString() {
         String name = this.name().toLowerCase().replace('_', ' ');
