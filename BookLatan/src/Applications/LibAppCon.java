@@ -8,6 +8,7 @@ import Components.Dashboards.LibDashCon;
 import Components.Login.LoginController;
 import Components.Managers.FinesManagerController;
 import Components.Managers.MemberManagerController;
+import Components.Managers.ReservationsManagerController;
 import Model.*;
 import java.util.Map;
 import javax.swing.*;
@@ -23,6 +24,7 @@ public class LibAppCon {
     private LibDashCon dashCon;
     private UserStaffDAO userDAO;
     private FinesManagerController fineCon;
+    private ReservationsManagerController reservationsCon;
     
     public LibAppCon(LibrarianApplication view, User user) {
         userDAO = new UserStaffDAO();
@@ -31,6 +33,7 @@ public class LibAppCon {
         this.memCon = new MemberManagerController(view.members, false);
         this.dashCon = new LibDashCon(view.dashboard);
         this.fineCon = new FinesManagerController(view.fines, userDAO.getStaffByUserID(user.getUserId()));
+        this.reservationsCon = new ReservationsManagerController(view.reservations, false, userDAO.getStaffByUserID(user.getUserId()));
         attachListeners();
         
     }

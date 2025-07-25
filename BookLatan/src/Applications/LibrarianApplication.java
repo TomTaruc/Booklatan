@@ -9,6 +9,7 @@ import Components.Managers.FinesManager;
 import Components.Dashboards.LibDashboard;
 import Components.Managers.BookManager;
 import Components.Managers.MembersManager;
+import Components.Managers.ReservationsManager;
 import Model.User;
 import Utilities.Design;
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class LibrarianApplication extends Application {
     public JPanel mainPanel;
     public LibDashboard dashboard;
     public MembersManager members;
+    public ReservationsManager reservations;
     public FinesManager fines;
     
     public LibrarianApplication() {
@@ -56,7 +58,7 @@ public class LibrarianApplication extends Application {
         BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);
         members = new MembersManager(Design.MAIN_PANEL_SIZE, false);
         JPanel loans = new JPanel();
-        JPanel reservations = new JPanel();
+        reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);
         fines = new FinesManager();
 
         mainPanel.add(dashboard, "dashboard");
