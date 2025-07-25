@@ -9,8 +9,6 @@ import Model.BookDAO;
 import Model.Member;
 import Model.Reservation;
 import Model.ReservationDAO;
-import Model.Staff;
-import Model.UserMemberDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.ZoneId;
@@ -19,24 +17,23 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Joseph Rey
+ * Controller for member-specific reservation form
+ * @author Generated
  */
-public class ReservationsFormCon {
-    private ReservationsForm view;
+public class MemberReservationsFormCon {
+    private MemberReservationsForm view;
     private ReservationDAO reservationDAO;
-    private UserMemberDAO memberDAO;
     private BookDAO bookDAO;
+    private Member member;
     private Runnable updateTableCallback;
     
-    public ReservationsFormCon(Staff staff, Runnable updateTable) {
-        this.view = new ReservationsForm();
-        this.memberDAO = new UserMemberDAO();
+    public MemberReservationsFormCon(Member member, Runnable updateTable) {
+        this.view = new MemberReservationsForm();
         this.reservationDAO = new ReservationDAO();
         this.bookDAO = new BookDAO();
+        this.member = member;
         this.updateTableCallback = updateTable;
         
-        loadMembers();
         loadBooks();
         
         view.setVisible(true);
@@ -46,13 +43,7 @@ public class ReservationsFormCon {
             public void actionPerformed(ActionEvent e) {
                 try {
                     // Validate inputs
-                    Member selectedMember = (Member) view.memberComboBox.getSelectedItem();
                     Book selectedBook = (Book) view.bookComboBox.getSelectedItem();
-                    
-                    if (selectedMember == null) {
-                        view.showErrorMessage("Please select a member");
-                        return;
-                    }
                     
                     if (selectedBook == null) {
                         view.showErrorMessage("Please select a book");
@@ -61,10 +52,11 @@ public class ReservationsFormCon {
                     
                     // Create reservation
                     Reservation reservation = new Reservation();
-                    reservation.setMemberID(selectedMember.getMemberID());
-                    reservation.setMemberName(selectedMember.getName());
+                    reservation.setMemberID(member.getMemberID());
+                    reservation.setMemberName(member.getName());
                     reservation.setDateReserved(((Date) view.reservationDate.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                     reservation.setStatus(Reservation.ReservationStatus.PENDING);
+                    reservation.setNotes(view.notes.getText().trim());
                     
                     // Add the selected book to the reservation
                     reservation.addBook(selectedBook);
@@ -80,7 +72,7 @@ public class ReservationsFormCon {
                     // Show success message and ask if user wants to create another reservation
                     int confirm = JOptionPane.showConfirmDialog(
                         view, 
-                        "Reservation for " + selectedMember.getName() + " has been created successfully.\nWould you like to create another reservation?", 
+                        "Your reservation for \"" + selectedBook.getTitle() + "\" has been created successfully.\nWould you like to create another reservation?", 
                         "Success", 
                         JOptionPane.YES_NO_OPTION
                     );
@@ -89,9 +81,9 @@ public class ReservationsFormCon {
                         view.dispose();
                     } else {
                         // Reset form for new reservation
-                        view.memberComboBox.setSelectedIndex(0);
                         view.bookComboBox.setSelectedIndex(0);
                         view.reservationDate.setValue(new Date());
+                        view.notes.setText("");
                     }
                     
                 } catch (Exception ex) {
@@ -112,18 +104,6 @@ public class ReservationsFormCon {
                 view.dispose();
             }
         });
-    }
-    
-    private void loadMembers() {
-        try {
-            List<Member> members = memberDAO.getMembers();
-            // Filter only active members
-            members.removeIf(member -> member.getStatus() != Member.MembershipStatus.ACTIVE);
-            view.setMembers(members);
-        } catch (Exception ex) {
-            view.showErrorMessage("Error loading members: " + ex.getMessage());
-            ex.printStackTrace();
-        }
     }
     
     private void loadBooks() {

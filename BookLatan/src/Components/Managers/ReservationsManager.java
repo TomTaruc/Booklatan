@@ -34,14 +34,14 @@ public class ReservationsManager extends JPanel {
 
     public ReservationsManager(Dimension size, User.UserType userType) {
         this.isEditable = (userType == User.UserType.ADMIN || userType == User.UserType.LIBRARIAN);
-        initComponent(size);
+        initComponent(size, userType);
     }
 
     public ReservationsManager(Dimension size) {
         this(size, User.UserType.ADMIN); // default to admin for backward compatibility
     }
 
-    private void initComponent(Dimension size) {
+    private void initComponent(Dimension size, User.UserType userType) {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -209,14 +209,25 @@ public class ReservationsManager extends JPanel {
         cancelBtn.setPrimaryColor(btnPrimaryColor);
         cancelBtn.setHoverColor(btnSecondaryColor);
         
-        addBtn.setVisible(isEditable);
-        claimBtn.setVisible(isEditable);
-        cancelBtn.setVisible(isEditable);
+        // Configure button visibility based on user type
+        if (userType == User.UserType.MEMBER) {
+            addBtn.setVisible(true);
+            addBtn.setText("New Reservation");
+            claimBtn.setVisible(false); // Members can't claim reservations
+            cancelBtn.setVisible(true);
+            cancelBtn.setText("Cancel Reservation");
+        } else {
+            addBtn.setVisible(isEditable);
+            claimBtn.setVisible(isEditable);
+            cancelBtn.setVisible(isEditable);
+        }
         
         buttonPanel.add(Box.createHorizontalGlue());
         buttonPanel.add(addBtn);
-        buttonPanel.add(Box.createHorizontalStrut(10));
-        buttonPanel.add(claimBtn);
+        if (claimBtn.isVisible()) {
+            buttonPanel.add(Box.createHorizontalStrut(10));
+            buttonPanel.add(claimBtn);
+        }
         buttonPanel.add(Box.createHorizontalStrut(10));
         buttonPanel.add(cancelBtn);
         buttonPanel.add(Box.createHorizontalGlue());
