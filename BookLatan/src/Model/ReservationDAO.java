@@ -228,6 +228,65 @@ public class ReservationDAO extends DataAccessObject {
         }
     }
 
+    public ArrayList<Reservation> getReservationsByMemberID(int memberID) {
+        con = super.getConnection();
+        reservations.clear();
+        
+        try {
+            String sql = "SELECT r.resID, r.memberID, r.dateReserved, r._status, " +
+                "m.name as memberName, " +
+                "GROUP_CONCAT(b.title SEPARATOR ', ') as bookTitles, " +
+                "GROUP_CONCAT(b.bookID SEPARATOR ', ') as bookIDs " +
+                "FROM reservation r " +
+                "JOIN member m ON r.memberID = m.memberID " +
+                "LEFT JOIN reservationbook rb ON r.resID = rb.resID " +
+                "LEFT JOIN book b ON rb.bookID = b.bookID " +
+                "WHERE r.memberID = ? " +
+                "GROUP BY r.resID " +
+                "ORDER BY r.dateReserved DESC";
+            
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, memberID);
+            results = pstmt.executeQuery();
+            
+            while (results.next()) {
+                Reservation reservation = new Reservation();
+                reservation.setReservationID(results.getInt("resID"));
+                reservation.setMemberID(results.getInt("memberID"));
+                reservation.setMemberName(results.getString("memberName"));
+                reservation.setDateReserved(results.getDate("dateReserved").toLocalDate());
+                String statusStr = results.getString("_status");
+                reservation.setStatus(Reservation.ReservationStatus.valueOf(statusStr.toUpperCase()));
+                
+                // Handle books
+                String bookTitles = results.getString("bookTitles");
+                String bookIDs = results.getString("bookIDs");
+                
+                if (bookTitles != null && bookIDs != null) {
+                    String[] titles = bookTitles.split(", ");
+                    String[] ids = bookIDs.split(", ");
+                    
+                    for (int i = 0; i < titles.length && i < ids.length; i++) {
+                        Book book = createSimpleBook(Integer.parseInt(ids[i]), titles[i]);
+                        reservation.addBook(book);
+                    }
+                }
+                
+                reservations.add(reservation);
+            }
+            
+            results.close();
+            pstmt.close();
+            con.close();
+            return reservations;
+        }
+        catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public Reservation getReservationByID(int reservationID) {
         con = super.getConnection();
 

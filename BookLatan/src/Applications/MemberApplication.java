@@ -69,7 +69,6 @@ public class MemberApplication extends Application {
         fines = new FineView();
         
         loans.setBackground(Color.pink);
-        reservations.setBackground(Color.red);
 
         mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");

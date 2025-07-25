@@ -6,8 +6,10 @@ package Applications;
 
 import Componenents.Members.FineViewCon;
 import Components.Login.LoginController;
+import Components.Managers.MemberReservationsManagerController;
 import Model.User;
 import Model.UserMemberDAO;
+import Model.Member;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -21,16 +23,20 @@ public class MemAppCon {
     private MemberApplication view;
     private User user;
     private UserMemberDAO userDAO;
+    private Member member;
     
     private FineViewCon fineviewCon;
+    private MemberReservationsManagerController reservationsController;
 
     public MemAppCon(MemberApplication view, User user) {
         this.view = view;
         this.user = user;
         this.userDAO = new UserMemberDAO();
+        this.member = userDAO.getMemberByID(userDAO.getMemberIDByUSerID(user.getUserId()));
         this.view.sidebar.addUserInfo(this.user.getUsername(), userDAO.getMemberIDByUSerID(user.getUserId()));
         
-        this.fineviewCon = new FineViewCon(view.fines, userDAO.getMemberByID(userDAO.getMemberIDByUSerID(user.getUserId())));
+        this.fineviewCon = new FineViewCon(view.fines, member);
+        this.reservationsController = new MemberReservationsManagerController(view.reservations, member);
         attachListeners();
         
     }
