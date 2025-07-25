@@ -69,10 +69,28 @@ public class Validators {
         }
     };
     
+    public static void validateEmptyVariable(Double variable, String variableName) {
+        if(variable == null) {
+            throw new IllegalArgumentException(variableName + " cannot be empty");
+        }
+    };
+    
     public static void validateEmptyVariable(Enum variable, String variableName) {
         if(variable == null) {
             throw new IllegalArgumentException(variableName + " cannot be empty");
         }
     };
+    
+    public static void validateLimitValue(Double variable, Double min, Double max) {
+        if(variable > max || variable < min) {
+            throw new IllegalArgumentException(variable + " should be set between " + min + "-" + max + ".");
+        }
+    }
+    
+    public static void validateLimitValue(Integer variable, Integer min, Integer max) {
+        if(variable > max || variable < min) {
+            throw new IllegalArgumentException(variable + " should be set between " + min + "-" + max + ".");
+        }
+    }
     
 }
