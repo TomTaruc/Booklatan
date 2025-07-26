@@ -27,25 +27,17 @@ public class FinesManager extends JPanel {
     public JButton btnMarkAsPaid;
     public JButton btnDeleteFine;
     public JButton btnRefresh;
-    
-    private Color headerTextColor = Color.BLACK;
-
-    private Color issueFineBtnColor = new Color(59, 130, 246);
-    private Color markAsPaidBtnColor = new Color(34, 197, 94);
-    private Color deleteFineBtnColor = new Color(239, 68, 68);
-    private Color searchRefreshBtnColor = new Color(59, 130, 246);
 
     private final String[] TABLE_COLUMN_NAMES = {
-        "Fine ID", "Member Name", "Amount", "Status", "Description"
+        "#", "Member Name", "Amount", "Status", "Description"
     };
 
     public FinesManager() {
-        initFrame();
+        initPanel();
         initComponents();
     }
     
-    private void initFrame() {
-        this.setLayout(new BorderLayout(10, 10));
+    private void initPanel() {
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(Design.PRIME_COLOR);

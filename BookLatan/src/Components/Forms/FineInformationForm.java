@@ -53,7 +53,6 @@ public class FineInformationForm extends JDialog{
     public CustomButton delBtn;
     private HeaderPanel header;
     private JPanel forms;
-    private JPanel btnHolder;
     private JPanel mainPanel;
     private ModernScrollPane scroll;
     
@@ -85,15 +84,10 @@ public class FineInformationForm extends JDialog{
         
         header = new HeaderPanel(new Dimension(Design.FRAME_SIZE.width/2, 100));
         header.setTitle("Fine Information");
-        header.setSubtitle("Read-Only");
+        header.setSubtitle("View Fine Information");
         
         forms = new JPanel();
         forms.setBackground(Design.PRIME_COLOR);
-        
-        btnHolder = new JPanel();
-        btnHolder.setBackground(Design.PRIME_COLOR);
-        btnHolder.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        btnHolder.setPreferredSize(new Dimension(Design.FRAME_SIZE.width/2, 100));
         
         fineIDLabel = new JLabel("Fine ID");
         fineIDLabel.setFont(Design.PRIME_FONT.deriveFont(Font.BOLD, 18));
@@ -194,7 +188,11 @@ public class FineInformationForm extends JDialog{
     private void initLayout() {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         forms.setLayout(new GridBagLayout());
-        btnHolder.setLayout(new BoxLayout(btnHolder, BoxLayout.X_AXIS));
+        
+        header.add(Box.createHorizontalGlue());
+        header.add(payBtn);
+        header.add(Box.createHorizontalStrut(10));
+        header.add(delBtn);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10,10,10,10);
@@ -289,13 +287,7 @@ public class FineInformationForm extends JDialog{
         gbc.weighty = 1;
         forms.add(Box.createVerticalGlue(), gbc);
         
-        btnHolder.add(Box.createHorizontalGlue());
-        btnHolder.add(payBtn);
-        btnHolder.add(Box.createHorizontalStrut(10));
-        btnHolder.add(delBtn);
-        
         mainPanel.add(forms);
-        mainPanel.add(btnHolder);
         scroll.setViewportView(mainPanel);
         this.add(header, BorderLayout.NORTH);
         this.add(scroll);

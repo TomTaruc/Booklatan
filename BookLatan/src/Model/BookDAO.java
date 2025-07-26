@@ -15,7 +15,7 @@ public class BookDAO {
 
     // CREATE: Add a new book
     public void addBook(Book book) throws SQLException {
-        String sql = "INSERT INTO book (title, category, pubDate, lang, _status, shelfLocation, pubID, libID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO book (title, category, pubDate, lang, _status, shelfLocation, pubID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, book.getTitle());
@@ -25,7 +25,6 @@ public class BookDAO {
             stmt.setString(5, book.getStatus().name().toLowerCase());
             stmt.setString(6, book.getShelfLocation());
             stmt.setInt(7, book.getPublisher().getPubID());
-            stmt.setInt(8, book.getLibID());
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
@@ -52,7 +51,7 @@ public class BookDAO {
 
     // UPDATE: Update a book
     public void updateBook(Book book) throws SQLException {
-        String sql = "UPDATE book SET title=?, category=?, pubDate=?, lang=?, _status=?, shelfLocation=?, pubID=?, libID=? WHERE bookID=?";
+        String sql = "UPDATE book SET title=?, category=?, pubDate=?, lang=?, _status=?, shelfLocation=?, pubID=? WHERE bookID=?";
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, book.getTitle());
@@ -62,7 +61,6 @@ public class BookDAO {
             stmt.setString(5, book.getStatus().name().toLowerCase());
             stmt.setString(6, book.getShelfLocation());
             stmt.setInt(7, book.getPublisher().getPubID());
-            stmt.setInt(8, book.getLibID());
             stmt.setInt(9, book.getBookID());
             stmt.executeUpdate();
         }
@@ -88,13 +86,12 @@ public class BookDAO {
         String statusStr = rs.getString("_status");
         String shelfLocation = rs.getString("shelfLocation");
         int pubID = rs.getInt("pubID");
-        int libID = rs.getInt("libID");
 
         Publisher publisher = new Publisher(pubID, "", "", "", "");
         BookStatus status = BookStatus.valueOf(statusStr.toUpperCase().replace(' ', '_'));
 
         // For simplicity, authors are not loaded here
-        return new Book(bookID, title, null, publisher, category, pubDate, lang, status, shelfLocation, libID);
+        return new Book(bookID, title, null, publisher, category, pubDate, lang, status, shelfLocation);
     }
     
     public Book getBookByTitle(String title) {

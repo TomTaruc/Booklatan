@@ -15,6 +15,7 @@ import static Model.User.UserType.MEMBER;
 import Applications.AdminApplication;
 import Applications.LibrarianApplication;
 import Applications.MemberApplication;
+import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -66,6 +67,10 @@ public class LoginController {
         User user;
         String username;
         String password;
+        
+        view.getUsernameField().setEditable(false);
+        view.getPasswordField().setEditable(false);
+        view.getLoginButton().setEnabled(false);
 
         //Get user input
         username = view.getUsernameField().getText().trim();
@@ -90,6 +95,9 @@ public class LoginController {
                 case MEMBER -> new MemAppCon(new MemberApplication(), user).openApp();
             }
         } else {
+            view.getUsernameField().setEditable(true);
+            view.getPasswordField().setEditable(true);
+            view.getLoginButton().setEnabled(true);
             view.showError("Invalid username or password.");
         }
     }

@@ -13,9 +13,19 @@ public enum BookStatus {
     AVAILABLE,
     NOT_AVAILABLE,
     RESERVED;
-
+    
     public String toReadableString() {
         String name = this.name().toLowerCase().replace('_', ' ');
         return Character.toUpperCase(name.charAt(0)) + name.substring(1);
     }
+    
+    public static BookStatus fromString(String value) {
+        for(BookStatus status : BookStatus.values()) {
+            if(status.name().equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        return null;
+    }
+    
 }

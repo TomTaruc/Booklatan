@@ -31,8 +31,7 @@ public class ReservationDAO extends DataAccessObject {
             new java.util.Date(), // pubDate
             "", // language
             BookStatus.AVAILABLE, // status
-            "", // shelfLocation
-            0  // libID
+            "" // shelfLocation
         );
     }
 
