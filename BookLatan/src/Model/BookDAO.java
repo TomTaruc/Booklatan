@@ -343,5 +343,29 @@ public class BookDAO extends DataAccessObject {
                 ex.printStackTrace();
             }
                 return null;
-        }    
+        }
+
+public ArrayList<Book> getAllBooksByTitleStatus(String title, BookStatus status) {
+        Connection conn = super.getConnection();
+        ArrayList<Book> books = new ArrayList<>();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("Select * from book where title like ? AND _status = ?");
+            pstmt.setString(1, "%" + title + "%");
+            pstmt.setString(2, status.toString().toLowerCase());
+            ResultSet results = pstmt.executeQuery();
+            while(results.next()) {
+                Book book = mapResultSetToBook(results);
+                books.add(book);
+            }
+
+            results.close();
+            pstmt.close();
+            conn.close();
+            return books;
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    };    
 }
