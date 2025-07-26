@@ -15,7 +15,9 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 
 import Components.Managers.BookManager;
+import Components.Managers.BookManagerController;
 import Components.Dashboards.LibDashboard;
+import Components.Managers.LoanManager;
 import Components.Managers.ReservationsManager;
 import Utilities.Design;
 import java.awt.Color;
@@ -30,9 +32,9 @@ public class MemberApplication extends Application {
     Sidebar sidebar;
     public CardLayout mainPanelLayout;
     public JPanel mainPanel;
-    LibDashboard dashboard;
+
     BookManager books;
-    JPanel loans;
+    LoanManager loans;
     ReservationsManager reservations;
     FineView fines;
 
@@ -44,7 +46,6 @@ public class MemberApplication extends Application {
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
-        menuItems.put("Dashboard", "./src/Images/dashboard2.png");
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Loans", "./src/Images/loanbooks.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
@@ -62,15 +63,14 @@ public class MemberApplication extends Application {
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
         
-        dashboard = new LibDashboard();
+        
         books = new BookManager(panelSize, User.UserType.MEMBER); // read-only for members
-        loans = new JPanel();
+        // Connect BookManager to database through controller
+        BookManagerController bookController = new BookManagerController(books);
+        loans = new LoanManager();
         reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.MEMBER);
         fines = new FineView();
         
-        loans.setBackground(Color.pink);
-
-        mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(loans, "loans");
         mainPanel.add(reservations, "reservations");

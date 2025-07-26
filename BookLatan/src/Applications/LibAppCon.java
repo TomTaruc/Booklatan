@@ -22,7 +22,6 @@ import javax.swing.*;
 public class LibAppCon {
     public LibrarianApplication view;
     private MemberManagerController memCon;
-    private LibDashCon dashCon;
     private UserStaffDAO userDAO;
     private FinesManagerController fineCon;
     private ReservationsManagerController reservationsCon;
@@ -33,10 +32,9 @@ public class LibAppCon {
         this.view = view;
         view.sidebar.addUserInfo(user.getUsername(), userDAO.getStaffIDByUserID(user.getUserId()));
         this.memCon = new MemberManagerController(view.members, false);
-        this.dashCon = new LibDashCon(view.dashboard);
         this.fineCon = new FinesManagerController(view.fines, userDAO.getStaffByUserID(user.getUserId()));
         this.reservationsCon = new ReservationsManagerController(view.reservations, false, userDAO.getStaffByUserID(user.getUserId()));
-        this.loanCon = new LoanManagerController (view.loans, userDAO.getStaffByUserID(user.getUserId()));
+        this.loanCon = new LoanManagerController (view.loans, user);
         attachListeners();
         
     }
@@ -47,7 +45,6 @@ public class LibAppCon {
     
     private void attachListeners() {
         Map<String, JButton> btns = view.sidebar.getMenuButtons();
-        btns.get("Dashboard").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "dashboard"));
         btns.get("Books").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "books"));
         btns.get("Members").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "members"));
         btns.get("Loans").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "loans"));

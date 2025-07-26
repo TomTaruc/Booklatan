@@ -39,7 +39,6 @@ public class AdminAppCon{
     
     private void attachListeners() {
         Map<String, JButton> btns = view.sidebar.getMenuButtons();
-        btns.get("Dashboard").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "dashboard"));
         btns.get("Books").addActionListener(e ->    view.mainPanelLayout.show(view.mainPanel, "books"));
         btns.get("Members").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "members"));
         btns.get("Staff").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "staff"));

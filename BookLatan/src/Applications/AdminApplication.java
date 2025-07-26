@@ -10,6 +10,7 @@ import Components.Managers.MembersManager;
 import Components.Designs.Sidebar;
 import Components.Managers.StaffManager;
 import Components.Managers.BookManager;
+import Components.Managers.BookManagerController;
 import Components.Managers.ReservationsManager;
 import Utilities.Design;
 import java.awt.*;
@@ -24,7 +25,6 @@ public class AdminApplication extends Application {
     public Sidebar sidebar;
     public JPanel mainPanel;
     public CardLayout mainPanelLayout;
-    public LibDashboard dashboard;
     public MembersManager members;
     public ReservationsManager reservations;
     public StaffManager staff;
@@ -37,7 +37,6 @@ public class AdminApplication extends Application {
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
-        menuItems.put("Dashboard", "./src/Images/dashboard2.png");
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Members", "./src/Images/members.png");
         menuItems.put("Reservations", "./src/Images/bookreservation.png");
@@ -53,13 +52,13 @@ public class AdminApplication extends Application {
     private void addMainPanel() {
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
-        dashboard = new LibDashboard();
         BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.ADMIN);
+        // Connect BookManager to database through controller
+        BookManagerController bookController = new BookManagerController(books);
         members = new MembersManager(Design.MAIN_PANEL_SIZE, true);
         reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.ADMIN);
         staff = new StaffManager(Design.MAIN_PANEL_SIZE);
 
-        mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
         mainPanel.add(reservations, "reservations");

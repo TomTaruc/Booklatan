@@ -33,6 +33,19 @@ public class LoanInformationCon {
     private Runnable updateTable;
     private BookDAO bookDAO;
     
+    public LoanInformationCon(Loan loan) {
+        this.view = new LoanInformationForm();
+        this.view.header.remove(this.view.deleteLoan);
+        this.view.header.remove(this.view.markAsReturned);
+        this.memDAO = new UserMemberDAO();
+        this.loanDAO = new LoanDAO();
+        this.bookDAO = new BookDAO();
+        this.loan = loan;
+        this.books = this.loanDAO.getLoanedBooks(this.loan.getLoanID());
+        this.member = memDAO.getMemberByID(loan.getMemberID());
+        this.updateField();
+    }
+    
     public LoanInformationCon(Staff staff, Loan loan, Runnable updateTable) {
         this.updateTable = updateTable;
         this.staff = staff;
@@ -44,6 +57,30 @@ public class LoanInformationCon {
         this.member = memDAO.getMemberByID(loan.getMemberID());
         this.books = this.loanDAO.getLoanedBooks(this.loan.getLoanID());
         
+        if(loan.getStatus() == LoanStatus.OVERDUE) {
+            LocalDate today = LocalDate.now();
+            Period period = Period.between(today, loan.getDueDate());
+            double minimumFine  = 15.75d;
+            double totalFine = minimumFine * Math.abs(period.getDays());
+            String description;
+            
+            int confirm = JOptionPane.showConfirmDialog(view, member.getName() + "'s loan is " + Math.abs(period.getDays()) + " days overdue. Would you like to issue a fine?", "Overdue Book", JOptionPane.YES_NO_OPTION);
+            
+            if(confirm == JOptionPane.YES_OPTION) {
+                this.view.dispose();
+                description = "Failure to return the following books on time: ";
+                for(Book book : books) {
+                    description = description + " " + book.getTitle();
+                    if(!books.getLast().equals(book)) {
+                        description = description + ",";
+                    }
+                }
+                
+                FineFormCon con = new FineFormCon(staff, updateTable);
+                con.setInitialLoanDetails(member, totalFine, description, today, loan);
+                
+            }
+        }
         
         updateField();
         
@@ -88,30 +125,8 @@ public class LoanInformationCon {
             this.updateField();
         });
         
-        if(loan.getStatus() == LoanStatus.OVERDUE) {
-            LocalDate today = LocalDate.now();
-            Period period = Period.between(today, loan.getDueDate());
-            double minimumFine  = 15.75d;
-            double totalFine = minimumFine * Math.abs(period.getDays());
-            String description;
-            
-            int confirm = JOptionPane.showConfirmDialog(view, member.getName() + "'s loan is " + Math.abs(period.getDays()) + " days overdue. Would you like to issue a fine?", "Overdue Book", JOptionPane.YES_NO_OPTION);
-            
-            if(confirm == JOptionPane.YES_OPTION) {
-                this.view.dispose();
-                description = "Failure to return the following books on time: ";
-                for(Book book : books) {
-                    description = description + " " + book.getTitle();
-                    if(!books.getLast().equals(book)) {
-                        description = description + ",";
-                    }
-                }
-                
-                FineFormCon con = new FineFormCon(staff, updateTable);
-                con.setInitialLoanDetails(member, totalFine, description, today, loan);
-                
-            }
-        }
+        
+        
         
     }
     

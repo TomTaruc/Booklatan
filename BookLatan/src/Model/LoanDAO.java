@@ -67,6 +67,49 @@ public class LoanDAO extends DataAccessObject{
         }
     }
     
+    public ArrayList<Loan> getLoans(LoanStatus status, int memberID) {
+        con = super.getConnection();
+        loans.clear();
+        
+        try {
+            if(status == LoanStatus.ALL) {
+                pstmt = con.prepareStatement("Select * FROM LoanMember WHERE memberID = ? ORDER BY dueDate asc");
+                pstmt.setInt(1, memberID);
+            }
+            else {
+                pstmt = con.prepareStatement("Select * FROM LoanMember WHERE status = ? and memberID = ? ORDER BY dueDate asc");
+                pstmt.setString(1, status.toString().toLowerCase());
+                pstmt.setInt(2, memberID);
+            }
+            
+            results = pstmt.executeQuery();
+            
+            while(results.next()) {
+                Loan loan = new Loan();
+                loan.setLoanID(Integer.parseInt(results.getString("loanID")));
+                loan.setMemberID(Integer.parseInt(results.getString("memberID")));
+                loan.setIssueDate(results.getDate("issueDate").toLocalDate());
+                loan.setDueDate(results.getDate("dueDate").toLocalDate());
+                loan.setReturnDate(results.getDate("returnDate") != null ? results.getDate("returnDate").toLocalDate() : null);
+                loan.setStatus(LoanStatus.fromString(results.getString("status")));
+                this.checkDueDate(loan);
+                loans.add(loan);
+            }
+            
+            results.close();
+            pstmt.close();
+            con.close();
+            
+            return loans;
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+            return null;
+        }
+    }
+    
     
     public ArrayList<Loan> getLoans(String search, LoanStatus status) {
         con = super.getConnection();
@@ -81,6 +124,51 @@ public class LoanDAO extends DataAccessObject{
                 pstmt = con.prepareStatement("Select * FROM LoanMember WHERE status = ? and name like ? ORDER BY dueDate asc");
                 pstmt.setString(1, status.toString().toLowerCase());
                 pstmt.setString(2, "%" + search + "%");
+            }
+            
+            results = pstmt.executeQuery();
+            
+            while(results.next()) {
+                Loan loan = new Loan();
+                loan.setLoanID(Integer.parseInt(results.getString("loanID")));
+                loan.setMemberID(Integer.parseInt(results.getString("memberID")));
+                loan.setIssueDate(results.getDate("issueDate").toLocalDate());
+                loan.setDueDate(results.getDate("dueDate").toLocalDate());
+                loan.setReturnDate(results.getDate("returnDate") != null ? results.getDate("returnDate").toLocalDate() : null);
+                loan.setStatus(LoanStatus.fromString(results.getString("status")));
+                this.checkDueDate(loan);
+                loans.add(loan);
+            }
+            
+            results.close();
+            pstmt.close();
+            con.close();
+            
+            return loans;
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+            return null;
+        }
+    }
+    
+    public ArrayList<Loan> getLoans(String search, LoanStatus status, int memberID) {
+        con = super.getConnection();
+        loans.clear();
+        
+        try {
+            if(status == LoanStatus.ALL) {
+                pstmt = con.prepareStatement("Select * FROM  LoanMember WHERE name like ? and memberID = ? ORDER BY dueDate asc");
+                pstmt.setString(1, "%" + search + "%");
+                pstmt.setInt(2, memberID);
+            }
+            else {
+                pstmt = con.prepareStatement("Select * FROM LoanMember WHERE status = ? and name like ? and memberID = ? ORDER BY dueDate asc");
+                pstmt.setString(1, status.toString().toLowerCase());
+                pstmt.setString(2, "%" + search + "%");
+                pstmt.setInt(3, memberID);
             }
             
             results = pstmt.executeQuery();

@@ -1,19 +1,14 @@
 package Model;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorDAO extends DataAccessObject{
-    private static final Dotenv dotenv = Dotenv.load();
-    private static final String DB_URL = dotenv.get("DB_URL");
-    private static final String DB_USER = dotenv.get("DB_USER");
-    private static final String DB_PASSWORD = dotenv.get("DB_PASSWORD");
+public class AuthorDAO extends DataAccessObject {
 
     public void addAuthor(Author author) throws SQLException {
         String sql = "INSERT INTO Author (name, bio) VALUES (?, ?)";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, author.getName());
             stmt.setString(2, author.getBio());
@@ -27,7 +22,7 @@ public class AuthorDAO extends DataAccessObject{
 
     public Author getAuthorById(int authorID) throws SQLException {
         String sql = "SELECT * FROM Author WHERE authorID = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, authorID);
             ResultSet rs = stmt.executeQuery();
@@ -44,8 +39,10 @@ public class AuthorDAO extends DataAccessObject{
     
     public List<Author> getAllAuthors(int bookID) throws SQLException {
         List<Author> authors = new ArrayList<>();
+        
+        // Try the view first
         String sql = "SELECT * FROM completebookinfo where bookID = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, bookID);
             ResultSet rs = stmt.executeQuery();
@@ -56,7 +53,30 @@ public class AuthorDAO extends DataAccessObject{
                     rs.getString("bio")
                 ));
             }
+        } catch (SQLException e) {
+            System.out.println("[DEBUG] View query failed, trying direct JOIN: " + e.getMessage());
         }
+        
+        // If view failed or returned no results, try direct JOIN
+        if (authors.isEmpty()) {
+            sql = "SELECT a.authorID, a.name, a.bio FROM Author a " +
+                  "JOIN BookAuthor ba ON a.authorID = ba.authorID " +
+                  "WHERE ba.bookID = ?";
+            try (Connection conn = getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, bookID);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    authors.add(new Author(
+                        rs.getInt("authorID"),
+                        rs.getString("name"),
+                        rs.getString("bio")
+                    ));
+                }
+            }
+        }
+        
+        System.out.println("[DEBUG] getAllAuthors for book " + bookID + " returned " + authors.size() + " authors");
         return authors;
     }
     
@@ -64,7 +84,7 @@ public class AuthorDAO extends DataAccessObject{
     public List<Author> getAllAuthors() throws SQLException {
         List<Author> authors = new ArrayList<>();
         String sql = "SELECT * FROM Author";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -80,7 +100,7 @@ public class AuthorDAO extends DataAccessObject{
 
     public void updateAuthor(Author author) throws SQLException {
         String sql = "UPDATE Author SET name = ?, bio = ? WHERE authorID = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, author.getName());
             stmt.setString(2, author.getBio());
@@ -91,33 +111,12 @@ public class AuthorDAO extends DataAccessObject{
 
     public void deleteAuthor(int authorID) throws SQLException {
         String sql = "DELETE FROM Author WHERE authorID = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, authorID);
             stmt.executeUpdate();
         }
     }
-    
-    public Author getAuthorByName(String name) throws java.sql.SQLException {
-        String sql = "SELECT * FROM Author WHERE name = ?";
-        try (java.sql.Connection conn = getConnection();
-             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, name);
-            try (java.sql.ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    int authorId = rs.getInt("authorID");
-                    String authorName = rs.getString("name");
-                    String bio = rs.getString("bio");
-                    return new Author(authorId, authorName, bio);
-                }
-            }
-        }
-        return null;
-    }
-
-
-///
-
 
     public void updateBookAuthors(int bookID, List<String> authorNames) throws SQLException {
         // Remove all existing links for this book
@@ -139,7 +138,7 @@ public class AuthorDAO extends DataAccessObject{
             }
         }
     }
-    
+    // Helper: get or create author by name
     private int getOrCreateAuthorIdByName(String name) throws SQLException {
         String selectSql = "SELECT authorID FROM Author WHERE name = ?";
         try (Connection conn = getConnection();
@@ -162,5 +161,22 @@ public class AuthorDAO extends DataAccessObject{
             }
         }
         throw new SQLException("Failed to create author: " + name);
+    }
+
+    public Author getAuthorByName(String name) throws java.sql.SQLException {
+        String sql = "SELECT * FROM Author WHERE name = ?";
+        try (java.sql.Connection conn = getConnection();
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int authorId = rs.getInt("authorID");
+                    String authorName = rs.getString("name");
+                    String bio = rs.getString("bio");
+                    return new Author(authorId, authorName, bio);
+                }
+            }
+        }
+        return null;
     }
 } 

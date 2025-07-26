@@ -12,6 +12,7 @@ import Model.Loan;
 import Model.LoanDAO;
 import Model.Member;
 import Model.PublisherDAO;
+import Model.User;
 import Model.User.UserType;
 import Model.UserMemberDAO;
 import java.awt.event.KeyAdapter;
@@ -41,8 +42,8 @@ public class LoanController {
     private ArrayList<Book> availableBooks = new ArrayList<>();
     private Runnable updateTable;
     
-    public LoanController(UserType type, Runnable updateTable) {
-        this.view = new LoanForm(type);
+    public LoanController(User user, Runnable updateTable) {
+        this.view = new LoanForm(user.getType());
         this.memberDAO = new UserMemberDAO();
         this.bookDAO = new BookDAO();
         this.authorDAO = new AuthorDAO();
@@ -51,46 +52,56 @@ public class LoanController {
         this.updateTable = updateTable;
         filterTable();
         
-        view.memberNameField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
-                    Member mem = memberDAO.getMemberByName(view.memberNameField.getText().trim());
-                    if(mem  == null) {
-                        JOptionPane.showMessageDialog(view, "User Does Exist", "Error", JOptionPane.ERROR_MESSAGE);
-                        view.memberNameField.setText("");
+        if(user.getType() == UserType.LIBRARIAN) {
+            view.memberNameField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if(e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_TAB) {
+                        Member mem = memberDAO.getMemberByName(view.memberNameField.getText().trim());
+                        if(mem  == null) {
+                            JOptionPane.showMessageDialog(view, "User Does Exist", "Error", JOptionPane.ERROR_MESSAGE);
+                            view.memberNameField.setText("");
+                            view.memberIDField.setText("");
+                        }
+                        else {
+                            view.memberNameField.setText(mem.getName());
+                            view.memberIDField.setText(String.format("%06d", mem.getMemberID()));
+                        }
+                    }
+                }
+            });
+        
+            view.memberNameField.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(view.memberNameField.getText().trim().isEmpty()) {
                         view.memberIDField.setText("");
                     }
-                    else {
-                        view.memberNameField.setText(mem.getName());
-                        view.memberIDField.setText(String.format("%06d", mem.getMemberID()));
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(view.memberNameField.getText().trim().isEmpty()) {
+                        view.memberIDField.setText("");
                     }
                 }
-            }
-        });
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(view.memberNameField.getText().trim().isEmpty()) {
+                        view.memberIDField.setText("");
+                    }
+                }
+            });
+        }
+        else {
+            view.memberIDField.setEditable(false);
+            view.memberNameField.setEditable(false);
+            Member member = memberDAO.getMemberByID(memberDAO.getMemberIDByUSerID(user.getUserId()));
+            view.memberIDField.setText(String.format("%06d", member.getMemberID()));
+            view.memberNameField.setText(member.getName());
+        }
         
-        view.memberNameField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                if(view.memberNameField.getText().trim().isEmpty()) {
-                    view.memberIDField.setText("");
-                }
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                if(view.memberNameField.getText().trim().isEmpty()) {
-                    view.memberIDField.setText("");
-                }
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                if(view.memberNameField.getText().trim().isEmpty()) {
-                    view.memberIDField.setText("");
-                }
-            }
-        });
         
         this.view.booksTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -112,6 +123,33 @@ public class LoanController {
                 int bookID = Integer.parseInt(view.booksTable.getValueAt(rowIndex, 0).toString());
                 selectedBooks.add(bookDAO.getBookByID(bookID));
                 
+                updateTable();
+            }
+            
+        });
+        
+        this.view.addedBooks.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(view, "Do you want to remove this book?", "Selected Book", JOptionPane.YES_NO_OPTION);
+                if(confirm == JOptionPane.NO_OPTION) {
+                    return;
+                }
+                
+                int rowIndex = view.addedBooks.getSelectedRow();
+                Book bookToRemove = null;
+                
+                
+                int bookID = Integer.parseInt(view.addedBooks.getValueAt(rowIndex, 0).toString());
+                for(Book book : selectedBooks) {
+                    if(book.getBookID() == bookID) {
+                        bookToRemove = book;
+                        break;
+                    }
+                }
+                
+                view.addedBooksModel.removeRow(rowIndex);
+                selectedBooks.remove(selectedBooks.indexOf(bookToRemove));
                 updateTable();
             }
             
@@ -195,7 +233,7 @@ public class LoanController {
             }
             
             view.booksTableModel.addRow(new Object[] {
-                book.getBookID(),
+                String.format("%06d", book.getBookID()),
                 book.getTitle(),
                 book.getCategory(),
                 book.getAuthors().size() >= 2 ? book.getAuthors().get(0).getName() + " et al." : book.getAuthors().get(0).getName(), 

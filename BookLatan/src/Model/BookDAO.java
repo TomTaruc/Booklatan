@@ -3,7 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model;
-
+/**
+ *
+ * @author Dinel
+ */
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -216,6 +219,17 @@ public class BookDAO extends DataAccessObject {
                     // Continue with other deletions
                 }
                 
+                try {
+                    String deleteReservations = "DELETE FROM reservationbook WHERE bookID = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(deleteReservations)) {
+                        stmt.setInt(1, bookID);
+                        stmt.executeUpdate();
+                    }
+                } catch (SQLException e) {
+                    System.out.println("[DEBUG] Could not delete from reservation: " + e.getMessage());
+                    // Continue with other deletions
+                }
+                
                 // Finally delete the book itself
                 String deleteBook = "DELETE FROM book WHERE bookID = ?";
                 try (PreparedStatement stmt = conn.prepareStatement(deleteBook)) {
@@ -233,13 +247,116 @@ public class BookDAO extends DataAccessObject {
         }
     }
 
+    // SQL-based search: Get books with filters for title, category, status, publisher, author
+    public List<Book> getBooksWithFilters(String searchText, String category, String status, String publisherName, String authorName) throws SQLException {
+        List<Book> books = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        List<Object> parameters = new ArrayList<>();
+
+        sql.append("SELECT DISTINCT b.* FROM book b ");
+
+        boolean joinPublisher = (publisherName != null && !publisherName.trim().isEmpty()) || (searchText != null && !searchText.trim().isEmpty());
+        boolean joinAuthor = (authorName != null && !authorName.trim().isEmpty()) || (searchText != null && !searchText.trim().isEmpty());
+
+        if (joinPublisher) {
+            sql.append("LEFT JOIN Publisher p ON b.pubID = p.pubID ");
+        }
+        if (joinAuthor) {
+            sql.append("LEFT JOIN bookauthor ba ON b.bookID = ba.bookID ");
+            sql.append("LEFT JOIN Author a ON ba.authorID = a.authorID ");
+        }
+
+        sql.append("WHERE 1=1 ");
+
+        // Dropdown filters (AND)
+        if (category != null && !category.trim().isEmpty()) {
+            sql.append("AND b.category = ? ");
+            parameters.add(category.trim());
+        }
+        if (status != null && !status.trim().isEmpty()) {
+            // Convert readable status to enum name for database search
+            BookStatus bookStatus = BookStatus.fromString(status.trim());
+            System.out.println("[DEBUG] Status filter: '" + status.trim() + "' -> " + (bookStatus != null ? bookStatus.name() : "null"));
+            if (bookStatus != null) {
+                sql.append("AND b._status = ? ");
+                parameters.add(bookStatus.name());
+            } else {
+                // Fallback: try direct match
+                sql.append("AND b._status LIKE ? ");
+                parameters.add("%" + status.trim().toLowerCase() + "%");
+            }
+        }
+        if (publisherName != null && !publisherName.trim().isEmpty()) {
+            sql.append("AND p.name LIKE ? ");
+            parameters.add("%" + publisherName.trim() + "%");
+        }
+        if (authorName != null && !authorName.trim().isEmpty()) {
+            sql.append("AND a.name LIKE ? ");
+            parameters.add("%" + authorName.trim() + "%");
+        }
+
+        // Search bar (OR)
+        if (searchText != null && !searchText.trim().isEmpty()) {
+            sql.append("AND (");
+            sql.append("b.title LIKE ? OR ");
+            sql.append("b._status LIKE ? OR ");
+            sql.append("b.category LIKE ? ");
+            if (joinPublisher) {
+                sql.append("OR p.name LIKE ? ");
+            }
+            if (joinAuthor) {
+                sql.append("OR a.name LIKE ? ");
+            }
+            sql.append(") ");
+            parameters.add("%" + searchText.trim() + "%"); // title
+            parameters.add("%" + searchText.trim() + "%"); // status
+            parameters.add("%" + searchText.trim() + "%"); // category
+            if (joinPublisher) {
+                parameters.add("%" + searchText.trim() + "%"); // publisher
+            }
+            if (joinAuthor) {
+                parameters.add("%" + searchText.trim() + "%"); // author
+            }
+        }
+
+        sql.append("ORDER BY b.title");
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < parameters.size(); i++) {
+                stmt.setObject(i + 1, parameters.get(i));
+            }
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Book book = mapResultSetToBook(rs);
+                books.add(book);
+            }
+        }
+        return books;
+    }
+
     // Helper: Map ResultSet to Book object using the better approach
     private Book mapResultSetToBook(ResultSet results) throws SQLException {
         Book book = new Book();
         book.setBookID(results.getInt("bookID"));
         book.setTitle(results.getString("Title"));
         book.setAuthors(authorDAO.getAllAuthors(book.getBookID()));
-        book.setPublisher(publisherDAO.getPublisherById(results.getInt("pubID")));
+        
+        // Load publisher with fallback
+        int pubID = results.getInt("pubID");
+        Publisher publisher = null;
+        try {
+            publisher = publisherDAO.getPublisherById(pubID);
+        } catch (SQLException e) {
+            System.out.println("[DEBUG] Error loading publisher ID " + pubID + ": " + e.getMessage());
+        }
+        if (publisher == null) {
+            // Create a fallback publisher with just the ID
+            publisher = new Publisher(pubID, "Unknown Publisher", "", "", "");
+            System.out.println("[DEBUG] Using fallback publisher for ID " + pubID);
+        }
+        book.setPublisher(publisher);
+        
         book.setCategory(results.getString("category"));
         book.setPubDate(results.getDate("pubDate"));
         book.setLanguage(results.getString("lang"));
@@ -278,21 +395,19 @@ public class BookDAO extends DataAccessObject {
 
         return null;
     }
-    
     public Book getBookByID(int bookID) {
-        try {
-            Connection conn = super.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM book WHERE bookID = ?");
-            pstmt.setInt(1, bookID);
-            ResultSet result = pstmt.executeQuery();
-            if(result.next()) {
-                return this.mapResultSetToBook(result);
+            try {
+                Connection conn = super.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM book WHERE bookID = ?");
+                pstmt.setInt(1, bookID);
+                ResultSet result = pstmt.executeQuery();
+                if(result.next()) {
+                    return this.mapResultSetToBook(result);
+                }
             }
+            catch(Exception ex) {
+                ex.printStackTrace();
+            }
+                return null;
         }
-        catch(Exception ex) {
-            ex.printStackTrace();
-        }
-            return null;
-    }
-    
 }

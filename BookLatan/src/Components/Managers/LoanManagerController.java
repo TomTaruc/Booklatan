@@ -13,7 +13,10 @@ import Model.LoanDAO;
 import Model.LoanStatus;
 import Model.Member;
 import Model.Staff;
+import Model.User;
+import Model.User.UserType;
 import Model.UserMemberDAO;
+import Model.UserStaffDAO;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -29,28 +32,44 @@ import javax.swing.event.DocumentListener;
 public class LoanManagerController {
     private LoanManager view;
     private LoanDAO loanDAO;
-    private UserMemberDAO userDAO;
+    private UserMemberDAO memDAO;
+    private UserStaffDAO staffDAO;
+    private User user;
     private Staff staff;
+    private Member member;
     
-    public LoanManagerController(LoanManager view, Staff staff) {
+    public LoanManagerController(LoanManager view, User user) {
         this.view = view;
-        this.staff = staff;
         this.loanDAO = new LoanDAO();
-        this.userDAO = new UserMemberDAO ();
-        this.staff = staff;
+        this.memDAO = new UserMemberDAO ();
+        this.staffDAO = new UserStaffDAO();
+        this.user = user;
+        
+        
+        if(user.getType().equals(UserType.LIBRARIAN)) {
+            staff = staffDAO.getStaffByUserID(user.getUserId());
+        }
+        else {
+            member = memDAO.getMemberByID(memDAO.getMemberIDByUSerID(user.getUserId()));
+        }
+        
+        
+        
         this.view.table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int rowIndex = view.table.getSelectedRow();
                 Loan loan = loanDAO.getLoan(Integer.parseInt(view.table.getValueAt(rowIndex, 0).toString()));
-                new LoanInformationCon(staff, loan, () -> filterTable());
                 
-            }
-            
+                if(user.getType() == UserType.LIBRARIAN) 
+                    new LoanInformationCon(staff, loan, () -> filterTable());
+                else 
+                    new LoanInformationCon(loan);
+            } 
         });
         
         this.view.createLoanBtn.addActionListener(e -> {
-            LoanController creator = new LoanController(staff.getType(), () -> filterTable());
+            LoanController creator = new LoanController(this.user, () -> filterTable());
         });
         
         
@@ -86,7 +105,7 @@ public class LoanManagerController {
         view.model.setRowCount(0);
         Member member;
         for(Loan loan : loans) {
-            member =  userDAO.getMemberByID(loan.getMemberID());
+            member =  memDAO.getMemberByID(loan.getMemberID());
             //"#", "Member","Issue Date", "Due Date", "Return Date", "Status"
             view.model.addRow(new Object[] {
                 String.format("%06d", loan.getLoanID()),
@@ -101,10 +120,18 @@ public class LoanManagerController {
     
     public void filterTable() {
         if (view.searchbar.getText().trim().equalsIgnoreCase(view.SEARCH_PLACEHORDER)) {
-            updateTable(loanDAO.getLoans( (LoanStatus) view.statusSelection.getSelectedItem()));
+            if(user.getType() == UserType.LIBRARIAN)
+                updateTable(loanDAO.getLoans( (LoanStatus) view.statusSelection.getSelectedItem()));
+            else
+                updateTable(loanDAO.getLoans((LoanStatus) view.statusSelection.getSelectedItem(), member.getMemberID()));
         }
         else {
-            updateTable(loanDAO.getLoans(view.searchbar.getText().trim(), (LoanStatus) view.statusSelection.getSelectedItem()));
+            if(user.getType() == UserType.LIBRARIAN) {
+                updateTable(loanDAO.getLoans(view.searchbar.getText().trim(), (LoanStatus) view.statusSelection.getSelectedItem()));
+            }
+            else {
+                updateTable(loanDAO.getLoans(view.searchbar.getText().trim(), (LoanStatus) view.statusSelection.getSelectedItem(), member.getMemberID()));
+            }
         }
     }
 }

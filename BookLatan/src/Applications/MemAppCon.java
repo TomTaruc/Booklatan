@@ -6,6 +6,7 @@ package Applications;
 
 import Componenents.Members.FineViewCon;
 import Components.Login.LoginController;
+import Components.Managers.LoanManagerController;
 import Components.Managers.MemberReservationsManagerController;
 import Model.User;
 import Model.UserMemberDAO;
@@ -25,6 +26,7 @@ public class MemAppCon {
     private UserMemberDAO userDAO;
     private Member member;
     
+    private LoanManagerController loanCon;
     private FineViewCon fineviewCon;
     private MemberReservationsManagerController reservationsController;
 
@@ -34,6 +36,7 @@ public class MemAppCon {
         this.userDAO = new UserMemberDAO();
         this.member = userDAO.getMemberByID(userDAO.getMemberIDByUSerID(user.getUserId()));
         this.view.sidebar.addUserInfo(this.user.getUsername(), userDAO.getMemberIDByUSerID(user.getUserId()));
+        this.loanCon = new LoanManagerController(this.view.loans, user);
         
         this.fineviewCon = new FineViewCon(view.fines, member);
         this.reservationsController = new MemberReservationsManagerController(view.reservations, member);
@@ -47,7 +50,6 @@ public class MemAppCon {
     
     private void attachListeners() {
         Map<String, JButton> btns = view.sidebar.getMenuButtons();
-        btns.get("Dashboard").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "dashboard"));
         btns.get("Books").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "books"));
         btns.get("Loans").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "loans"));
         btns.get("Reservations").addActionListener(e -> view.mainPanelLayout.show(view.mainPanel, "reservations"));

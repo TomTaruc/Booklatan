@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class LoanInformationForm extends JDialog{
     
-    private HeaderPanel header;
+    public HeaderPanel header;
     private JPanel mainPanel;
     private JPanel formsPanel;
     private ModernScrollPane scrollPanel;

@@ -8,6 +8,7 @@ import Components.Designs.Sidebar;
 import Components.Managers.FinesManager;
 import Components.Dashboards.LibDashboard;
 import Components.Managers.BookManager;
+import Components.Managers.BookManagerController;
 import Components.Managers.LoanManager;
 import Components.Managers.MembersManager;
 import Components.Managers.ReservationsManager;
@@ -25,7 +26,6 @@ public class LibrarianApplication extends Application {
     public Sidebar sidebar;
     public CardLayout mainPanelLayout;
     public JPanel mainPanel;
-    public LibDashboard dashboard;
     public MembersManager members;
     public ReservationsManager reservations;
     public FinesManager fines;
@@ -39,7 +39,6 @@ public class LibrarianApplication extends Application {
     @Override
     protected void addSideBar() {
         Map<String, String> menuItems = new LinkedHashMap<>();
-        menuItems.put("Dashboard", "./src/Images/dashboard2.png");
         menuItems.put("Books", "./src/Images/bookcataglo2.png");
         menuItems.put("Members", "./src/Images/members.png");
         menuItems.put("Loans", "./src/Images/loanbooks.png");
@@ -56,14 +55,14 @@ public class LibrarianApplication extends Application {
     private void addMainPanel() {
         mainPanelLayout = new CardLayout();
         mainPanel = new JPanel(mainPanelLayout);
-        dashboard = new LibDashboard();
         BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);
+        // Connect BookManager to database through controller
+        BookManagerController bookController = new BookManagerController(books);
         members = new MembersManager(Design.MAIN_PANEL_SIZE, false);
         loans = new LoanManager();
         reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);
         fines = new FinesManager();
 
-        mainPanel.add(dashboard, "dashboard");
         mainPanel.add(books, "books");
         mainPanel.add(members, "members");
         mainPanel.add(loans, "loans");
