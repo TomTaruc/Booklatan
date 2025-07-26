@@ -7,13 +7,21 @@ package Components.Forms;
 import Model.AuthorDAO;
 import Model.Book;
 import Model.BookDAO;
+import Model.BookStatus;
+import Model.Loan;
+import Model.LoanDAO;
 import Model.Member;
 import Model.PublisherDAO;
 import Model.User.UserType;
 import Model.UserMemberDAO;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -28,14 +36,20 @@ public class LoanController {
     private BookDAO bookDAO;
     private AuthorDAO authorDAO;
     private PublisherDAO pubDAO;
+    private LoanDAO loanDAO;
     private ArrayList<Book> selectedBooks = new ArrayList<>();
+    private ArrayList<Book> availableBooks = new ArrayList<>();
+    private Runnable updateTable;
     
-    public LoanController(UserType type) {
+    public LoanController(UserType type, Runnable updateTable) {
         this.view = new LoanForm(type);
         this.memberDAO = new UserMemberDAO();
         this.bookDAO = new BookDAO();
         this.authorDAO = new AuthorDAO();
         this.pubDAO = new PublisherDAO();
+        this.loanDAO = new LoanDAO();
+        this.updateTable = updateTable;
+        filterTable();
         
         view.memberNameField.addKeyListener(new KeyAdapter() {
             @Override
@@ -77,7 +91,119 @@ public class LoanController {
                 }
             }
         });
+        
+        this.view.booksTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(view, "Do you want to loan this book?", "Selected Book", JOptionPane.YES_NO_OPTION);
+                if(confirm == JOptionPane.NO_OPTION) {
+                    return;
+                }
+                
+                int rowIndex = view.booksTable.getSelectedRow();
+                int columnCount = view.booksTable.getColumnCount();
+                Object[] rowData = new Object[columnCount];
+                
+                for(int i = 0; i < columnCount; i++) {
+                    rowData[i] = view.booksTable.getValueAt(rowIndex, i);
+                }
+                view.addedBooksModel.addRow(rowData);
+                
+                int bookID = Integer.parseInt(view.booksTable.getValueAt(rowIndex, 0).toString());
+                selectedBooks.add(bookDAO.getBookByID(bookID));
+                
+                updateTable();
+            }
+            
+        });
+        
+        this.view.searchBar.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTable();
+            
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTable();
+            }
+        
+        });
+        
+        this.view.loanBook.addActionListener(e -> {
+            if(view.memberNameField.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(view, "Member name and id must not be empty", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if(((Date) view.dueDateField.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(LocalDate.now())) {
+                JOptionPane.showMessageDialog(view, "The Due date must not be today.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if(selectedBooks.isEmpty()) {
+                JOptionPane.showMessageDialog(view, "Select a book to loan.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            
+            Loan loan = new Loan();
+            loan.setIssueDate(LocalDate.now());
+            loan.setDueDate(((Date) view.dueDateField.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            loan.setMemberID(Integer.parseInt(view.memberIDField.getText()));
+            loanDAO.addLoan(loan, selectedBooks);
+            this.updateTable.run();
+            JOptionPane.showMessageDialog(view, "Loan has been issued", "Success", JOptionPane.INFORMATION_MESSAGE);
+            this.view.dispose();
+        });
+    }
+    
+    public void filterTable() {
+        if(view.searchBar.getText().equalsIgnoreCase("Search book")) {
+            availableBooks = bookDAO.getAllBooksByStatus(BookStatus.AVAILABLE); 
+            updateTable();
+        }
+        else {
+            availableBooks = bookDAO.getAllBooksByTitleStatus(view.searchBar.getText(), BookStatus.AVAILABLE);
+            updateTable();
+        }
     }
     
     
+    private void updateTable() {
+        view.booksTableModel.setRowCount(0);
+        
+        boolean skip = false;
+        for(Book book: availableBooks) {
+            
+            for(Book xbook: selectedBooks) {
+                if(xbook.getBookID() == book.getBookID()) {
+                    skip = true;
+                    break;
+                }
+            }
+            
+            if(skip) {
+                skip = false;
+                continue;
+            }
+            
+            view.booksTableModel.addRow(new Object[] {
+                book.getBookID(),
+                book.getTitle(),
+                book.getCategory(),
+                book.getAuthors().size() >= 2 ? book.getAuthors().get(0).getName() + " et al." : book.getAuthors().get(0).getName(), 
+            });
+        }
+    }
+    
+    public void clearSelected() {
+        this.selectedBooks.clear();
+    }
 }

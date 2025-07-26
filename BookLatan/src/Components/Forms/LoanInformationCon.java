@@ -5,6 +5,8 @@
 package Components.Forms;
 
 import Model.Book;
+import Model.BookDAO;
+import Model.BookStatus;
 import Model.Loan;
 import Model.LoanDAO;
 import Model.LoanStatus;
@@ -29,7 +31,7 @@ public class LoanInformationCon {
     private LoanDAO loanDAO;
     private Staff staff;
     private Runnable updateTable;
-    
+    private BookDAO bookDAO;
     
     public LoanInformationCon(Staff staff, Loan loan, Runnable updateTable) {
         this.updateTable = updateTable;
@@ -37,6 +39,7 @@ public class LoanInformationCon {
         this.view = new LoanInformationForm();
         this.memDAO = new UserMemberDAO();
         this.loanDAO = new LoanDAO();
+        this.bookDAO = new BookDAO();
         this.loan = loan;
         this.member = memDAO.getMemberByID(loan.getMemberID());
         this.books = this.loanDAO.getLoanedBooks(this.loan.getLoanID());
@@ -47,6 +50,16 @@ public class LoanInformationCon {
         this.view.deleteLoan.addActionListener(e -> {
            int confirm = JOptionPane.showConfirmDialog(view, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
            if(confirm == JOptionPane.YES_OPTION) {
+               for(Book book : books) {
+                    try {
+                        book.setStatus(BookStatus.AVAILABLE);
+                        bookDAO.updateBook(book);
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            
                 loanDAO.deleteLoan(loan);
                 this.view.dispose();
                 this.updateTable.run();
@@ -59,6 +72,18 @@ public class LoanInformationCon {
             }
             loan.setReturnDate(LocalDate.now());
             loanDAO.updateLoanStatus(loan);
+            
+            for(Book book : books) {
+                try {
+                    book.setStatus(BookStatus.AVAILABLE);
+                    bookDAO.updateBook(book);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            
+            
             this.updateTable.run();
             this.updateField();
         });

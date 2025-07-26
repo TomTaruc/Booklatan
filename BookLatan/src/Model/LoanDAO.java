@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import Model.BookDAO;
 /**
  *
  * @author Joseph Rey
@@ -23,6 +24,7 @@ public class LoanDAO extends DataAccessObject{
     private ArrayList<Book> books = new ArrayList<>();
     private AuthorDAO authorDAO = new AuthorDAO();
     private PublisherDAO pubDAO = new PublisherDAO();
+    private BookDAO bookDAO = new BookDAO();
     
     public ArrayList<Loan> getLoans(LoanStatus status) {
         con = super.getConnection();
@@ -154,7 +156,7 @@ public class LoanDAO extends DataAccessObject{
             
             results = pstmt.executeQuery();
             
-            if(results.next()) {
+            while(results.next()) {
                 book = new Book();
                 book.setBookID(results.getInt("bookID"));
                 book.setTitle(results.getString("Title"));
@@ -230,7 +232,6 @@ public class LoanDAO extends DataAccessObject{
     
     public void deleteLoan(Loan loan) {
         con = super.getConnection();
-        loans.clear();
         
         try {
             pstmt = con.prepareStatement("{Call deleteLoan(?)}");
@@ -242,6 +243,47 @@ public class LoanDAO extends DataAccessObject{
             
         }
         catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
+    
+    public void addLoan(Loan loan, ArrayList<Book> books) {
+        con = super.getConnection();
+        int loanID = -1;
+        try {
+            pstmt = con.prepareStatement("INSERT INTO Loan(issueDate, dueDate, memberID, status) VALUES (?, ?, ?, 'pending')", Statement.RETURN_GENERATED_KEYS);
+            pstmt.setDate(1, Date.valueOf(loan.getIssueDate()));
+            pstmt.setDate(2, Date.valueOf(loan.getDueDate()));
+            pstmt.setInt(3, loan.getMemberID());
+            int affectedRows = pstmt.executeUpdate();
+            
+            if(affectedRows > 0) {
+                results = pstmt.getGeneratedKeys();
+                if(results.next()) {
+                    loanID = results.getInt(1);
+                }
+            }
+            
+            if(loanID > -1) {
+                for(Book book : books) {
+                    pstmt = con.prepareStatement("INSERT INTO loanbook(loanID, bookID) VALUES (?, ?)");
+                    pstmt.setInt(1, loanID);
+                    pstmt.setInt(2, book.getBookID());
+                    pstmt.execute();
+                    
+                    book.setStatus(BookStatus.LOANED);
+                    bookDAO.updateBook(book);
+                    
+                }
+            }
+            
+            results.close();
+            pstmt.close();
+            con.close();
+        }
+        catch(Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);

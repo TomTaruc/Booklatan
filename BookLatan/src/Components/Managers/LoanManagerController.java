@@ -44,12 +44,13 @@ public class LoanManagerController {
                 int rowIndex = view.table.getSelectedRow();
                 Loan loan = loanDAO.getLoan(Integer.parseInt(view.table.getValueAt(rowIndex, 0).toString()));
                 new LoanInformationCon(staff, loan, () -> filterTable());
+                
             }
             
         });
         
         this.view.createLoanBtn.addActionListener(e -> {
-            new LoanController(staff.getType());
+            LoanController creator = new LoanController(staff.getType(), () -> filterTable());
         });
         
         
