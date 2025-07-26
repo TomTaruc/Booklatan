@@ -41,7 +41,6 @@ public class LoanInformationForm extends JDialog{
     public JTextField statusField;
     
     public CustomButton markAsReturned;
-    public CustomButton issueAFine;
     public CustomButton deleteLoan;
     
     private final String[] columnNames = {"Book ID", "Title", "Category", "Author", "Publisher"};
@@ -168,20 +167,16 @@ public class LoanInformationForm extends JDialog{
         deleteLoan.setPrimaryColor(Design.BTN3);
         deleteLoan.setHoverColor(Design.BTN3_HOVER);
         
-        issueAFine = new CustomButton("Issue a Fine");
-        issueAFine.setPrimaryColor(Design.BTN1);
-        issueAFine.setHoverColor(Design.BTN2_HOVER);
     }
     
     private void initLayout() {
         header.add(Box.createHorizontalGlue());
         header.add(markAsReturned);
         header.add(Box.createHorizontalStrut(10));
-        header.add(issueAFine);
-        header.add(Box.createHorizontalStrut(10));
         header.add(deleteLoan);
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        
         formsPanel.setLayout(new GridBagLayout());
         
         GridBagConstraints gbc = new GridBagConstraints();

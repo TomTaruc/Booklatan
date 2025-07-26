@@ -203,25 +203,26 @@ public class UserStaffDAO extends DataAccessObject{
     public Staff getStaffByID(int staffID) {
         try {
             con = super.getConnection();
-            Staff individual;
+            Staff individual = null;
 
             stmt = con.createStatement();
             results = stmt.executeQuery("SELECT * FROM StaffUser WHERE staffID = "+ staffID +";");
-            results.next();
-            individual = new Staff(results.getString("userName"), results.getString("password"));
-            individual.setStaffID(results.getInt("staffID"));
-            individual.setName(results.getString("name"));
-            individual.setPhone(results.getString("phone"));
-            individual.setEmail(results.getString("email"));
-            individual.setAddress(results.getString("address"));
-            individual.setDateHired(results.getDate("dateHired").toLocalDate());
-            individual.setType(User.UserType.fromString(results.getString("type")));
+            if(results.next()) {
+                individual = new Staff(results.getString("userName"), results.getString("password"));
+                individual.setStaffID(results.getInt("staffID"));
+                individual.setName(results.getString("name"));
+                individual.setPhone(results.getString("phone"));
+                individual.setEmail(results.getString("email"));
+                individual.setAddress(results.getString("address"));
+                individual.setDateHired(results.getDate("dateHired").toLocalDate());
+                individual.setType(User.UserType.fromString(results.getString("type")));                
+            }
 
             results.close();
             stmt.close();
             con.close();
-
             return individual;
+
         }
         catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.toString(), "Error", JOptionPane.ERROR_MESSAGE);

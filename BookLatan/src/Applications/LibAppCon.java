@@ -36,7 +36,7 @@ public class LibAppCon {
         this.dashCon = new LibDashCon(view.dashboard);
         this.fineCon = new FinesManagerController(view.fines, userDAO.getStaffByUserID(user.getUserId()));
         this.reservationsCon = new ReservationsManagerController(view.reservations, false, userDAO.getStaffByUserID(user.getUserId()));
-        this.loanCon = new LoanManagerController (view.loans);
+        this.loanCon = new LoanManagerController (view.loans, userDAO.getStaffByUserID(user.getUserId()));
         attachListeners();
         
     }

@@ -4,12 +4,15 @@
  */
 package Components.Managers;
 
+import Components.Forms.LoanController;
+import Components.Forms.LoanForm;
 import Components.Forms.LoanInformationCon;
 import Components.Forms.LoanInformationForm;
 import Model.Loan;
 import Model.LoanDAO;
 import Model.LoanStatus;
 import Model.Member;
+import Model.Staff;
 import Model.UserMemberDAO;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -27,22 +30,29 @@ public class LoanManagerController {
     private LoanManager view;
     private LoanDAO loanDAO;
     private UserMemberDAO userDAO;
+    private Staff staff;
     
-    public LoanManagerController(LoanManager view) {
+    public LoanManagerController(LoanManager view, Staff staff) {
         this.view = view;
+        this.staff = staff;
         this.loanDAO = new LoanDAO();
         this.userDAO = new UserMemberDAO ();
-        
+        this.staff = staff;
         this.view.table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int rowIndex = view.table.getSelectedRow();
                 Loan loan = loanDAO.getLoan(Integer.parseInt(view.table.getValueAt(rowIndex, 0).toString()));
-                new LoanInformationCon(loan);
-                
+                new LoanInformationCon(staff, loan, () -> filterTable());
             }
             
         });
+        
+        this.view.createLoanBtn.addActionListener(e -> {
+            new LoanController(staff.getType());
+        });
+        
+        
         
         this.view.searchbar.getDocument().addDocumentListener(new DocumentListener() {
             @Override

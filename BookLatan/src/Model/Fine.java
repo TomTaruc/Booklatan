@@ -79,7 +79,7 @@ public class Fine {
 
     public void setAmount(double amount) {
         Validators.validateEmptyVariable(amount, "Amount");
-        Validators.validateLimitValue(amount, 1000.0, 10000.0);
+        Validators.validateLimitValue(amount, 10.75, 10000.0);
         this.amount = amount;
     }
 

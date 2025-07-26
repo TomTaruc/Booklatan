@@ -12,7 +12,8 @@ public enum LoanStatus {
     ALL("All"),
     OVERDUE ("Overdue"),
     RETURNED("Returned"),
-    PENDING("Pending");
+    PENDING("Pending"),
+    FINED("Fined");
     
     private String label;
     

@@ -73,7 +73,7 @@ public class Design {
             @Override
             public void focusLost(FocusEvent e) {
                 if(field.getText().isEmpty()) {
-                    field.setText("Search member");
+                    field.setText(defaultText);
                     field.setForeground(Color.LIGHT_GRAY);
                 }
             }

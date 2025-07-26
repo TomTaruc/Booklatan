@@ -6,6 +6,9 @@ package Components.Forms;
 
 import Model.Fine;
 import Model.FineDAO;
+import Model.Loan;
+import Model.LoanDAO;
+import Model.LoanStatus;
 import Model.Member;
 import Model.Staff;
 import Model.UserMemberDAO;
@@ -28,30 +31,31 @@ public class FineFormCon {
     private FineForm view;
     private FineDAO fineDAO;
     private UserMemberDAO memberDAO;
-    private Runnable udpateTable;
+    private Runnable updateTable;
+    private Staff staff;
+    private LoanDAO loanDAO;
+    private Loan loan = null;
     
     public FineFormCon(Staff staff, Runnable updateTable) {
         this.view = new FineForm();
+        this.staff = staff;
         this.memberDAO = new UserMemberDAO();
         this.fineDAO = new FineDAO();
-        this.udpateTable = updateTable;
+        this.loanDAO = new LoanDAO();
+        this.updateTable = updateTable;
         view.setVisible(true);
-        
-        view.memberName.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                Member mem = memberDAO.getMemberByName(view.memberName.getText().trim());
-                if(mem  == null) {
-                    view.showErrorMessage("User Does Not Exist");
-                    view.memberName.setText("");
-                    view.memberNo.setText("");
-                }
-                else {
-                    view.memberName.setText(mem.getName());
-                    view.memberNo.setText(String.format("%06d", mem.getMemberID()));
-                }
-            } 
-        });
+        attachListeners();
+    }
+    
+    public void setInitialLoanDetails(Member member, double amount, String description, LocalDate dateIssued, Loan loan) {
+        view.memberName.setText(member.getName());
+        view.memberNo.setText(String.format("%06d", member.getMemberID()));
+        view.amount.setValue(amount);
+        view.description.setText(description);
+        this.loan = loan;
+    }
+    
+    public void attachListeners() {
         
         view.memberName.addKeyListener(new KeyAdapter() {
             @Override
@@ -83,10 +87,20 @@ public class FineFormCon {
                     fine.setDue_date(((Date)view.dueDate.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                     fine.setDescription(view.description.getText());
                     fineDAO.addFine(fine);
-                    updateTable.run();
-                    int confirm = JOptionPane.showConfirmDialog(view, "A fine under " + view.memberName.getText() + " has been issued. Would you like to add issue fine?", "Success", JOptionPane.YES_NO_OPTION);
-                    if(confirm == JOptionPane.NO_OPTION)
+                    
+                    if(loan != null) {
+                        loan.setStatus(LoanStatus.FINED);
+                        loanDAO.updateLoanStatus(loan);
+                        updateTable.run();
+                        JOptionPane.showMessageDialog(null, "A fine under " + view.memberName.getText() + " has been issued.");
                         view.dispose();
+                    }
+                    else {
+                        updateTable.run();
+                        int confirm = JOptionPane.showConfirmDialog(view, "A fine under " + view.memberName.getText() + " has been issued. Would you like to add issue fine?", "Success", JOptionPane.YES_NO_OPTION);
+                        if(confirm == JOptionPane.NO_OPTION)
+                            view.dispose();
+                    }
                 } catch (Exception ex) {
                     view.showErrorMessage(ex.getMessage());
                     ex.printStackTrace();
@@ -100,5 +114,6 @@ public class FineFormCon {
                 view.dispose();
             }
         });
+    
     }
 }

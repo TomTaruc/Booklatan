@@ -5,6 +5,8 @@
 package Model;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 /**
@@ -45,6 +47,7 @@ public class LoanDAO extends DataAccessObject{
                 loan.setDueDate(results.getDate("dueDate").toLocalDate());
                 loan.setReturnDate(results.getDate("returnDate") != null ? results.getDate("returnDate").toLocalDate() : null);
                 loan.setStatus(LoanStatus.fromString(results.getString("status")));
+                this.checkDueDate(loan);
                 loans.add(loan);
             }
             
@@ -88,6 +91,7 @@ public class LoanDAO extends DataAccessObject{
                 loan.setDueDate(results.getDate("dueDate").toLocalDate());
                 loan.setReturnDate(results.getDate("returnDate") != null ? results.getDate("returnDate").toLocalDate() : null);
                 loan.setStatus(LoanStatus.fromString(results.getString("status")));
+                this.checkDueDate(loan);
                 loans.add(loan);
             }
             
@@ -123,6 +127,7 @@ public class LoanDAO extends DataAccessObject{
                 loan.setDueDate(results.getDate("dueDate").toLocalDate());
                 loan.setReturnDate(results.getDate("returnDate") != null ? results.getDate("returnDate").toLocalDate() : null);
                 loan.setStatus(LoanStatus.fromString(results.getString("status")));
+                this.checkDueDate(loan);
             }
             
             results.close();
@@ -177,5 +182,70 @@ public class LoanDAO extends DataAccessObject{
         }
     }
     
+    public void updateLoanStatus(Loan loan) {
+        con = super.getConnection();
+        loans.clear();
+        
+        try {
+            
+            if(loan.getStatus() == LoanStatus.RETURNED) {
+                pstmt = con.prepareStatement("UPDATE loan SET status = ?, returnDate = ? WHERE loanID = ?");
+                pstmt.setString(1, loan.getStatus().toString());
+                pstmt.setDate(2, Date.valueOf(loan.getReturnDate()));
+                pstmt.setInt(3, loan.getLoanID());
+            }
+            else {
+                pstmt = con.prepareStatement("UPDATE loan SET status = ? WHERE loanID = ?");
+                pstmt.setString(1, loan.getStatus().toString());
+                pstmt.setInt(2, loan.getLoanID());
+            }
+            
+            pstmt.execute();
+            
+            pstmt.close();
+            con.close();
+            
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
+    
+    public void checkDueDate(Loan loan) {
+        
+        if(loan.getStatus() != LoanStatus.PENDING) {
+            return;
+        }
+        
+        LocalDate today = LocalDate.now();
+        Period period = Period.between(today, loan.getDueDate());
+        if(period.getDays() < 0) {
+            loan.setStatus(LoanStatus.OVERDUE);
+            updateLoanStatus(loan);
+        }
+    }
+    
+    
+    public void deleteLoan(Loan loan) {
+        con = super.getConnection();
+        loans.clear();
+        
+        try {
+            pstmt = con.prepareStatement("{Call deleteLoan(?)}");
+            pstmt.setInt(1, loan.getLoanID());
+            pstmt.execute();
+            
+            pstmt.close();
+            con.close();
+            
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
     
 }

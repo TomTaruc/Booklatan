@@ -7,12 +7,14 @@ package Components.Forms;
 import Model.Book;
 import Model.Loan;
 import Model.LoanDAO;
+import Model.LoanStatus;
 import Model.Member;
+import Model.Staff;
 import Model.UserMemberDAO;
-import java.awt.Color;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.Period;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,18 +26,68 @@ public class LoanInformationCon {
     private ArrayList<Book> books;
     private UserMemberDAO memDAO;
     private LoanInformationForm view;
-    private LoanDAO loanDOA;
+    private LoanDAO loanDAO;
+    private Staff staff;
+    private Runnable updateTable;
     
     
-    public LoanInformationCon(Loan loan) {
+    public LoanInformationCon(Staff staff, Loan loan, Runnable updateTable) {
+        this.updateTable = updateTable;
+        this.staff = staff;
         this.view = new LoanInformationForm();
         this.memDAO = new UserMemberDAO();
-        this.loanDOA = new LoanDAO();
+        this.loanDAO = new LoanDAO();
         this.loan = loan;
         this.member = memDAO.getMemberByID(loan.getMemberID());
-        this.books = this.loanDOA.getLoanedBooks(this.loan.getLoanID());
+        this.books = this.loanDAO.getLoanedBooks(this.loan.getLoanID());
+        
         
         updateField();
+        
+        this.view.deleteLoan.addActionListener(e -> {
+           int confirm = JOptionPane.showConfirmDialog(view, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+           if(confirm == JOptionPane.YES_OPTION) {
+                loanDAO.deleteLoan(loan);
+                this.view.dispose();
+                this.updateTable.run();
+           }
+        });
+        
+        this.view.markAsReturned.addActionListener(e -> {
+            if(loan.getStatus() == LoanStatus.PENDING) {
+                loan.setStatus(LoanStatus.RETURNED);
+            }
+            loan.setReturnDate(LocalDate.now());
+            loanDAO.updateLoanStatus(loan);
+            this.updateTable.run();
+            this.updateField();
+        });
+        
+        if(loan.getStatus() == LoanStatus.OVERDUE) {
+            LocalDate today = LocalDate.now();
+            Period period = Period.between(today, loan.getDueDate());
+            double minimumFine  = 15.75d;
+            double totalFine = minimumFine * Math.abs(period.getDays());
+            String description;
+            
+            int confirm = JOptionPane.showConfirmDialog(view, member.getName() + "'s loan is " + Math.abs(period.getDays()) + " days overdue. Would you like to issue a fine?", "Overdue Book", JOptionPane.YES_NO_OPTION);
+            
+            if(confirm == JOptionPane.YES_OPTION) {
+                this.view.dispose();
+                description = "Failure to return the following books on time: ";
+                for(Book book : books) {
+                    description = description + " " + book.getTitle();
+                    if(!books.getLast().equals(book)) {
+                        description = description + ",";
+                    }
+                }
+                
+                FineFormCon con = new FineFormCon(staff, updateTable);
+                con.setInitialLoanDetails(member, totalFine, description, today, loan);
+                
+            }
+        }
+        
     }
     
     private void updateField() {
