@@ -10,6 +10,7 @@ import Components.Managers.MembersManager;
 import Components.Designs.Sidebar;
 import Components.Managers.StaffManager;
 import Components.Managers.BookManager;
+import Components.Managers.BookManagerController;
 import Components.Managers.ReservationsManager;
 import Utilities.Design;
 import java.awt.*;
@@ -55,6 +56,8 @@ public class AdminApplication extends Application {
         mainPanel = new JPanel(mainPanelLayout);
         dashboard = new LibDashboard();
         BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.ADMIN);
+        // Connect BookManager to database through controller
+        BookManagerController bookController = new BookManagerController(books);
         members = new MembersManager(Design.MAIN_PANEL_SIZE, true);
         reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.ADMIN);
         staff = new StaffManager(Design.MAIN_PANEL_SIZE);

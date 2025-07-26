@@ -8,6 +8,7 @@ import Components.Designs.Sidebar;
 import Components.Managers.FinesManager;
 import Components.Dashboards.LibDashboard;
 import Components.Managers.BookManager;
+import Components.Managers.BookManagerController;
 import Components.Managers.LoanManager;
 import Components.Managers.MembersManager;
 import Components.Managers.ReservationsManager;
@@ -58,6 +59,8 @@ public class LibrarianApplication extends Application {
         mainPanel = new JPanel(mainPanelLayout);
         dashboard = new LibDashboard();
         BookManager books = new BookManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);
+        // Connect BookManager to database through controller
+        BookManagerController bookController = new BookManagerController(books);
         members = new MembersManager(Design.MAIN_PANEL_SIZE, false);
         loans = new LoanManager();
         reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.LIBRARIAN);

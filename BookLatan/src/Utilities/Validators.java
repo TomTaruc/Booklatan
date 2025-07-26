@@ -47,7 +47,7 @@ public class Validators {
         validateEmptyVariable(username, "Username");
         
         if(!USERNAME_PATTERN.matcher(username).matches()) {
-            throw new IllegalArgumentException("Username must be 3–20 characters (letters, numbers, underscores only).");
+          throw new IllegalArgumentException("Username must be 3–20 characters (letters, numbers, underscores only).");
         }
     };
     

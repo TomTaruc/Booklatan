@@ -49,7 +49,6 @@ public class ReservationDAO extends DataAccessObject {
                 "LEFT JOIN book b ON rb.bookID = b.bookID " +
                 "GROUP BY r.resID, r.memberID, r.dateReserved, r._status, m.name " +
                 "ORDER BY r.dateReserved DESC";
-            System.out.println("Model.ReservationDAO.getReservations()");
             stmt = con.createStatement();
             results = stmt.executeQuery(sql);
             

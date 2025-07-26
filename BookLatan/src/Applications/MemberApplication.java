@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 
 import Components.Managers.BookManager;
+import Components.Managers.BookManagerController;
 import Components.Dashboards.LibDashboard;
 import Components.Managers.ReservationsManager;
 import Utilities.Design;
@@ -64,6 +65,8 @@ public class MemberApplication extends Application {
         
         dashboard = new LibDashboard();
         books = new BookManager(panelSize, User.UserType.MEMBER); // read-only for members
+        // Connect BookManager to database through controller
+        BookManagerController bookController = new BookManagerController(books);
         loans = new JPanel();
         reservations = new ReservationsManager(Design.MAIN_PANEL_SIZE, User.UserType.MEMBER);
         fines = new FineView();

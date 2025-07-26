@@ -30,9 +30,7 @@ public class DataAccessObject {
     
     private void checkDrivers() {
         try {
-            System.out.println("Checking MySQL JDBC driver: ");
             Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("Success! You may now use MySQL JDBC");
         } catch(ClassNotFoundException ex) {
             System.out.print("JDBC Driver is not found. Please ensure that you have MySQL JDBC driver installed and imported to your libraries.");
             System.exit(0);
