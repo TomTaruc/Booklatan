@@ -23,10 +23,10 @@ public class FineDAO extends DataAccessObject {
         fines.clear();
         try {
             if (status == FineStatus.ALL) {
-                pstmt = con.prepareStatement("Select * FROM FineMember");
+                pstmt = con.prepareStatement("Select * FROM FineMember ORDER BY due_date ASC");
             }
             else {
-                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ?");
+                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? ORDER BY due_date ASC");
                 pstmt.setString(1, status.toString().toLowerCase());
             }
             
@@ -67,11 +67,11 @@ public class FineDAO extends DataAccessObject {
         fines.clear();
         try {
             if (status == FineStatus.ALL) {
-                pstmt = con.prepareStatement("Select * FROM FineMember WHERE name like ?");
+                pstmt = con.prepareStatement("Select * FROM FineMember WHERE name like ? ORDER BY due_date ASC");
                 pstmt.setString(1, "%" + search +"%");
             }
             else {
-                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? and name like ?");
+                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? and name like ? ORDER BY due_date ASC");
                 pstmt.setString(1, status.toString().toLowerCase());
                 pstmt.setString(2, "%" + search +"%");
             }
@@ -113,11 +113,11 @@ public class FineDAO extends DataAccessObject {
         fines.clear();
         try {
             if (status == FineStatus.ALL) {
-                pstmt = con.prepareStatement("Select * FROM FineMember WHERE memberID = ?");
+                pstmt = con.prepareStatement("Select * FROM FineMember WHERE memberID = ? ORDER BY due_date ASC");
                 pstmt.setInt(1, member.getMemberID());
             }
             else {
-                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? and memberID = ?");
+                pstmt = con.prepareStatement("Select * From FineMember WHERE _status = ? and memberID = ? ORDER BY due_date ASC");
                 pstmt.setString(1, status.toString().toLowerCase());
                 pstmt.setInt(2, member.getMemberID());
             }

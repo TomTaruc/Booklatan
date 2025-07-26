@@ -21,9 +21,10 @@ public class Book {
     private String language;
     private BookStatus status;
     private String shelfLocation;
-    private int libID; // NEW FIELD
 
-    public Book(int bookID, String title, List<Author> authors, Publisher publisher, String category, Date pubDate, String language, BookStatus status, String shelfLocation, int libID) {
+    public Book() {};
+    
+    public Book(int bookID, String title, List<Author> authors, Publisher publisher, String category, Date pubDate, String language, BookStatus status, String shelfLocation) {
         this.bookID = bookID;
         this.title = title;
         this.authors = authors;
@@ -33,7 +34,6 @@ public class Book {
         this.language = language;
         this.status = status;
         this.shelfLocation = shelfLocation;
-        this.libID = libID;
     }
 
     // Getters and setters for all fields
@@ -55,6 +55,4 @@ public class Book {
     public void setStatus(BookStatus status) { this.status = status; }
     public String getShelfLocation() { return shelfLocation; }
     public void setShelfLocation(String shelfLocation) { this.shelfLocation = shelfLocation; }
-    public int getLibID() { return libID; }
-    public void setLibID(int libID) { this.libID = libID; }
 }

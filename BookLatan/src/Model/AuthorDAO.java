@@ -41,6 +41,25 @@ public class AuthorDAO {
         }
         return null;
     }
+    
+    public List<Author> getAllAuthors(int bookID) throws SQLException {
+        List<Author> authors = new ArrayList<>();
+        String sql = "SELECT * FROM completebookinfo where bookID = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookID);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                authors.add(new Author(
+                    rs.getInt("authorID"),
+                    rs.getString("authorName"),
+                    rs.getString("bio")
+                ));
+            }
+        }
+        return authors;
+    }
+    
 
     public List<Author> getAllAuthors() throws SQLException {
         List<Author> authors = new ArrayList<>();
