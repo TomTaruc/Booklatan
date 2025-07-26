@@ -49,7 +49,9 @@ public class UserMemberDAO extends DataAccessObject{
             members.clear(); // Removes previous selection
 
             while(results.next()) {
+                System.out.println("Checking username: " + results.getString("userName")); 
                 member = new Member(results.getString("userName"), results.getString("password"));
+                
                 // Set Member Attributes
                 member.setMemberID(results.getInt("memberID"));
                 member.setName(results.getString("name"));
@@ -99,6 +101,7 @@ public class UserMemberDAO extends DataAccessObject{
                 member.setEmail(results.getString("email"));
                 member.setPhone(results.getString("phone"));
                 member.setStatus(Member.MembershipStatus.fromString(results.getString("_status")));
+                
                 members.add(member);
             }
 
