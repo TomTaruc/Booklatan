@@ -30,15 +30,15 @@ public class ReservationsManager extends JPanel {
     private boolean isEditable = true;
 
     // Filters for all roles
-    public JComboBox<String> statusFilter, memberFilter;
+    public JComboBox<String> statusFilter;
 
     public ReservationsManager(Dimension size, User.UserType userType) {
-        this.isEditable = (userType == User.UserType.ADMIN || userType == User.UserType.LIBRARIAN);
+        this.isEditable = (userType == User.UserType.LIBRARIAN);
         initComponent(size, userType);
     }
 
     public ReservationsManager(Dimension size) {
-        this(size, User.UserType.ADMIN); // default to admin for backward compatibility
+        this(size, User.UserType.LIBRARIAN); 
     }
 
     private void initComponent(Dimension size, User.UserType userType) {
@@ -65,43 +65,11 @@ public class ReservationsManager extends JPanel {
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
         filterPanel.setOpaque(false);
 
-        statusFilter = new JComboBox<>(new String[]{"All Statuses", "Pending", "Claimed", "Canceled"});
-        memberFilter = new JComboBox<>(new String[]{"All Members", "Kaiser Lycan", "Alice Love", "Dinel Christian P. Robles", "Khryzna Advincula"});
+        statusFilter = new JComboBox<>(new String[]{"All Statuses", "Pending", "Claimed", "Cancelled"});
         statusFilter.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        memberFilter.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         statusFilter.setMaximumSize(new Dimension(200, 35));
-        memberFilter.setMaximumSize(new Dimension(250, 35));
         filterPanel.add(statusFilter);
         filterPanel.add(Box.createHorizontalStrut(10));
-        filterPanel.add(memberFilter);
-        filterPanel.add(Box.createHorizontalStrut(10));
-
-        // Add Date Range filter
-        JLabel dateLabel = new JLabel("Date From:");
-        dateLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        JTextField dateFromField = new JTextField();
-        dateFromField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        dateFromField.setMaximumSize(new Dimension(120, 35));
-        dateFromField.setPreferredSize(new Dimension(120, 35));
-        dateFromField.setText("YYYY-MM-DD");
-        dateFromField.setForeground(Color.GRAY);
-        
-        JLabel dateToLabel = new JLabel("To:");
-        dateToLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        JTextField dateToField = new JTextField();
-        dateToField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        dateToField.setMaximumSize(new Dimension(120, 35));
-        dateToField.setPreferredSize(new Dimension(120, 35));
-        dateToField.setText("YYYY-MM-DD");
-        dateToField.setForeground(Color.GRAY);
-        
-        filterPanel.add(dateLabel);
-        filterPanel.add(Box.createHorizontalStrut(5));
-        filterPanel.add(dateFromField);
-        filterPanel.add(Box.createHorizontalStrut(10));
-        filterPanel.add(dateToLabel);
-        filterPanel.add(Box.createHorizontalStrut(5));
-        filterPanel.add(dateToField);
 
         headerPanel.add(title);
         headerPanel.add(Box.createVerticalStrut(10));
@@ -256,7 +224,7 @@ public class ReservationsManager extends JPanel {
                     label.setBackground(new Color(212, 237, 218));
                     label.setForeground(new Color(40, 167, 69));
                     break;
-                case "Canceled":
+                case "Cancelled":
                     label.setBackground(new Color(248, 215, 218));
                     label.setForeground(new Color(220, 53, 69));
                     break;

@@ -15,7 +15,6 @@ import static Model.User.UserType.MEMBER;
 import Applications.AdminApplication;
 import Applications.LibrarianApplication;
 import Applications.MemberApplication;
-import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

@@ -9,14 +9,11 @@ import Components.Designs.CustomButton;
 import Components.Designs.HeaderPanel;
 import Model.Member;
 import Model.Book;
+import Model.BookStatus;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Joseph Rey
- */
 public class ReservationsForm extends JDialog {
     
     private JPanel mainPanel;
@@ -28,11 +25,10 @@ public class ReservationsForm extends JDialog {
     public JComboBox<Member> memberComboBox;
     public JComboBox<Book> bookComboBox;
     public JSpinner reservationDate;
-    public JTextArea notes;
     private JLabel memberLabel;
     private JLabel bookLabel;
     private JLabel dateLabel;
-    private JLabel notesLabel;
+    private BookStatus BookStatus;
 
     public ReservationsForm() {
         initDialog();
@@ -87,16 +83,20 @@ public class ReservationsForm extends JDialog {
         bookComboBox.setPreferredSize(new Dimension(400, 50));
         bookComboBox.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
         bookComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Book) {
-                    Book book = (Book) value;
-                    setText(String.format("%d - %s", book.getBookID(), book.getTitle()));
-                }
-                return this;
-            }
-        });
+            
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (value instanceof Book) {
+            Book book = (Book) value;
+            String fullText = String.format("%d - %s | Author/s: %s | Publisher:  %s",
+                    book.getBookID(), book.getTitle(), book.getAuthors(), book.getPublisher());
+            setText(fullText);
+            setToolTipText(fullText);
+        }
+        return this;
+    }
+});
         
         dateLabel = new JLabel("Reservation Date (YYYY-MM-DD):");
         dateLabel.setFont(Design.PRIME_FONT.deriveFont(Font.BOLD, 18));
@@ -108,18 +108,6 @@ public class ReservationsForm extends JDialog {
         reservationDate.setFont(Design.PRIME_FONT.deriveFont(Font.PLAIN, 18));
         reservationDate.setPreferredSize(new Dimension(400, 50));
         reservationDate.setBorder(BorderFactory.createEmptyBorder());
-        
-        notesLabel = new JLabel("Notes (Optional):");
-        notesLabel.setFont(Design.PRIME_FONT.deriveFont(Font.BOLD, 18));
-        notes = new JTextArea(4, 30);
-        notes.setFont(Design.PRIME_FONT.deriveFont(Font.PLAIN, 16));
-        notes.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.GRAY),
-            BorderFactory.createEmptyBorder(10, 5, 10, 5)
-        ));
-        notes.setLineWrap(true);
-        notes.setWrapStyleWord(true);
-        
         btnHolder = new JPanel();
         btnHolder.setBackground(Design.PRIME_COLOR);
         
@@ -155,13 +143,6 @@ public class ReservationsForm extends JDialog {
         formPanel.add(dateLabel, gbc);
         gbc.gridy = 5;
         formPanel.add(reservationDate, gbc);
-        gbc.gridy = 6;
-        formPanel.add(notesLabel, gbc);
-        gbc.gridy = 7;
-        
-        JScrollPane notesScrollPane = new JScrollPane(notes);
-        notesScrollPane.setPreferredSize(new Dimension(400, 100));
-        formPanel.add(notesScrollPane, gbc);
         
         btnHolder.add(Box.createHorizontalGlue());
         btnHolder.add(cancel);
@@ -199,9 +180,11 @@ public class ReservationsForm extends JDialog {
     public void setBooks(java.util.List<Book> books) {
         DefaultComboBoxModel<Book> model = new DefaultComboBoxModel<>();
         model.addElement(null); // Add empty option
-        for (Book book : books) {
+          for (Book book : books) {
+        if (book.getStatus() == BookStatus.AVAILABLE) {
             model.addElement(book);
         }
-        bookComboBox.setModel(model);
     }
+    bookComboBox.setModel(model);
+   }
 }

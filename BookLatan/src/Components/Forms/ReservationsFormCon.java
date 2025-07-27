@@ -65,7 +65,6 @@ public class ReservationsFormCon {
                     reservation.setMemberName(selectedMember.getName());
                     reservation.setDateReserved(((Date) view.reservationDate.getValue()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
                     reservation.setStatus(Reservation.ReservationStatus.PENDING);
-                    reservation.setNotes(view.notes.getText().trim());
                     
                     // Add the selected book to the reservation
                     reservation.addBook(selectedBook);
@@ -93,7 +92,6 @@ public class ReservationsFormCon {
                         view.memberComboBox.setSelectedIndex(0);
                         view.bookComboBox.setSelectedIndex(0);
                         view.reservationDate.setValue(new Date());
-                        view.notes.setText("");
                     }
                     
                 } catch (Exception ex) {

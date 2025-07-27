@@ -49,6 +49,7 @@ public class ReservationDAO extends DataAccessObject {
                 "LEFT JOIN book b ON rb.bookID = b.bookID " +
                 "GROUP BY r.resID, r.memberID, r.dateReserved, r._status, m.name " +
                 "ORDER BY r.dateReserved DESC";
+            System.out.println("Model.ReservationDAO.getReservations()");
             stmt = con.createStatement();
             results = stmt.executeQuery(sql);
             
@@ -113,7 +114,7 @@ public class ReservationDAO extends DataAccessObject {
                     "LEFT JOIN book b ON rb.bookID = b.bookID " +
                     "WHERE r._status = ? " +
                     "GROUP BY r.resID, r.memberID, r.dateReserved, r._status, m.name " +
-                    "ORDER BY r.dateReserved DESC"
+                    "ORDER BY r.resID ASC"
                 );
                 pstmt.setString(1, status.name().toLowerCase());
             }
@@ -177,7 +178,7 @@ public class ReservationDAO extends DataAccessObject {
             }
             
             query += " GROUP BY r.resID, r.memberID, r.dateReserved, r._status, m.name " +
-                    "ORDER BY r.dateReserved DESC";
+                    "ORDER BY r.resID ASC";
             
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, "%" + search + "%");
@@ -241,7 +242,7 @@ public class ReservationDAO extends DataAccessObject {
                 "LEFT JOIN book b ON rb.bookID = b.bookID " +
                 "WHERE r.memberID = ? " +
                 "GROUP BY r.resID " +
-                "ORDER BY r.dateReserved DESC";
+                "ORDER BY r.resID ASC";
             
             pstmt = con.prepareStatement(sql);
             pstmt.setInt(1, memberID);

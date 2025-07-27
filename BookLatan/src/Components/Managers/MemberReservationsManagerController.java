@@ -111,10 +111,10 @@ public class MemberReservationsManagerController {
                 return Reservation.ReservationStatus.PENDING;
             case "Claimed":
                 return Reservation.ReservationStatus.CLAIMED;
-            case "Canceled":
+            case "Cancelled":
                 return Reservation.ReservationStatus.CANCELLED;
             default:
-                return null;
+                return Reservation.ReservationStatus.ALL;
         }
     }
     
