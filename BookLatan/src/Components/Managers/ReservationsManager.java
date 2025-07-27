@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import Model.User;
 import Components.Designs.BorderlessTable;
 import Components.Designs.CustomButton;
+import Components.Designs.CustomComboBox;
+import Utilities.Design;
 
 public class ReservationsManager extends JPanel {
-    private Color primaryColor = new Color(245, 245, 245);
     private Font primaryFont = new Font("Segoe UI", Font.PLAIN, 16);
     private ArrayList<JLabel> labels = new ArrayList<>();
     public ArrayList<JTextField> fields = new ArrayList<>();
@@ -49,11 +50,11 @@ public class ReservationsManager extends JPanel {
         // --- Header Panel (Search & Filters) ---
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-        headerPanel.setOpaque(false);
+        headerPanel.setBackground(Design.PRIME_COLOR);
 
         JLabel title = new JLabel("Search & Filter Reservations");
         title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         searchBar = new JTextField();
         searchBar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -63,13 +64,16 @@ public class ReservationsManager extends JPanel {
 
         JPanel filterPanel = new JPanel();
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
-        filterPanel.setOpaque(false);
+        filterPanel.setBackground(Design.PRIME_COLOR);
 
         statusFilter = new JComboBox<>(new String[]{"All Statuses", "Pending", "Claimed", "Cancelled"});
         statusFilter.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        statusFilter.setMaximumSize(new Dimension(200, 35));
+        statusFilter.setPreferredSize(new Dimension(Design.MAIN_PANEL_SIZE.width, 50));
+        statusFilter.setMaximumSize(new Dimension(Design.MAIN_PANEL_SIZE.width, 50));
+        statusFilter.setAlignmentX(Component.LEFT_ALIGNMENT);
+        statusFilter.setUI(new CustomComboBox());
         filterPanel.add(statusFilter);
-        filterPanel.add(Box.createHorizontalStrut(10));
+        filterPanel.add(Box.createVerticalStrut(10));
 
         headerPanel.add(title);
         headerPanel.add(Box.createVerticalStrut(10));
@@ -82,13 +86,12 @@ public class ReservationsManager extends JPanel {
         // --- Main Content: Table (left) + Details (right) ---
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
-        mainPanel.setOpaque(false);
-        mainPanel.setBackground(primaryColor);
+        mainPanel.setBackground(Design.PRIME_COLOR);
 
         // --- Table Panel (left) ---
         JPanel tableWrapper = new JPanel();
         tableWrapper.setLayout(new BoxLayout(tableWrapper, BoxLayout.Y_AXIS));
-        tableWrapper.setOpaque(false);
+        tableWrapper.setBackground(Design.PRIME_COLOR);
         tableWrapper.setAlignmentY(Component.TOP_ALIGNMENT);
         tableWrapper.setPreferredSize(new Dimension((int)(size.width * 0.55), size.height));
         tableWrapper.setMaximumSize(new Dimension((int)(size.width * 0.65), size.height));
@@ -125,8 +128,8 @@ public class ReservationsManager extends JPanel {
             BorderFactory.createLineBorder(Color.black)
         ));
         scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-        scrollPane.setBackground(primaryColor);
-        scrollPane.getViewport().setBackground(primaryColor);
+        scrollPane.setBackground(Design.PRIME_COLOR);
+        scrollPane.getViewport().setBackground(Design.PRIME_COLOR);
         tableWrapper.add(scrollPane);
 
         mainPanel.add(tableWrapper);
@@ -139,19 +142,19 @@ public class ReservationsManager extends JPanel {
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
         detailsPanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 10, 10));
-        detailsPanel.setBackground(primaryColor);
+        detailsPanel.setBackground(Design.PRIME_COLOR);
 
         String[] labelNames = {"Reservation ID", "Date Reserved", "Status", "Member Name", "Member ID", "Book Title"};
         for (String labelName : labelNames) {
             JLabel label = new JLabel(labelName + ": ");
             label.setFont(primaryFont.deriveFont(Font.BOLD));
-            label.setAlignmentX(Component.LEFT_ALIGNMENT);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
             labels.add(label);
 
             JTextField field = new JTextField();
             field.setName(labelName);
             field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-            field.setAlignmentX(Component.LEFT_ALIGNMENT);
+            field.setAlignmentX(Component.CENTER_ALIGNMENT);
             field.setFont(primaryFont);
             field.setBorder(BorderFactory.createEmptyBorder(5,5, 5, 5));
             fields.add(field);
@@ -165,7 +168,7 @@ public class ReservationsManager extends JPanel {
         // --- Button Panel (only visible for admin/librarian) ---
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setBackground(primaryColor);
+        buttonPanel.setBackground(Design.PRIME_COLOR);
         addBtn = new CustomButton("Add Reservation");
         cancelBtn = new CustomButton("Cancel Reservation");
         claimBtn = new CustomButton("Mark as Claimed");
